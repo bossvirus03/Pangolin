@@ -6,7 +6,7 @@ import * as loginModule from "facebook-chat-api";
 import { join } from "path";
 import { ConfigService } from "@nestjs/config";
 import { Logger } from "@nestjs/common";
-import HandleCommand from "./core/handeCommand";
+import HandleCommand from "./core/handleCommand";
 import HandleEvent from "./core/handleEvent";
 import Listen from "./core/listen";
 

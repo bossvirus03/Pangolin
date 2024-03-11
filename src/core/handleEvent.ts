@@ -58,7 +58,7 @@ class HandleEvent {
       }
     }
 
-    console.log(`Loaded ${eventCount} events!`);
+    console.log(`Loaded ${eventCount} event command!`);
   }
 }
 

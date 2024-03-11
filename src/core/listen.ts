@@ -1,3 +1,4 @@
+import * as cache from "memory-cache";
 class Listen {
   constructor(
     private api: any,
@@ -29,24 +30,47 @@ class Listen {
       }
 
       let listCommands = [];
-      if (!event.body.startsWith(this.client.config.PREFIX)) {
-        return;
-      }
+
       args = event.body
         .slice(this.client.config.PREFIX.length)
         .trim()
         .split(" ");
+
       this.client.commands.forEach((value, key) => {
         listCommands.push(key);
       });
 
-      if (!listCommands.includes(args[0]))
-        return this.api.sendMessage(
-          "Lệnh của bạn không tồn tại !!",
-          event.threadID,
-          event.messageID
-        );
-      this.client.commands.get(args[0]).run(this.api, event, args, this.client);
+      let commandEventOn = cache.get("command-event-on") ?? [];
+      if (commandEventOn) {
+        if (event.body.startsWith(this.client.config.PREFIX)) {
+          if (listCommands.includes(args[0])) {
+            this.client.commands
+              .get(args[0])
+              .run(this.api, event, args, this.client);
+          } else {
+            this.api.sendMessage("Lệnh của bạn không hợp lệ!!", event.threadID);
+          }
+        } else {
+          commandEventOn.forEach((command) => {
+            this.client.commands
+              .get(command.command)
+              .run(this.api, event, args, this.client);
+          });
+        }
+        // return;
+      } else {
+        if (!event.body.startsWith(this.client.config.PREFIX)) return;
+        if (!listCommands.includes(args[0])) {
+          return this.api.sendMessage(
+            "Lệnh của bạn không hợp lệ!!",
+            event.messageID,
+            event.threadID
+          );
+        }
+        this.client.commands
+          .get(args[0])
+          .run(this.api, event, args, this.client);
+      }
     });
   }
 }

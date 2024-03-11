@@ -13,8 +13,6 @@ export default class NotiCommand {
 
   constructor(private client) {}
   run(api, event, args) {
-    console.log(event);
-
     // Your run logic here
     if (event.logMessageType != "log:subscribe") return;
     let msgBody;
@@ -30,39 +28,37 @@ export default class NotiCommand {
         return;
       }
 
-      console.log(info.imageSrc);
-
       const addedParticipant = event.logMessageData.addedParticipants[0];
 
       const msgBody = `Chào mừng ${addedParticipant.fullName} đã đến với ${info.threadName}. Bạn là thành viên thứ ${info.participantIDs.length} của nhóm.`;
 
-      axios
-        .get(info.imageSrc, { responseType: "stream" })
-        .then((response) => {
-          const ext = path.extname(info.imageSrc).substring(1); // Extract extension from the image URL
-          const imagePath = path.join(process.cwd(), "public", `image.${ext}`);
+      // axios
+      //   .get(info.imageSrc, { responseType: "stream" })
+      //   .then((response) => {
+      //     const ext = path.extname(info.imageSrc).substring(1); // Extract extension from the image URL
+      //     const imagePath = path.join(process.cwd(), "public", `image.${ext}`);
 
-          response.data
-            .pipe(fs.createWriteStream(imagePath))
-            .on("finish", () => {
-              api.sendMessage(
-                {
-                  body: msgBody,
-                  mentions: [
-                    {
-                      tag: addedParticipant.fullName,
-                      id: addedParticipant.userId,
-                    },
-                  ],
-                  attachment: fs.createReadStream(imagePath),
-                },
-                event.threadID
-              );
-            });
-        })
-        .catch((error) => {
-          console.error("Error fetching image:", error);
-        });
+      //     response.data
+      //       .pipe(fs.createWriteStream(imagePath))
+      //       .on("finish", () => {
+      //         api.sendMessage(
+      //           {
+      //             body: msgBody,
+      //             mentions: [
+      //               {
+      //                 tag: addedParticipant.fullName,
+      //                 id: addedParticipant.userId,
+      //               },
+      //             ],
+      //             attachment: fs.createReadStream(imagePath),
+      //           },
+      //           event.threadID
+      //         );
+      //       });
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error fetching image:", error);
+      //   });
     });
   }
 }

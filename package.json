@@ -24,10 +24,13 @@
     "@nestjs/config": "^3.2.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@types/memory-cache": "^0.2.5",
     "axios": "^1.6.7",
     "facebook-chat-api": "^1.8.0",
     "fs": "^0.0.1-security",
+    "memory-cache": "^0.2.0",
     "messaging-api-messenger": "^1.1.0",
+    "openai": "^4.28.4",
     "reflect-metadata": "^0.2.0",
     "request": "^2.88.2",
     "rxjs": "^7.8.1"

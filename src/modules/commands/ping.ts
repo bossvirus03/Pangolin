@@ -9,14 +9,13 @@ export default class PingCommand {
   constructor(private client) {}
 
   run(api, event, args) {
-    api.sendMessage("PONG! prefix", event.tAhreadID, event.messageID);
+    api.sendMessage("PONG! prefix", event.threadID, event.messageID);
   }
 
   noprefix(api, event, args) {
     // Your noprefix logic here
-    api.sendMessage("PONG! no prefix", event.threadID, event.messageI);
+    api.sendMessage("PONG! no prefix", event.threadID, event.messageID);
   }
 
-  onload(api, client) {
-  }
+  onload(api, client) {}
 }
