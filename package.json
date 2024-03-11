@@ -26,6 +26,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@types/memory-cache": "^0.2.5",
     "axios": "^1.6.7",
+    "dayjs": "^1.11.10",
     "facebook-chat-api": "^1.8.0",
     "fs": "^0.0.1-security",
     "memory-cache": "^0.2.0",
