@@ -17,7 +17,7 @@ async function bootstrap() {
   /** =========== APP ===========*/
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const port = configService.get("PORT");
+  const port = configService.get("PORT") || 3000;
   await app.listen(port);
   Logger.log(`🚀Application is running on: http://localhost:${port}`);
 
@@ -51,7 +51,7 @@ async function bootstrap() {
     // Logging in to Facebook Chat API
     await loginAsync(loginPath, (err, api) => {
       if (err) return console.error(err);
-      
+
       //listen event
       const ListenEvent = new Listen(api, client);
       ListenEvent.listen();

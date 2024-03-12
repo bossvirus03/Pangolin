@@ -5,6 +5,7 @@ class Listen {
     private client: any
   ) {}
   listen() {
+    const PREFIX = this.client.config.PREFIX || ";";
     for (let i = 0; i < this.client.onload.length; i++) {
       this.client.onload[i].onload(this.api, this.client);
     }
@@ -31,10 +32,7 @@ class Listen {
 
       let listCommands = [];
 
-      args = event.body
-        .slice(this.client.config.PREFIX.length)
-        .trim()
-        .split(" ");
+      args = event.body.slice(PREFIX.length).trim().split(" ");
 
       this.client.commands.forEach((value, key) => {
         listCommands.push(key);
@@ -42,7 +40,7 @@ class Listen {
 
       let commandEventOn = cache.get("command-event-on") ?? [];
       if (commandEventOn) {
-        if (event.body.startsWith(this.client.config.PREFIX)) {
+        if (event.body.startsWith(PREFIX)) {
           if (listCommands.includes(args[0])) {
             this.client.commands
               .get(args[0])
@@ -59,7 +57,7 @@ class Listen {
         }
         // return;
       } else {
-        if (!event.body.startsWith(this.client.config.PREFIX)) return;
+        if (!event.body.startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {
           return this.api.sendMessage(
             "Lệnh của bạn không hợp lệ!!",
