@@ -12,22 +12,27 @@ class Listen {
 
     this.api.setOptions({ listenEvents: true });
     this.api.listenMqtt((err, event) => {
+      // load all event
       this.client.events.forEach((value, key) => {
         this.client.events.get(key).run(this.api, event, this.client);
       });
 
-      const check = event.body == undefined;
-      if (check) return;
+      //load all command event
+      this.client.event.forEach((value, key) => {
+        this.client.event.get(key).event(this.api, event, this.client);
+      });
 
+      if (event.body == undefined) return;
       let args = event.body.trim().split(" ");
       let listNoprefix = [];
       this.client.noprefix.forEach((value, key) => {
         listNoprefix.push(key);
       });
+
       if (listNoprefix.includes(args[0])) {
         this.client.noprefix
           .get(args[0])
-          .noprefix(this.api, event, args, this.client);
+          .noprefix(this.api, event, this.client, args);
       }
 
       let listCommands = [];
@@ -38,13 +43,14 @@ class Listen {
         listCommands.push(key);
       });
 
+      //load command when cache has command-event-on
       let commandEventOn = cache.get("command-event-on") ?? [];
       if (commandEventOn) {
         if (event.body.startsWith(PREFIX)) {
           if (listCommands.includes(args[0])) {
             this.client.commands
               .get(args[0])
-              .run(this.api, event, args, this.client);
+              .run(this.api, event, this.client, args);
           } else {
             this.api.sendMessage("Lệnh của bạn không hợp lệ!!", event.threadID);
           }
@@ -52,11 +58,12 @@ class Listen {
           commandEventOn.forEach((command) => {
             this.client.commands
               .get(command.command)
-              .run(this.api, event, args, this.client);
+              .run(this.api, event, this.client, args);
           });
         }
-        // return;
-      } else {
+      }
+      //load all command
+      else {
         if (!event.body.startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {
           return this.api.sendMessage(
@@ -67,7 +74,7 @@ class Listen {
         }
         this.client.commands
           .get(args[0])
-          .run(this.api, event, args, this.client);
+          .run(this.api, event, this.client, args);
       }
     });
   }
