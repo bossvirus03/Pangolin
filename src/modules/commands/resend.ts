@@ -12,8 +12,6 @@ export default class ResendCommand {
 
   constructor(private client) {}
   async event(api, event, client) {
-    console.log(cache.get("command-event-on"));
-    // console.log(event);
     function getOldMessage() {
       const cachedArray = cache.get("old-message");
       if (cachedArray) {
@@ -33,10 +31,6 @@ export default class ResendCommand {
     }
     async function handleMessageUnSend(message) {
       const isCommandOn = cache.get("command-event-on");
-
-      console.log(isCommandOn);
-      // .some((item) => item.threadID == event.threadID);
-      // if (isCommandOn) {
       await api.getUserInfo([event.senderID], (err, ret) => {
         if (err) return console.error(err);
         for (var prop in ret) {
@@ -48,7 +42,6 @@ export default class ResendCommand {
           }
         }
       });
-      // }
     }
 
     // handle logic event
@@ -78,7 +71,10 @@ export default class ResendCommand {
     if (args[1] == "on") {
       if (prevCommandEventOn) {
         if (
-          prevCommandEventOn.some((item) => item.threadID == event.threadID)
+          prevCommandEventOn.some(
+            (item) =>
+              item.threadID == event.threadID && item.command == "resend"
+          )
         ) {
           api.sendMessage("resend vẫn đang hoạt động", event.threadID);
           return;

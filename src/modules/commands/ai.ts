@@ -1,6 +1,5 @@
 import axios from "axios";
 import * as cache from "memory-cache";
-import OpenAI from "openai";
 export default class AiCommand {
   static config = {
     name: "ai",
@@ -11,7 +10,7 @@ export default class AiCommand {
 
   constructor(private client) {}
 
-  async run(api, event, args) {
+  async run(api, event, client, args) {
     // handle pre command event
     function getPrevCommandEvent() {
       const cachedArray = cache.get("command-event-on");
@@ -28,18 +27,14 @@ export default class AiCommand {
     if (args[1] == "on") {
       prevCommandEventOn.push({
         command: "ai",
-        threadID: event.threadID || event.messageID,
+        threadID: event.threadID,
       });
-      cache.put("command-event-on", prevCommandEventOn, 6 * 1000 * 5); // Time in ms
-      api.sendMessage(
-        "Chat bot ai is running",
-        event.threadID,
-        event.messageID
-      );
+      cache.put("command-event-on", prevCommandEventOn, 6 * 10000 * 5); // Time in ms
+      api.sendMessage("Chat bot ai is running", event.threadID);
     }
     if (args[1] == "off") {
       const newPrevCommandEventOn = prevCommandEventOn.filter(
-        (item) => item.command !== "ai"
+        (item) => item.command != "ai" && item.threadID != event.threadID
       );
       cache.put("command-event-on", newPrevCommandEventOn, 6 * 1000 * 5); // Time in ms
       api.sendMessage(
@@ -50,23 +45,56 @@ export default class AiCommand {
     }
 
     // handle logic event
-    if (args[0] == "ai") return;
-    if (
-      1 ||
-      event.body.startsWith("GPT:") ||
-      event.body.startsWith("question:")
-    ) {
-      cache.get("command-event-on").forEach((command) => {
-        if (command.threadID == event.threadID) {
-          handleCallGpt(event.threadID, event);
-        }
-      });
-      async function handleCallGpt(threadID, event) {
-        console.log(event);
-        return;
-      }
 
-      api.sendMessage("AI respose: ", event.threadID, event.messageID);
+    async function handleCallGpt(threadID, event) {
+      const options = {
+        method: "POST",
+        url: "https://chatgpt-42.p.rapidapi.com/conversationgpt4",
+        headers: {
+          "content-type": "application/json",
+          "X-RapidAPI-Key":
+            "70d6c3fedfmshd34b0c87b9f894dp131cc7jsn08a2dc9842da",
+          "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com",
+        },
+        data: {
+          messages: [
+            {
+              role: "user",
+              content: event.body.split("question:")[1].trim(),
+            },
+          ],
+          system_prompt: "",
+          temperature: 0.9,
+          top_k: 5,
+          top_p: 0.9,
+          max_tokens: 2560,
+          web_access: false,
+        },
+      };
+      try {
+        const response = await axios.request(options);
+        return response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    if (args[0] == "ai") return;
+    if (event.body.startsWith("question:")) {
+      const check = cache
+        .get("command-event-on")
+        .some(
+          async (item) =>
+            item.threadID == event.threadID && item.command == "ai"
+        );
+      if (check) {
+        const response = await handleCallGpt(event.threadID, event);
+        api.sendMessage(
+          `AI respose: ${response.result}`,
+          event.threadID,
+          event.messageID
+        );
+      }
     }
   }
 }
