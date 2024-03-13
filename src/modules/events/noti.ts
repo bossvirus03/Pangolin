@@ -6,13 +6,9 @@ export default class NotiCommand {
     createdAt: "",
   };
 
-  constructor(private client) {}
-
-  run(api, event, args) {
-    // Your run logic here
+  run(api, event, client, args) {
+    // console.log(event);
   }
 
-  onload(api, client) {
-    // Your onload logic here
-  }
+  onload(api, client) {}
 }

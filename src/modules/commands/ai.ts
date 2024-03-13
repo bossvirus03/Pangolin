@@ -58,28 +58,15 @@ export default class AiCommand {
     ) {
       cache.get("command-event-on").forEach((command) => {
         if (command.threadID == event.threadID) {
-          handleCallGpt(event.threadID, event.body);
+          handleCallGpt(event.threadID, event);
         }
       });
-      async function handleCallGpt(threadID, body) {
-        // const openai = new OpenAI({
-        //   apiKey: process.env["OPENAI_API_KEY"],
-        // });
-
-        // async function main() {
-        //   const completion = await openai.chat.completions.create({
-        //     messages: [
-        //       { role: "system", content: "You are a helpful assistant." },
-        //     ],
-        //     model: "gpt-3.5-turbo",
-        //   });
-
-        //   console.log(completion.choices[0]);
-        // }
-
-        // main();
-        api.sendMessage("AI respose: ", event.threadID, event.messageID);
+      async function handleCallGpt(threadID, event) {
+        console.log(event);
+        return;
       }
+
+      api.sendMessage("AI respose: ", event.threadID, event.messageID);
     }
   }
 }

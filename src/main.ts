@@ -40,6 +40,7 @@ async function bootstrap() {
       events: new Map(),
       noprefix: new Map(),
       onload: new Array(),
+      event: new Map(),
     };
 
     //load commands, event

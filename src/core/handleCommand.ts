@@ -51,6 +51,10 @@ class HandleCommand {
           this.client.commands.set(config.name, commandInstance);
         }
 
+        if (commandInstance.event) {
+          this.client.event.set(config.name, commandInstance);
+        }
+
         if (commandInstance.noprefix) {
           noprefixCount++;
           this.client.noprefix.set(config.name, commandInstance);
