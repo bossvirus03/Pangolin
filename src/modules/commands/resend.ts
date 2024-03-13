@@ -12,6 +12,7 @@ export default class ResendCommand {
 
   constructor(private client) {}
   async event(api, event, client) {
+    console.log(cache.get("command-event-on"));
     // console.log(event);
     function getOldMessage() {
       const cachedArray = cache.get("old-message");
@@ -31,7 +32,12 @@ export default class ResendCommand {
       }
     }
     async function handleMessageUnSend(message) {
-      api.getUserInfo([event.senderID], (err, ret) => {
+      const isCommandOn = cache.get("command-event-on");
+
+      console.log(isCommandOn);
+      // .some((item) => item.threadID == event.threadID);
+      // if (isCommandOn) {
+      await api.getUserInfo([event.senderID], (err, ret) => {
         if (err) return console.error(err);
         for (var prop in ret) {
           if (ret[prop].name) {
@@ -42,6 +48,7 @@ export default class ResendCommand {
           }
         }
       });
+      // }
     }
 
     // handle logic event
@@ -86,8 +93,9 @@ export default class ResendCommand {
     }
     if (args[1] == "off") {
       const newPrevCommandEventOn = prevCommandEventOn.filter(
-        (item) => item.threadID == event.threadID
+        (item) => item.threadID != event.threadID
       );
+      console.log("newPrevCommandEventOn", newPrevCommandEventOn);
       cache.put("command-event-on", newPrevCommandEventOn, 6 * 10000 * 5); // Time in ms
       api.sendMessage("Resend is disabled!!", event.threadID, event.messageID);
     }
