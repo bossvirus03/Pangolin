@@ -1,5 +1,9 @@
 import axios from "axios";
-
+import request from "request-promise";
+import * as cache from "memory-cache";
+import * as cheerio from "cheerio";
+import * as fs from "fs";
+import { join } from "path";
 export default class MangaCommand {
   static config = {
     name: "manga",
@@ -9,61 +13,163 @@ export default class MangaCommand {
   };
 
   constructor(private client) {}
-
-  async run(api, event, args) {
-    const search = event.body.split("|")[1].trim();
-    // console.log("check search", search);
-
-    if (args[1] == "search") {
-      try {
-        const response = await axios.get("https://trumtruyen.vn/ajax.php", {
-          params: {
-            type: "quick_search",
-            str: search,
-          },
+  async event(api, event, client) {
+    const listManga = cache.get("manga");
+    if (event.type == "message_reply") {
+      let numChose = 1;
+      //reply list manga
+      if (listManga) {
+        listManga.forEach((item) => {
+          if (event.messageReply.messageID == item.messageID) {
+            item.data.forEach((itemData) => {
+              if (event.body == numChose) {
+                axios(itemData.href).then((res) => {
+                  const html = res.data;
+                  const $ = cheerio.load(html);
+                  let chapters = [];
+                  $("ul li .col-xs-5", html).each(function () {
+                    const link = $(this).find("a").attr("href");
+                    chapters.push(link);
+                  });
+                  api.sendMessage(
+                    `Có ${chapters.length} chapter, vui lòng reply để chọn chap cần đọc!`,
+                    event.threadID,
+                    (err, res) => {
+                      cache.put(
+                        "manga-list-chapter",
+                        { data: chapters, messageID: res.messageID },
+                        5 * 1000 * 60
+                      );
+                    }
+                  );
+                });
+              }
+              numChose++;
+            });
+          }
         });
+      }
+      // reply list chapter
+      const listChapter = cache.get("manga-list-chapter");
+      if (listChapter) {
+        let chapterIndex = 1;
+        if (event.messageReply.messageID == listChapter.messageID) {
+          listChapter.data.forEach((chapter) => {
+            if (event.body == chapterIndex) {
+              axios(chapter).then(async (res) => {
+                const html = res.data;
+                const $ = cheerio.load(html);
+                let linkImgChapters = [];
+                let imgChapters = [];
+                let promises = [];
+                let numOfImgChapter = 1;
+                $(".reading .reading-detail .page-chapter", html).each(
+                  function () {
+                    const link = $(this).find("img").attr("data-original");
+                    var ext = link.substring(link.lastIndexOf(".") + 1);
+                    linkImgChapters.unshift(link);
+                    const path = join(
+                      process.cwd(),
+                      `/public/images/${numOfImgChapter}.${ext}`
+                    );
+                    // Create a promise for each image download
+                    const promise = axios
+                      .get(link, { responseType: "arraybuffer" })
+                      .then((response) => {
+                        const buffer = Buffer.from(response.data);
+                        fs.writeFileSync(path, buffer);
+                        imgChapters.push(fs.createReadStream(path));
+                      })
+                      .catch((error) => {
+                        console.error("Error downloading image:", error);
+                      });
+                    promises.push(promise);
+                    numOfImgChapter++;
+                  }
+                );
+
+                // Wait for all promises to resolve
+                Promise.all(promises)
+                  .then(() => {
+                    // All images are downloaded, send the message
+                    imgChapters.forEach((item) => {
+                      api.sendMessage(
+                        {
+                          attachment: imgChapters,
+                        },
+                        event.threadID
+                      );
+                    });
+                    api.sendMessage(
+                      {
+                        body: `Có ${linkImgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
+                      },
+                      event.threadID
+                    );
+                  })
+                  .catch((error) => {
+                    console.error("Error downloading images:", error);
+                  });
+              });
+            }
+            chapterIndex++;
+          });
+        }
+      }
+    }
+  }
+  async run(api, event, client, args) {
+    if (args[1] == "search") {
+      const search = event.body.split("search")[1].trim();
+      try {
+        const response = await axios.get(
+          "https://nettruyenfull.com/suggest-search",
+          {
+            params: {
+              q: search,
+            },
+          }
+        );
+
         const rawLinks = response.data.split("<a");
 
-        // Loại bỏ phần tử cuối cùng (kết quả tìm kiếm)
-        rawLinks.pop();
-
-        // Xử lý từng phần tử để lấy thông tin về href và title
-        const result = rawLinks.map((rawLink) => {
+        let result = rawLinks.map((rawLink) => {
           const hrefStart = rawLink.indexOf('href="') + 6;
           const hrefEnd = rawLink.indexOf('"', hrefStart);
           const href = rawLink.slice(hrefStart, hrefEnd);
 
-          const titleStart = rawLink.indexOf('title="') + 7;
-          const titleEnd = rawLink.indexOf('"', titleStart);
+          const titleStart = rawLink.indexOf("h3>") + 3;
+          const titleEnd = rawLink.indexOf("<", titleStart);
           const title = rawLink.slice(titleStart, titleEnd);
 
-          return { href, title };
+          const imgStart = rawLink.indexOf('src="') + 5;
+          const imgEnd = rawLink.indexOf('"', imgStart);
+          const thumbnail = rawLink.slice(imgStart, imgEnd);
+
+          return { href, title, thumbnail };
         });
 
-        // console.log(response.data);
+        result = result.filter((item) => !item.href.startsWith(" "));
 
         let smg = "";
-        let i = 0;
-        for (let item of result) {
-          if (i > 0) {
-            smg += `[${i}] ${item.title} \n Link: ${item.href}\n\n`;
-          }
+        let i = 1;
+        result.forEach((item) => {
+          smg += `[${i}] ${item.title} \n${item.href}\n\n`;
           i++;
-        }
-        // console.log("IIIIII", i);
-
-        if (i == 1) {
-          api.sendMessage(
-            "Không tìm thầy kết quả!",
-            event.threadID,
-            event.messageID
-          );
-          return;
-        }
-        api.sendMessage(smg, event.threadID, event.messageID);
+        });
+        smg += "Reply số tương ứng để chọn";
+        api.sendMessage(smg, event.threadID, async (err, res) => {
+          const MangaChose = [];
+          MangaChose.push({
+            messageID: res.messageID,
+            threadID: res.threadID,
+            data: result,
+          });
+          cache.put("manga", MangaChose, 10000 * 60);
+        });
       } catch (error) {
         console.log("Error fetching data:", error);
       }
-    }
+    } else return;
   }
 }
