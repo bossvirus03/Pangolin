@@ -46,8 +46,10 @@ lerna-debug.log*
 .temp
 .tmp
 
-# img 
+# image, audio, vido
 *.jpg
+*.mp4
+*.mp3
 
 # Runtime data
 pids

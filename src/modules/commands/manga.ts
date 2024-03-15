@@ -54,12 +54,11 @@ export default class MangaCommand {
       if (listChapter) {
         let chapterIndex = 1;
         if (event.messageReply.messageID == listChapter.messageID) {
-          listChapter.data.forEach((chapter) => {
+          listChapter.data.reverse().forEach((chapter) => {
             if (event.body == chapterIndex) {
               axios(chapter).then(async (res) => {
                 const html = res.data;
                 const $ = cheerio.load(html);
-                let linkImgChapters = [];
                 let imgChapters = [];
                 let promises = [];
                 let numOfImgChapter = 1;
@@ -67,7 +66,6 @@ export default class MangaCommand {
                   function () {
                     const link = $(this).find("img").attr("data-original");
                     var ext = link.substring(link.lastIndexOf(".") + 1);
-                    linkImgChapters.unshift(link);
                     const path = join(
                       process.cwd(),
                       `/public/images/${numOfImgChapter}.${ext}`
@@ -96,16 +94,11 @@ export default class MangaCommand {
                       api.sendMessage(
                         {
                           attachment: imgChapters,
+                          body: `Có ${imgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
                         },
                         event.threadID
                       );
                     });
-                    api.sendMessage(
-                      {
-                        body: `Có ${linkImgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
-                      },
-                      event.threadID
-                    );
                   })
                   .catch((error) => {
                     console.error("Error downloading images:", error);
