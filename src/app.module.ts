@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
-import GetIpService from "libs/shared/common/services/get-IP.service";
 
 @Module({
   imports: [
@@ -11,6 +10,6 @@ import GetIpService from "libs/shared/common/services/get-IP.service";
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, GetIpService],
+  providers: [AppService],
 })
 export class AppModule {}

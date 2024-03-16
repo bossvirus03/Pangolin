@@ -1,6 +1,4 @@
-// src/app.controller.ts
 import { Controller, Get, Post } from "@nestjs/common";
 
 @Controller()
-export class AppController {
-}
+export class AppController {}

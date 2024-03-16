@@ -1,5 +1,4 @@
 import axios from "axios";
-import request from "request-promise";
 import * as cache from "memory-cache";
 import * as cheerio from "cheerio";
 import * as fs from "fs";
@@ -90,15 +89,22 @@ export default class MangaCommand {
                 Promise.all(promises)
                   .then(() => {
                     // All images are downloaded, send the message
-                    imgChapters.forEach((item) => {
-                      api.sendMessage(
-                        {
-                          attachment: imgChapters,
-                          body: `Có ${imgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
-                        },
-                        event.threadID
-                      );
-                    });
+                    // imgChapters.forEach((item) => {
+                    //   api.sendMessage(
+                    //     {
+                    //       attachment: item,
+                    //       body: `Có ${imgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
+                    //     },
+                    //     event.threadID
+                    //   );
+                    // });
+                    api.sendMessage(
+                      {
+                        attachment: imgChapters,
+                        body: `Có ${imgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
+                      },
+                      event.threadID
+                    );
                   })
                   .catch((error) => {
                     console.error("Error downloading images:", error);
