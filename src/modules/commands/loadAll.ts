@@ -18,8 +18,7 @@ export default class LoadAllCommand {
     const users = usersData.map((item) => {
       return item.dataValues.uid;
     });
-    console.log(users);
-    const allTags = [["INBOX"], , ["OTHER"]];
+    const allTags = [["INBOX"], ["OTHER"]];
     allTags.forEach((item) => {
       const [limit, timestamp, tags, callback] = [
         10,
@@ -30,16 +29,30 @@ export default class LoadAllCommand {
             console.error("Error fetching threads:", err);
           } else {
             const listBox = list.filter((item) => item.isGroup == true);
-            await listBox.forEach((item) => {
+            // get list user from group
+            if (listBox.length > 0) {
+              listBox.forEach((box) => {
+                const usersFromListBox = box.participants;
+                usersFromListBox.forEach(async (item) => {
+                  if (!users.includes(item.userID)) {
+                    await DataUser.set(item.userID, item.name);
+                  }
+                });
+              });
+            }
+
+            // get list box form chat
+            await listBox.forEach(async (item) => {
               if (!threads.includes(item.threadID)) {
-                DataThread.set(item.threadID, item.name);
+                await DataThread.set(item.threadID, item.name);
               }
             });
 
+            // get users form chat
             const listUser = list.filter((item) => item.isGroup == false);
-            await listUser.forEach((item) => {
+            await listUser.forEach(async (item) => {
               if (!users.includes(item.threadID)) {
-                DataUser.set(item.threadID, item.name);
+                await DataUser.set(item.threadID, item.name);
               }
             });
           }

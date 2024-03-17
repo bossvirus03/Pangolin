@@ -84,16 +84,16 @@ export default class RankCommand {
 
     // Vẽ chữ hiển thị % level
     ctx.fillStyle = "#ccc";
-    ctx.font = "italic bold 32px Sintony";
+    ctx.font = "italic bold 32px Arial";
     ctx.fillText(`${percentLevel}%`, 696, 295);
 
     // Vẽ chữ hiển thị Tên
     ctx.fillStyle = "#000000"; // Màu đen
-    ctx.font = "italic bold 46px Sintony";
+    ctx.font = "italic bold 46px Arial";
     ctx.fillText(`${name}`, 372, 209);
 
     //thông tin level Nal/Nal và level hiện tại
-    ctx.font = "italic bold 36px Sintony";
+    ctx.font = "italic bold 36px Arial";
     ctx.fillStyle = "#ccc";
     ctx.fillText(`${currentLevel}`, 1030, 85);
     ctx.fillText(`${nowExp} /${futureExp}`, 800, 85);

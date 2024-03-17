@@ -2,7 +2,7 @@ import axios from "axios";
 import * as fs from "fs";
 import { join } from "path";
 
-export default class RankCommand {
+export default class ImgBoxCommand {
   static config = {
     name: "imgbox", //tên lệnh của bạn
     version: "",
