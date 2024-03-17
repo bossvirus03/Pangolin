@@ -1,4 +1,4 @@
-export default class MangaCommand {
+export default class UidCommand {
   static config = {
     name: "uid",
     version: "1.0.0",

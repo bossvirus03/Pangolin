@@ -24,6 +24,7 @@ export default class HelpCommand {
     for (const file of commandFiles) {
       const filePath = join(commandPath, file);
       const CommandClass = require(filePath).default;
+      console.log(CommandClass);
       const { config } = CommandClass;
       const commandInstance = new CommandClass(this.client);
       if (commandInstance.run) {

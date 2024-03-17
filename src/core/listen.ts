@@ -90,6 +90,21 @@ class Listen {
   }
 
   UserData = {
+    set: async (uid, name) => {
+      const newUser = await User.create({
+        uid: uid,
+        exp: 0,
+        money: 0,
+        name: name,
+        prefix: null,
+      });
+      console.log("New user created:", newUser.toJSON());
+    },
+    getAll: async () => {
+      const res = await User.findAll();
+      if (!res) return null;
+      return res;
+    },
     get: async (uid) => {
       const user = await User.findOne({ where: { uid } });
       if (!user) return null;
@@ -101,6 +116,24 @@ class Listen {
   };
 
   ThreadData = {
+    set: async (tid, name) => {
+      const newThread = await Thread.create({
+        tid: tid,
+        name: name,
+        prefix: null,
+        rankup: true,
+      });
+      console.log("New thread created:", newThread.toJSON());
+    },
+    setPrefix: async (tid, prefix) => {
+      const res = await Thread.update({ prefix }, { where: { tid } });
+      return res;
+    },
+    getAll: async () => {
+      const res = await Thread.findAll();
+      if (!res) return null;
+      return res;
+    },
     get: async (tid) => {
       const res = await Thread.findOne({ where: { tid } });
       if (!res) return null;
@@ -119,7 +152,6 @@ class Listen {
       },
       set: async (tid, bool: boolean) => {
         const res = await Thread.update({ rankup: bool }, { where: { tid } });
-        console.log(res);
         return res;
       },
     },
@@ -203,7 +235,8 @@ class Listen {
 
       const PREFIX =
         (await this.ThreadData.prefix(event.threadID)) ||
-        this.client.config.PREFIX;
+        this.client.config.PREFIX ||
+        ";";
       args = event.body.slice(PREFIX.length).trim().split(" ");
 
       this.client.commands.forEach((value, key) => {

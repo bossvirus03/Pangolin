@@ -1,6 +1,6 @@
 import * as cache from "memory-cache";
 
-export default class ResendCommand {
+export default class CheckCMCommand {
   static config = {
     name: "checkCM",
     version: "1.0.0",
