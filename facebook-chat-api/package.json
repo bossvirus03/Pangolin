@@ -1,0 +1,66 @@
+{
+  "name": "facebook-chat-api",
+  "version": "1.8.0",
+  "description": "Facebook chat API that doesn't rely on XMPP.  Will NOT be deprecated April 30th 2015.",
+  "scripts": {
+    "test": "mocha",
+    "lint": "./node_modules/.bin/eslint **.js",
+    "prettier": "prettier utils.js src/* --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Schmavery/facebook-chat-api.git"
+  },
+  "keywords": [
+    "facebook",
+    "chat",
+    "api"
+  ],
+  "bugs": {
+    "url": "https://github.com/Schmavery/facebook-chat-api/issues"
+  },
+  "author": "Avery, David, Maude, Benjamin",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.0.0",
+    "cheerio": "^0.22.0",
+    "mqtt": "^3.0.0",
+    "npmlog": "^1.2.0",
+    "request": "^2.53.0",
+    "websocket-stream": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=4.x"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "mocha": "^7.0.1",
+    "prettier": "^1.11.1"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "rules": {
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-unused-vars": [
+        1,
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ]
+    }
+  }
+}
