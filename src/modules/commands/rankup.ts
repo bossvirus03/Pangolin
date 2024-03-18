@@ -43,7 +43,7 @@ export default class RankUpCommand {
             {
               tag: `@${user.name}`,
               id: event.senderID,
-              fromIndex: 9, // Highlight the second occurrence of @Sender
+              fromIndex: 9,
             },
           ],
           attachment: fs.createReadStream(join(gifPath + "/" + randomGif)),

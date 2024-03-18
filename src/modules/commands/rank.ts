@@ -43,7 +43,7 @@ export default class RankCommand {
       "data",
       "rank",
       "card",
-      "card.jpg"
+      "card.png"
     );
 
     const template = await loadImage(cardTemplatePath);
@@ -106,7 +106,7 @@ export default class RankCommand {
     ctx.drawImage(await loadImage(avt), 36, 40, 328, 328);
 
     const fimg = canvas.toBuffer();
-    fs.writeFileSync(
+    await fs.writeFileSync(
       join(
         process.cwd(),
         "src",
@@ -114,7 +114,7 @@ export default class RankCommand {
         "data",
         "rank",
         "card",
-        "card2.jpg"
+        "card2.png"
       ),
       fimg
     );
@@ -145,22 +145,25 @@ export default class RankCommand {
       user.exp,
       percentLevel
     );
-    api.sendMessage(
-      {
-        attachment: await fs.createReadStream(
-          join(
-            process.cwd(),
-            "src",
-            "database",
-            "data",
-            "rank",
-            "card",
-            "card2.jpg"
-          )
-        ),
-      },
-      event.threadID
-    );
+
+    setTimeout(async () => {
+      api.sendMessage(
+        {
+          attachment: await fs.createReadStream(
+            join(
+              process.cwd(),
+              "src",
+              "database",
+              "data",
+              "rank",
+              "card",
+              "card2.png"
+            )
+          ),
+        },
+        event.threadID
+      );
+    }, 2000);
 
     // ! TODO làm phần tag để get rank
     // if (!args[1]) return api.sendMessage(event.senderID, event.threadID);
