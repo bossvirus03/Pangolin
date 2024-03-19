@@ -2,9 +2,10 @@ export default class SetNameCommand {
   static config = {
     name: "setname",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "Đổi biệt danh của 1 người",
+    description:
+      "Cách dùng: [prefix]setname @mention [new name]\nChức năng: Đổi biệt danh của 1 người",
   };
 
   constructor(private client) {}

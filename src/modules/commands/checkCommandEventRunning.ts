@@ -4,9 +4,10 @@ export default class CheckCMCommand {
   static config = {
     name: "checkCM",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "13/3/24",
-    description: "on/off resend mode",
+    description:
+      "Cách dùng: [prefix]checkCM\nChức năng: kiểm tra xem có bao nhiêu lênh đạng sử dụng dữ liệu của memory",
     permission: 2,
   };
 

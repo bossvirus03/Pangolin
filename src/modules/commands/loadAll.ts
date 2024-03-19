@@ -2,9 +2,10 @@ export default class LoadAllCommand {
   static config = {
     name: "loadAll",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "",
+    description:
+      "[Chỉ dảnh cho ADMIN bot]:load all người dùng, thread đang hoạt động vào database",
     permission: 2,
   };
 

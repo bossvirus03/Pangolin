@@ -6,9 +6,10 @@ export default class autoReaction {
   static config = {
     name: "autoReaction",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "1",
+    description:
+      "Cách dùng: autoReaction @mention [emoji] or autoReaction @mention off\nChức năng: Tự động thả reaction khi ai đó nhắn",
   };
 
   constructor(private client) {}

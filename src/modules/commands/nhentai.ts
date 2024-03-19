@@ -1,13 +1,14 @@
 import axios from "axios";
 import * as fs from "fs";
 import { join } from "path";
-export default class HentaiCommand {
+export default class NhentaiCommand {
   static config = {
     name: "nhentai",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "/nhentai [tag]",
+    description:
+      "Cách dùng: [prefix]nhentai [tag] random ảnh anime 18+\nChức năng: xem ảnh anime 18+",
   };
 
   constructor(private client) {}

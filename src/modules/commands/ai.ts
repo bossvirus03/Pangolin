@@ -4,8 +4,10 @@ export default class AiCommand {
   static config = {
     name: "ai",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
+    description:
+      "Cách dùng: [prefix]ai [on/off] rồi nhắn question: [ câu hỏi ]\nChức năng: đặt câu hỏi gì đó cho chat gpt",
   };
 
   constructor(private client) {}
@@ -60,7 +62,11 @@ export default class AiCommand {
           messages: [
             {
               role: "user",
-              content: event.body.split("question:")[1].trim(),
+              content:
+                event.body.split("question:")[1].trim() ||
+                event.body.split("question :")[1].trim() ||
+                event.body.split("Question :")[1].trim() ||
+                event.body.split("Question:")[1].trim(),
             },
           ],
           system_prompt: "",

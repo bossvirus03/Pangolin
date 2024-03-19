@@ -5,9 +5,10 @@ export default class RankUpCommand {
   static config = {
     name: "rankup",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "",
+    description:
+      "Cách dùng: [prefix]rankup [on/off]\nChức năng: bật tắt thông báo khi tăng cấp độ tương tác",
   };
 
   constructor(private client) {}

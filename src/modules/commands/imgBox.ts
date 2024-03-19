@@ -5,10 +5,11 @@ import { join } from "path";
 export default class ImgBoxCommand {
   static config = {
     name: "imgbox", //tên lệnh của bạn
-    version: "",
-    author: "",
+    version: "1.0.0",
+    author: "Lợi",
     createdAt: "",
-    description: "",
+    description:
+      "Cách dùng: [prefix]imgbox(Reply 1 bức ảnh)\nChức năng: đổi avatar nhóm",
     permission: 1,
   };
 

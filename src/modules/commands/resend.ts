@@ -5,9 +5,10 @@ export default class ResendCommand {
   static config = {
     name: "resend",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "13/3/24",
-    description: "on/off resend mode",
+    description:
+      "Cách dùng[prefix]on/off resend mode\nChức năng: on/off resend mode",
     permission: 1,
   };
 

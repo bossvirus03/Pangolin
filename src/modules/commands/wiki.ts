@@ -4,7 +4,7 @@ export default class WikiCommand {
   static config = {
     name: "wiki",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
   };
 

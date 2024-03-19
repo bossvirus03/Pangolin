@@ -2,16 +2,15 @@ import { readdirSync } from "fs";
 import * as fs from "fs";
 import { join } from "path";
 import { createCanvas, loadImage } from "canvas";
-import Request from "requests";
-import { get } from "request-promise";
 import axios from "axios";
 export default class RankCommand {
   static config = {
     name: "rank",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "",
+    description:
+      "Cách dùng[prefix]rank\nChức năng: Lấy thông tin rank của người dùng",
   };
 
   constructor(private client) {}
@@ -125,20 +124,31 @@ export default class RankCommand {
     const countExp = (level) => {
       return (3 * (-2 + Math.pow(level * 2, 2))) / 4;
     };
-    // console.log(
-    //   `https://graph.facebook.com/${event.senderID}/picture?width=328&height=328&access_token=${process.env.ACCESS_TOKEN_FB}`
-    // );
-    let avt = await api.getUserInfo(event.senderID, (err, ret) => {});
-    avt = avt[event.senderID].thumbSrc;
+    const avt = `https://graph.facebook.com/${event.senderID}/picture`;
+    const avtUrl = await axios.get(avt, {
+      params: {
+        width: 480,
+        height: 480,
+        redirect: false,
+        access_token: process.env.ACCESS_TOKEN_FB,
+      },
+      headers: {
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0",
+        Cookie:
+          "sb=8lroZVbhKmJEmxTrSDlPeHY9; datr=8lroZWMAuHuZ9TskwZTJyFdg; dpr=0.8999999761581421; ps_n=0; ps_l=0; locale=en_US; c_user=100049732817959; xs=40%3AgJstZorKeBXc5w%3A2%3A1710512151%3A-1%3A6398%3A%3AAcVIJX6w33kD_DcG29ZqFgwb4iHpNf3pq72mHqBtn_Q; fr=1kHbVtj4uFeqpFDHL.AWUKIvembjxLw0xsPDDvx9BASxY.Bl-UX4..AAA.0.0.Bl-UbQ.AWUIZZEoe4Y; wd=1872x958; presence=EDvF3EtimeF1710835746EuserFA21B49732817959A2EstateFDutF0CEchF_7bCC; usida=eyJ2ZXIiOjEsImlkIjoiQXNhbDVjNng3dzN0aiIsInRpbWUiOjE3MTA4MzU4NDR9",
+      },
+    });
+    // let avt = await api.getUserInfo(event.senderID, (err, ret) => {});
+    // avt = avt[event.senderID].thumbSrc;
     const user = await DataUser.get(event.senderID);
     const currentLevel = Math.floor(Math.sqrt(1 + (4 * user.exp) / 3 + 1) / 2);
     const futureExp = Math.floor(countExp(currentLevel + 1));
     const nowExp = Math.floor(countExp(currentLevel));
-    console.log(futureExp, nowExp, user.exp, currentLevel);
     const percentLevel = Math.floor((nowExp / futureExp) * 100);
 
     this.createRankCard(
-      avt,
+      avtUrl.data.url,
       user.name,
       currentLevel,
       futureExp,

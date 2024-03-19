@@ -8,9 +8,10 @@ export default class YtCommand {
   static config = {
     name: "yt",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "",
+    description:
+      "Cách dùng[prefix]yt search [tìm kiếm gì đó ở đây]\nChức năng: tải video từ youtube về",
   };
 
   constructor(private client) {}

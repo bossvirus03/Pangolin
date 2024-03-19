@@ -2,9 +2,10 @@ export default class SetPrefixCommand {
   static config = {
     name: "setprefix",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "Đổi prefix của box",
+    description:
+      "Cách dùng:[prefix]setprefix [prefix]\nChức năng: Đổi prefix của box",
     permission: 1,
   };
 

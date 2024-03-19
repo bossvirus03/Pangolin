@@ -6,8 +6,10 @@ export default class WeatherCommand {
   static config = {
     name: "weather",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
+    description:
+      "Cách dùng: [prefix]weather [city]\nChức năng: Xem dự báo thời tiết",
   };
 
   constructor(private client) {}

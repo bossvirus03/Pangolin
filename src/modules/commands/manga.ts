@@ -7,8 +7,10 @@ export default class MangaCommand {
   static config = {
     name: "manga",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
+    description:
+      "Cách dùng: [prefix]manga search [tên truyện cần tìm]\nChức năng: đọc truyện",
   };
 
   constructor(private client) {}
@@ -169,6 +171,11 @@ export default class MangaCommand {
       } catch (error) {
         console.log("Error fetching data:", error);
       }
-    } else return;
+    } else {
+      api.sendMessage(
+        "sử dụng bằng cách: [prefix]manga search [tên truyện muốn tìm]",
+        event.threadID
+      );
+    }
   }
 }

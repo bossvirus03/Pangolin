@@ -2,9 +2,10 @@ export default class SayCommand {
   static config = {
     name: "say",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "nói theo",
+    description:
+      "Cách dùng: [prefix]say [câu muốn bot nói]\nChức năng: nói theo",
   };
 
   constructor(private client) {}

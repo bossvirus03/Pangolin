@@ -2,9 +2,10 @@ export default class CheckttCommand {
   static config = {
     name: "checktt",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "",
+    description:
+      "Cách dùng: [prefix]checktt\nChức năng: Xem thông tin các thành viên trong nhóm có số tương tác",
     permission: 1,
   };
 

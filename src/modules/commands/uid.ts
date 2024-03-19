@@ -2,9 +2,10 @@ export default class UidCommand {
   static config = {
     name: "uid",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
-    description: "Lấy uid của 1 người",
+    description:
+      "Cách dùng: [prefix]uid or [prefix]uid @mentions\nChức năng: Lấy uid của mình hoặc của người khác",
   };
 
   constructor(private client) {}
