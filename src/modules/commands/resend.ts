@@ -8,6 +8,7 @@ export default class ResendCommand {
     author: "loi",
     createdAt: "13/3/24",
     description: "on/off resend mode",
+    permission: 1,
   };
 
   constructor(private client) {}

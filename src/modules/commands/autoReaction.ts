@@ -8,7 +8,7 @@ export default class autoReaction {
     version: "1.0.0",
     author: "loi",
     createdAt: "",
-    description: "",
+    description: "1",
   };
 
   constructor(private client) {}

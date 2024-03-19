@@ -5,6 +5,7 @@ export default class LoadAllCommand {
     author: "loi",
     createdAt: "",
     description: "",
+    permission: 2,
   };
 
   constructor(private client) {}

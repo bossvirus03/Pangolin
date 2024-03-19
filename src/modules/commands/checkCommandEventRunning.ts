@@ -7,6 +7,7 @@ export default class CheckCMCommand {
     author: "loi",
     createdAt: "13/3/24",
     description: "on/off resend mode",
+    permission: 2,
   };
 
   constructor(private client) {}

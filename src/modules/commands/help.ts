@@ -8,6 +8,7 @@ export default class HelpCommand {
     version: "1.0.0",
     author: "loi",
     createdAt: "",
+    permission: 2,
   };
 
   constructor(private client) {}
@@ -24,7 +25,6 @@ export default class HelpCommand {
     for (const file of commandFiles) {
       const filePath = join(commandPath, file);
       const CommandClass = require(filePath).default;
-      console.log(CommandClass);
       const { config } = CommandClass;
       const commandInstance = new CommandClass(this.client);
       if (commandInstance.run) {
@@ -36,10 +36,10 @@ export default class HelpCommand {
         msgNpPrefix += `${config.name}, `;
       }
     }
-    api.sendMessage(
-      `-------HELP-------\nThis is Facebook chat message, currently this bot has ${commandCount + noprefixCount} commands\n${commandCount} commands has prefix : ${msgPrefix}\n${noprefixCount} no prefix: ${msgNpPrefix}`,
-      event.threadID,
-      event.messageID
-    );
+    // api.sendMessage(
+    //   `-------HELP-------\nThis is Facebook chat message, currently this bot has ${commandCount + noprefixCount} commands\n${commandCount} commands has prefix : ${msgPrefix}\n${noprefixCount} no prefix: ${msgNpPrefix}`,
+    //   event.threadID,
+    //   event.messageID
+    // );
   }
 }

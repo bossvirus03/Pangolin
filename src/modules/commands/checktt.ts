@@ -5,6 +5,7 @@ export default class CheckttCommand {
     author: "loi",
     createdAt: "",
     description: "",
+    permission: 1,
   };
 
   constructor(private client) {}

@@ -9,6 +9,7 @@ export default class ImgBoxCommand {
     author: "",
     createdAt: "",
     description: "",
+    permission: 1,
   };
 
   constructor(private client) {}

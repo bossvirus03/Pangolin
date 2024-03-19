@@ -1,4 +1,7 @@
+import { readdirSync } from "fs";
 import * as cache from "memory-cache";
+import { join } from "path";
+import { env } from "process";
 import sequelize from "src/database/database";
 import { Thread } from "src/database/models/threadModel";
 import { User } from "src/database/models/userModel";
@@ -19,6 +22,7 @@ class Listen {
       }
 
       // Tìm người dùng theo uid (senderID)
+
       const user = await User.findOne({ where: { uid: event.senderID } });
       if (!user) {
         // Thêm user vào cơ sở dữ liệu nếu không tồn tại
@@ -156,6 +160,7 @@ class Listen {
       },
     },
   };
+
   listen() {
     for (let i = 0; i < this.client.onload.length; i++) {
       this.client.onload[i].onload(this.api, this.client);
@@ -258,6 +263,62 @@ class Listen {
                 this.UserData,
                 this.ThreadData
               );
+
+            // check permission
+            // this.api.getThreadInfo(event.threadID, (err, info) => {
+            //   info.adminIDs.forEach((item) => {
+            //     if (item.id == event.senderID) {
+            //       console.log("admin send");
+            //     }
+            //   });
+            // });
+            const ADMINS = process.env.ADMINS;
+            const commandPath = join(
+              process.cwd(),
+              "src",
+              "modules",
+              "commands"
+            );
+            const commandFiles = readdirSync(commandPath).filter(
+              (file: string) => file.endsWith(".ts")
+            );
+            for (const file of commandFiles) {
+              const filePath = join(commandPath, file);
+              const CommandClass = require(filePath).default;
+              const { config } = CommandClass;
+              const commandInstance = new CommandClass(this.client);
+              if (commandInstance.run) {
+                if (config.name == args[0]) {
+                  if (config.permission == 1) {
+                    // check permission of commands for admin group
+                    this.api.getThreadInfo(event.threadID, (err, info) => {
+                      info.adminIDs.forEach((item) => {
+                        if (item.id != event.senderID) {
+                          return this.api.sendMessage(
+                            `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                            event.threadID
+                          );
+                        }
+                      });
+                    });
+                  } else if (config.permission == 2) {
+                    const ADS = JSON.parse(ADMINS);
+                    ADS.forEach((id) => {
+                      if (id != event.senderID) {
+                        return this.api.sendMessage(
+                          `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                          event.threadID
+                        );
+                      }
+                    });
+                    // console.log(array);
+
+                    // console.log(entries);
+                  }
+                }
+                // if()
+              }
+            }
           } else {
             this.api.sendMessage("Lệnh của bạn không hợp lệ!!", event.threadID);
           }

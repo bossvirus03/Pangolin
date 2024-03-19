@@ -5,6 +5,7 @@ export default class SetPrefixCommand {
     author: "loi",
     createdAt: "",
     description: "Đổi prefix của box",
+    permission: 1,
   };
 
   constructor(private client) {}
