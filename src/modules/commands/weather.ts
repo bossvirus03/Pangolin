@@ -1,7 +1,5 @@
 import axios from "axios";
-import { error } from "console";
 import * as dayjs from "dayjs";
-// import GetIpService from "libs/shared/common/services/get-IP.service";
 export default class WeatherCommand {
   static config = {
     name: "weather",

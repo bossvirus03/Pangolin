@@ -1,4 +1,3 @@
-import { readdirSync } from "fs";
 import * as fs from "fs";
 import { join } from "path";
 import { createCanvas, loadImage } from "canvas";
@@ -10,7 +9,7 @@ export default class RankCommand {
     author: "Lợi",
     createdAt: "",
     description:
-      "Cách dùng[prefix]rank\nChức năng: Lấy thông tin rank của người dùng",
+      "Cách dùng: [prefix]rank\nChức năng: Lấy thông tin rank của người dùng",
   };
 
   constructor(private client) {}
@@ -135,8 +134,7 @@ export default class RankCommand {
       headers: {
         Accept:
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0",
-        Cookie:
-          "sb=8lroZVbhKmJEmxTrSDlPeHY9; datr=8lroZWMAuHuZ9TskwZTJyFdg; dpr=0.8999999761581421; ps_n=0; ps_l=0; locale=en_US; c_user=100049732817959; xs=40%3AgJstZorKeBXc5w%3A2%3A1710512151%3A-1%3A6398%3A%3AAcVIJX6w33kD_DcG29ZqFgwb4iHpNf3pq72mHqBtn_Q; fr=1kHbVtj4uFeqpFDHL.AWUKIvembjxLw0xsPDDvx9BASxY.Bl-UX4..AAA.0.0.Bl-UbQ.AWUIZZEoe4Y; wd=1872x958; presence=EDvF3EtimeF1710835746EuserFA21B49732817959A2EstateFDutF0CEchF_7bCC; usida=eyJ2ZXIiOjEsImlkIjoiQXNhbDVjNng3dzN0aiIsInRpbWUiOjE3MTA4MzU4NDR9",
+        Cookie: process.env.ACCESS_COOKIE_FB,
       },
     });
     // let avt = await api.getUserInfo(event.senderID, (err, ret) => {});

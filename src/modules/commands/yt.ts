@@ -11,7 +11,7 @@ export default class YtCommand {
     author: "Lợi",
     createdAt: "",
     description:
-      "Cách dùng[prefix]yt search [tìm kiếm gì đó ở đây]\nChức năng: tải video từ youtube về",
+      "Cách dùng: [prefix]yt search [tìm kiếm gì đó ở đây]\nChức năng: tải video từ youtube về",
   };
 
   constructor(private client) {}

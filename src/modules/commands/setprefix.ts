@@ -5,7 +5,7 @@ export default class SetPrefixCommand {
     author: "Lợi",
     createdAt: "",
     description:
-      "Cách dùng:[prefix]setprefix [prefix]\nChức năng: Đổi prefix của box",
+      "Cách dùng: [prefix]setprefix [prefix]\nChức năng: Đổi prefix của box",
     permission: 1,
   };
 

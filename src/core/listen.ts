@@ -22,7 +22,6 @@ class Listen {
       }
 
       // Tìm người dùng theo uid (senderID)
-
       const user = await User.findOne({ where: { uid: event.senderID } });
       if (!user) {
         // Thêm user vào cơ sở dữ liệu nếu không tồn tại
@@ -30,6 +29,7 @@ class Listen {
           event.senderID,
           (err, ret) => {}
         );
+        console.log(nameUser);
         const newUser = await User.create({
           uid: event.senderID,
           exp: 0,
@@ -248,10 +248,81 @@ class Listen {
         listCommands.push(key);
       });
 
+      async function checkPermission(client, api) {
+        const ADMINS = process.env.ADMINS;
+        const commandPath = join(process.cwd(), "src", "modules", "commands");
+        const commandFiles = readdirSync(commandPath).filter((file: string) =>
+          file.endsWith(".ts")
+        );
+        for (const file of commandFiles) {
+          const filePath = join(commandPath, file);
+          const CommandClass = require(filePath).default;
+          if (!CommandClass) continue;
+          const { config } = CommandClass;
+          const commandInstance = new CommandClass(client);
+          if (commandInstance.run) {
+            if (config.name == args[0]) {
+              if (config.permission == 1) {
+                let isPermission = true;
+                try {
+                  const info: { adminIDs: { id: string }[] } =
+                    await new Promise((resolve, reject) => {
+                      api.getThreadInfo(event.threadID, (err, info) => {
+                        if (err) reject(err);
+                        else resolve(info);
+                      });
+                    });
+
+                  for (const item of info.adminIDs) {
+                    if (item.id !== event.senderID) {
+                      await api.sendMessage(
+                        `Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                        event.threadID
+                      );
+                      isPermission = false;
+                    }
+                  }
+                  return isPermission;
+                } catch (error) {
+                  // Handle error
+                  console.error("Error occurred:", error);
+                  return false; // Assuming permission is denied in case of error
+                }
+              }
+
+              // check permissions for admin bot
+              else if (config.permission == 2) {
+                let isPermission = true;
+                const ADS = JSON.parse(ADMINS);
+                let isAdmin = 0;
+                for (let id of ADS) {
+                  if (id != event.senderID) {
+                    isAdmin++;
+                  }
+                }
+                if (isAdmin == ADS.length) {
+                  api.sendMessage(
+                    `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                    event.threadID
+                  );
+                  isPermission = false;
+                }
+                return isPermission;
+              } else {
+                return true;
+              }
+            } else {
+              return true;
+            }
+          }
+        }
+      }
+      const isPermission = await checkPermission(this.client, this.api);
       //load command when cache has command-event-on
       let commandEventOn = cache.get("command-event-on") ?? [];
       if (commandEventOn) {
         if (event.body.startsWith(PREFIX)) {
+          if (!isPermission) return;
           if (listCommands.includes(args[0])) {
             this.client.commands
               .get(args[0])
@@ -263,62 +334,6 @@ class Listen {
                 this.UserData,
                 this.ThreadData
               );
-
-            // check permission
-            // this.api.getThreadInfo(event.threadID, (err, info) => {
-            //   info.adminIDs.forEach((item) => {
-            //     if (item.id == event.senderID) {
-            //       console.log("admin send");
-            //     }
-            //   });
-            // });
-            const ADMINS = process.env.ADMINS;
-            const commandPath = join(
-              process.cwd(),
-              "src",
-              "modules",
-              "commands"
-            );
-            const commandFiles = readdirSync(commandPath).filter(
-              (file: string) => file.endsWith(".ts")
-            );
-            for (const file of commandFiles) {
-              const filePath = join(commandPath, file);
-              const CommandClass = require(filePath).default;
-              const { config } = CommandClass;
-              const commandInstance = new CommandClass(this.client);
-              if (commandInstance.run) {
-                if (config.name == args[0]) {
-                  if (config.permission == 1) {
-                    // check permission of commands for admin group
-                    this.api.getThreadInfo(event.threadID, (err, info) => {
-                      info.adminIDs.forEach((item) => {
-                        if (item.id != event.senderID) {
-                          return this.api.sendMessage(
-                            `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
-                            event.threadID
-                          );
-                        }
-                      });
-                    });
-                  } else if (config.permission == 2) {
-                    const ADS = JSON.parse(ADMINS);
-                    ADS.forEach((id) => {
-                      if (id != event.senderID) {
-                        return this.api.sendMessage(
-                          `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
-                          event.threadID
-                        );
-                      }
-                    });
-                    // console.log(array);
-
-                    // console.log(entries);
-                  }
-                }
-                // if()
-              }
-            }
           } else {
             this.api.sendMessage("Lệnh của bạn không hợp lệ!!", event.threadID);
           }
@@ -338,7 +353,7 @@ class Listen {
         }
       }
       //load all command
-      else {
+      else if (isPermission) {
         if (!event.body.startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {
           return this.api.sendMessage(
