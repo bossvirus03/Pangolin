@@ -48,7 +48,7 @@ module.exports = function(defaultFuncs, api, ctx) {
           throw resData;
         }
         callback(null, formatData(resData.payload.profiles));
-        return resData.payload.profiles;
+        return resData.payload.profiles
       })
       .catch(function(err) {
         log.error("getUserInfo", err);

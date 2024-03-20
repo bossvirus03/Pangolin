@@ -1,4 +1,3 @@
-import axios from "axios";
 import * as cache from "memory-cache";
 
 export default class ResendCommand {
@@ -8,7 +7,7 @@ export default class ResendCommand {
     author: "Lợi",
     createdAt: "13/3/24",
     description:
-      "Cách dùng[prefix]on/off resend mode\nChức năng: on/off resend mode",
+      "Cách dùng: [prefix]on/off resend mode\nChức năng: on/off resend mode\nQuyền: admin group",
     permission: 1,
   };
 
@@ -38,7 +37,10 @@ export default class ResendCommand {
         for (var prop in ret) {
           if (ret[prop].name) {
             api.sendMessage(
-              `${ret[prop].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
+              {
+                body: `${ret[prop].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
+                // attachment: message.attachments.url,
+              },
               event.threadID
             );
           }
@@ -49,7 +51,11 @@ export default class ResendCommand {
     // handle logic event
     if (event.type == "message_unsend") {
       const preCommand = await cache.get("command-event-on");
-      if (preCommand.some((command) => command.threadID == event.threadID))
+      if (
+        preCommand.some(
+          (item) => item.threadID == event.threadID && item.command == "resend"
+        )
+      )
         cache.get("old-message").forEach((item) => {
           if (item.messageID == event.messageID) {
             handleMessageUnSend(item);
@@ -68,7 +74,7 @@ export default class ResendCommand {
       }
     }
 
-    // handle switch AI
+    // handle switch resend
     let prevCommandEventOn = getPrevCommandEvent();
     if (args[1] == "on") {
       if (prevCommandEventOn) {

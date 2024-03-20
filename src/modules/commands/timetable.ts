@@ -2,7 +2,7 @@ export default class SayCommand {
   static config = {
     name: "timetable",
     version: "1.0.0",
-    author: "loi",
+    author: "Lợi",
     createdAt: "",
     description: "get tkb",
   };
