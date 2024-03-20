@@ -14,9 +14,6 @@ export default class PingCommand {
   }
 
   noprefix(api, event, args) {
-    // Your noprefix logic here
     api.sendMessage("PONG! no prefix", event.threadID, event.messageID);
   }
-
-  onload(api, client) {}
 }

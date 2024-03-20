@@ -1,7 +1,6 @@
 import { readdirSync } from "fs";
 import * as cache from "memory-cache";
 import { join } from "path";
-import { env } from "process";
 import sequelize from "src/database/database";
 import { Thread } from "src/database/models/threadModel";
 import { User } from "src/database/models/userModel";
@@ -29,7 +28,6 @@ class Listen {
           event.senderID,
           (err, ret) => {}
         );
-        console.log(nameUser);
         const newUser = await User.create({
           uid: event.senderID,
           exp: 0,

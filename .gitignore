@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /build
-
+/facebook-chat-api
 # Logs
 logs
 *.log
@@ -50,6 +50,7 @@ lerna-debug.log*
 *.jpg
 *.mp4
 *.mp3
+*.png
 
 # Runtime data
 pids
