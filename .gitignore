@@ -46,7 +46,7 @@ lerna-debug.log*
 .temp
 .tmp
 
-# image, audio, vido
+# image, audio, video
 *.jpg
 *.mp4
 *.mp3

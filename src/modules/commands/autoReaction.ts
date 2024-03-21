@@ -27,7 +27,6 @@ export default class autoReaction {
       if (dataAutoReaction) {
         const dataAutoReactionArray = JSON.parse(dataAutoReaction);
         dataAutoReactionArray.forEach((item) => {
-          // console.log(item.userID, event.senderID);
           if (
             item.threadID == event.threadID &&
             item.userID == event.senderID

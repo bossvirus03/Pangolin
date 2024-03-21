@@ -4,6 +4,7 @@ import { join } from "path";
 import sequelize from "src/database/database";
 import { Thread } from "src/database/models/threadModel";
 import { User } from "src/database/models/userModel";
+import * as stringSimilarity from "string-similarity";
 
 class Listen {
   constructor(
@@ -160,6 +161,18 @@ class Listen {
   };
 
   listen() {
+    const commandPath = join(process.cwd(), "src", "modules", "commands");
+    const commandFiles = readdirSync(commandPath).filter((file: string) =>
+      file.endsWith(".ts")
+    );
+    let listCommands = [];
+    for (const file of commandFiles) {
+      const filePath = join(commandPath, file);
+      const CommandClass = require(filePath).default;
+      if (!CommandClass) continue;
+      const { config } = CommandClass;
+      listCommands.push(config.name);
+    }
     for (let i = 0; i < this.client.onload.length; i++) {
       this.client.onload[i].onload(this.api, this.client);
     }
@@ -333,7 +346,11 @@ class Listen {
                 this.ThreadData
               );
           } else {
-            this.api.sendMessage("Lệnh của bạn không hợp lệ!!", event.threadID);
+            var matches = stringSimilarity.findBestMatch(args[0], listCommands);
+            this.api.sendMessage(
+              `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
+              event.threadID
+            );
           }
         } else {
           commandEventOn.forEach((command) => {
@@ -354,9 +371,9 @@ class Listen {
       else if (isPermission) {
         if (!event.body.startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {
+          var matches = stringSimilarity.findBestMatch(args[0], listCommands);
           return this.api.sendMessage(
-            "Lệnh của bạn không hợp lệ!!",
-            event.messageID,
+            `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
             event.threadID
           );
         }

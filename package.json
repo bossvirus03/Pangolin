@@ -48,6 +48,7 @@
     "sequelize": "^6.37.1",
     "sequelize-typescript": "^2.1.6",
     "sqlite3": "^5.1.7",
+    "string-similarity": "^4.0.4",
     "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
