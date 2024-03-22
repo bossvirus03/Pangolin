@@ -31,14 +31,14 @@ export default class AiCommand {
         command: "ai",
         threadID: event.threadID,
       });
-      cache.put("command-event-on", prevCommandEventOn, 6 * 10000 * 5); // Time in ms
+      cache.put("command-event-on", prevCommandEventOn, 60 * 1000 * 5); // Time in ms
       api.sendMessage("Chat bot ai is running", event.threadID);
     }
     if (args[1] == "off") {
       const newPrevCommandEventOn = prevCommandEventOn.filter(
         (item) => item.command != "ai" && item.threadID != event.threadID
       );
-      cache.put("command-event-on", newPrevCommandEventOn, 6 * 1000 * 5); // Time in ms
+      cache.put("command-event-on", newPrevCommandEventOn, 60 * 1000 * 5); // Time in ms
       api.sendMessage(
         "Chat bot AI is disabled!!",
         event.threadID,
