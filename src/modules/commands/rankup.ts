@@ -58,9 +58,17 @@ export default class RankUpCommand {
     console.log(args[1]);
     if (args[1] == "on") {
       await DataThread.rankup.set(event.threadID, true);
+      api.sendMessage(
+        "Đã bật thông báo khi tăng cấp độ tương tác",
+        event.threadID
+      );
     }
     if (args[1] == "off") {
       await DataThread.rankup.set(event.threadID, false);
+      api.sendMessage(
+        "Đã tắt thông báo khi tăng cấp độ tương tác",
+        event.threadID
+      );
     }
   }
 }
