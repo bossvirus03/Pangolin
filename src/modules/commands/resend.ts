@@ -1,18 +1,31 @@
+import axios from "axios";
 import * as cache from "memory-cache";
+import * as fs from "fs";
+import { join } from "path";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
 export default class ResendCommand {
   static config = {
     name: "resend",
-    version: "1.0.0",
+    version: "1.0.1",
     author: "Lợi",
-    createdAt: "13/3/24",
+    createdAt: "",
     description:
       "Cách dùng: [prefix]on/off resend mode\nChức năng: on/off resend mode\nQuyền: admin group",
     permission: 1,
   };
 
   constructor(private client) {}
-  async event(api, event, client) {
+  async event(api: Ifca, event: IEvent, client) {
+    const preCommand = await cache.get("command-event-on");
+    if (!preCommand) return;
+    if (
+      !preCommand.some(
+        (item) => item.threadID == event.threadID && item.command == "resend"
+      )
+    )
+      return;
     function getOldMessage() {
       const cachedArray = cache.get("old-message");
       if (cachedArray) {
@@ -31,39 +44,53 @@ export default class ResendCommand {
       }
     }
     async function handleMessageUnSend(message) {
-      const isCommandOn = cache.get("command-event-on");
-      await api.getUserInfo([event.senderID], (err, ret) => {
-        if (err) return console.error(err);
-        for (var prop in ret) {
-          if (ret[prop].name) {
+      const user = await api.getUserInfo(event.senderID, (err, ret) => {});
+      if (!message.attachments) {
+        return api.sendMessage(
+          {
+            body: `${user[event.senderID].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
+          },
+          event.threadID
+        );
+      }
+      const attachments = message.attachments;
+      let i = 1;
+      let listAttachmentUnsend = [];
+      attachments.forEach(async (attachment) => {
+        let nameAtt = "resend";
+        const path = join(process.cwd(), `/public/images/${nameAtt}_${i}.jpg`);
+        await axios
+          .get(attachment.url, { responseType: "arraybuffer" })
+          .then((response) => {
+            const buffer = Buffer.from(response.data);
+            fs.writeFileSync(path, buffer);
+            listAttachmentUnsend.push(fs.createReadStream(path));
+          })
+          .then(() => {
             api.sendMessage(
               {
-                body: `${ret[prop].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
-                // attachment: message.attachments.url,
+                body: `${user[event.senderID].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
+                attachment: listAttachmentUnsend,
               },
               event.threadID
             );
-          }
-        }
+          })
+          .catch((error) => {
+            console.error("Error downloading image:", error);
+          });
       });
     }
 
     // handle logic event
     if (event.type == "message_unsend") {
-      const preCommand = await cache.get("command-event-on");
-      if (
-        preCommand.some(
-          (item) => item.threadID == event.threadID && item.command == "resend"
-        )
-      )
-        cache.get("old-message").forEach((item) => {
-          if (item.messageID == event.messageID) {
-            handleMessageUnSend(item);
-          }
-        });
+      cache.get("old-message").forEach((item) => {
+        if (item.messageID == event.messageID) {
+          handleMessageUnSend(item);
+        }
+      });
     }
   }
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     function getPrevCommandEvent() {
       const cachedArray = cache.get("command-event-on");
       if (cachedArray) {
@@ -93,15 +120,15 @@ export default class ResendCommand {
         threadID: event.threadID,
       });
       cache.put("command-event-on", prevCommandEventOn, 6 * 10000 * 5); // Time in ms
-      api.sendMessage("Resend on!", event.threadID, event.messageID);
-    }
-    if (args[1] == "off") {
+      api.sendMessage("Resend on!", event.threadID);
+    } else if (args[1] == "off") {
       const newPrevCommandEventOn = prevCommandEventOn.filter(
         (item) => item.threadID != event.threadID
       );
-      console.log("newPrevCommandEventOn", newPrevCommandEventOn);
       cache.put("command-event-on", newPrevCommandEventOn, 6 * 10000 * 5); // Time in ms
-      api.sendMessage("Resend is disabled!!", event.threadID, event.messageID);
+      api.sendMessage("Resend is disabled!!", event.threadID);
+    } else {
+      return api.sendMessage("Chỉ có thể dùng: on/off", event.threadID);
     }
   }
 }

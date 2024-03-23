@@ -1,10 +1,12 @@
 import axios from "axios";
 import * as fs from "fs";
 import { join } from "path";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
 export default class ImgBoxCommand {
   static config = {
-    name: "imgbox", //tên lệnh của bạn
+    name: "imgbox",
     version: "1.0.0",
     author: "Lợi",
     createdAt: "",
@@ -14,7 +16,7 @@ export default class ImgBoxCommand {
   };
 
   constructor(private client) {}
-  async run(api, event, client, args, DataUser, DataThread) {
+  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
     if (event.type == "message_reply") {
       const imgPath = join(
         process.cwd(),

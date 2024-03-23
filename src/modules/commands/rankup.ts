@@ -1,6 +1,8 @@
 import { readdirSync } from "fs";
 import * as fs from "fs";
 import { join } from "path";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 export default class RankUpCommand {
   static config = {
     name: "rankup",
@@ -12,7 +14,7 @@ export default class RankUpCommand {
   };
 
   constructor(private client) {}
-  async event(api, event, client, DataUser, DataThread) {
+  async event(api: Ifca, event: IEvent, client, DataUser, DataThread) {
     if (!event.senderID) return;
     const thread = DataThread.rankup.get(event.threadID) || {};
     if (!thread) return;
@@ -54,7 +56,7 @@ export default class RankUpCommand {
     }
   }
 
-  async run(api, event, client, args, DataUser, DataThread) {
+  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
     console.log(args[1]);
     if (args[1] == "on") {
       await DataThread.rankup.set(event.threadID, true);

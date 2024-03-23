@@ -1,5 +1,7 @@
 import axios from "axios";
 import * as cache from "memory-cache";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 export default class AiCommand {
   static config = {
     name: "ai",
@@ -12,7 +14,7 @@ export default class AiCommand {
 
   constructor(private client) {}
 
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     // handle pre command event
     function getPrevCommandEvent() {
       const cachedArray = cache.get("command-event-on");
@@ -39,11 +41,7 @@ export default class AiCommand {
         (item) => item.command != "ai" && item.threadID != event.threadID
       );
       cache.put("command-event-on", newPrevCommandEventOn, 60 * 1000 * 5); // Time in ms
-      api.sendMessage(
-        "Chat bot AI is disabled!!",
-        event.threadID,
-        event.messageID
-      );
+      api.sendMessage("Chat bot AI is disabled!!", event.threadID);
     }
 
     // handle logic event
@@ -86,7 +84,8 @@ export default class AiCommand {
     }
 
     if (args[0] == "ai") return;
-    if (event.body.startsWith("question:")) {
+    // event.body as string
+    if ((event.body as string).startsWith("question:")) {
       const check = cache
         .get("command-event-on")
         .some(
@@ -95,11 +94,7 @@ export default class AiCommand {
         );
       if (check) {
         const response = await handleCallGpt(event.threadID, event);
-        api.sendMessage(
-          `AI respose: ${response.result}`,
-          event.threadID,
-          event.messageID
-        );
+        api.sendMessage(`AI respose: ${response.result}`, event.threadID);
       }
     }
   }

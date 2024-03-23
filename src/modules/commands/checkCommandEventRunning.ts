@@ -1,4 +1,6 @@
 import * as cache from "memory-cache";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
 export default class CheckCMCommand {
   static config = {
@@ -12,7 +14,7 @@ export default class CheckCMCommand {
   };
 
   constructor(private client) {}
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     const response = cache.get("command-event-on");
     let smg: string = "";
     if (!response) {

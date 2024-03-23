@@ -2,6 +2,8 @@ import * as fs from "fs";
 import { join } from "path";
 import { createCanvas, loadImage } from "canvas";
 import axios from "axios";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 export default class RankCommand {
   static config = {
     name: "rank",
@@ -119,7 +121,7 @@ export default class RankCommand {
     ctx.fillText(currentLevel, 485, 330.42);
     return fimg;
   }
-  async run(api, event, client, args, DataUser, DataThread) {
+  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
     const countExp = (level) => {
       return (3 * (-2 + Math.pow(level * 2, 2))) / 4;
     };

@@ -3,6 +3,8 @@ import * as cache from "memory-cache";
 import * as fs from "fs";
 import { join } from "path";
 import * as ytdl from "@distube/ytdl-core";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
 export default class YtCommand {
   static config = {
@@ -15,7 +17,7 @@ export default class YtCommand {
   };
 
   constructor(private client) {}
-  async event(api, event, client) {
+  async event(api: Ifca, event: IEvent, client) {
     if (event.type == "message_reply") {
       const listVideoYoutubeSearch = cache.get("list-audio-youtube-search");
       if (
@@ -69,8 +71,8 @@ export default class YtCommand {
     }
   }
 
-  async run(api, event, client, args) {
-    const search = event.body.split(args[0])[1];
+  async run(api: Ifca, event: IEvent, client, args) {
+    const search = (event.body as string).split(args[0])[1];
     var listVideoResult = [];
     let index = 1;
     await axios

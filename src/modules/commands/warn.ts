@@ -1,5 +1,7 @@
 import { join } from "path";
 import * as fs from "fs";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
 export default class WarnCommand {
   static config = {
@@ -14,7 +16,7 @@ export default class WarnCommand {
 
   constructor(private client) {}
 
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     if (event.type === "message_reply" && event.mentions) {
       return api.sendMessage(
         "Chỉ reply hoặc chỉ tag user cần warn!",
@@ -80,7 +82,7 @@ export default class WarnCommand {
       const info = await api.getUserInfo(warnedId, (err, ret) => {
         if (err) return console.log(err);
       });
-      const reason = event.body.split(args[0])[1].trim();
+      const reason = (event.body as string).split(args[0])[1].trim();
       if (!reason)
         return api.sendMessage("Vui lòng viết lí do warn!", event.threadID);
       await handleWarning(warnedId, reason);
@@ -123,7 +125,9 @@ export default class WarnCommand {
         "Vui lòng tag một người! hoặc reply tin nhắn của người cần warn",
         event.threadID
       );
-    const reason = event.body.split(Object.values(event.mentions)[0])[1];
+    const reason = (event.body as string).split(
+      Object.values(event.mentions)[0] as string
+    )[1];
     if (!reason)
       return api.sendMessage("Vui lòng viết lí do warn!", event.threadID);
     if (event.mentions) {
@@ -135,8 +139,8 @@ export default class WarnCommand {
         const info = await api.getUserInfo(warnedId[0], (err, ret) => {
           if (err) return console.log(err);
         });
-        const reason = event.body
-          .split(Object.values(event.mentions)[0])[1]
+        const reason = (event.body as string)
+          .split(Object.values(event.mentions)[0] as string)[1]
           .trim();
         if (!reason)
           return api.sendMessage("Vui lòng viết lí do warn!", event.threadID);

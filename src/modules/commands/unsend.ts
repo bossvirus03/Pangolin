@@ -1,20 +1,21 @@
-// export default class UnsendCommand {
-//   static config = {
-//     name: "unsend", //tên lệnh của bạn
-//     version: "",
-//     author: "",
-//     createdAt: "",
-//     description: "",
-//   };
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
-//   constructor(private client) {}
-//   async run(api, event, client, args, DataUser, DataThread) {
-//     // logic here
-//   }
-//   async event(api, event, client, args, DataUser, DataThread) {
-//     // logic
-//   }
-//   async noprefix(api, event, client, args, DataUser, DataThread) {
-//     // logic
-//   }
-// }
+export default class UnsendCommand {
+  static config = {
+    name: "unsend",
+    version: "1.0.0",
+    author: "Lợi",
+    createdAt: "",
+    description: "Cách dùng: [prefix]unsend(reply tin nhắn bot)",
+  };
+
+  constructor(private client) {}
+  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+    if (event.type === "message_reply") {
+      api.unsendMessage(event.messageReply.messageID, (err) => {
+        api.sendMessage("Chỉ thu hồi được tin nhắn của bot!", event.threadID);
+      });
+    }
+  }
+}

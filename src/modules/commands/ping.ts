@@ -1,3 +1,6 @@
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
+
 export default class PingCommand {
   static config = {
     name: "ping",
@@ -9,11 +12,11 @@ export default class PingCommand {
 
   constructor(private client) {}
 
-  run(api, event, args) {
-    api.sendMessage("PONG! prefix", event.threadID, event.messageID);
+  run(api: Ifca, event: IEvent, args) {
+    api.sendMessage("PONG! prefix", event.threadID);
   }
 
-  noprefix(api, event, args) {
-    api.sendMessage("PONG! no prefix", event.threadID, event.messageID);
+  noprefix(api: Ifca, event: IEvent, args) {
+    api.sendMessage("PONG! no prefix", event.threadID);
   }
 }

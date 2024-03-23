@@ -3,6 +3,8 @@ import * as cache from "memory-cache";
 import * as cheerio from "cheerio";
 import * as fs from "fs";
 import { join } from "path";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 export default class MangaCommand {
   static config = {
     name: "manga",
@@ -14,7 +16,7 @@ export default class MangaCommand {
   };
 
   constructor(private client) {}
-  async event(api, event, client) {
+  async event(api: Ifca, event: IEvent, client) {
     const listManga = cache.get("manga");
     if (event.type == "message_reply") {
       let numChose = 1;
@@ -119,8 +121,8 @@ export default class MangaCommand {
       }
     }
   }
-  async run(api, event, client, args) {
-    const search = event.body.split("search")[1].trim();
+  async run(api: Ifca, event: IEvent, client, args) {
+    const search = (event.body as string).split(args[0])[1].trim();
     try {
       const response = await axios.get(
         "https://nettruyenfull.com/suggest-search",

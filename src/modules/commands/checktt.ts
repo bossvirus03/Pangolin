@@ -1,3 +1,6 @@
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
+
 export default class CheckttCommand {
   static config = {
     name: "checktt",
@@ -10,7 +13,7 @@ export default class CheckttCommand {
   };
 
   constructor(private client) {}
-  async run(api, event, client, args, UserData, ThreadData) {
+  async run(api: Ifca, event: IEvent, client, args, UserData, ThreadData) {
     api.getThreadInfo(event.threadID, async (err, res) => {
       const users = res.participantIDs;
       const smg = await Promise.all(

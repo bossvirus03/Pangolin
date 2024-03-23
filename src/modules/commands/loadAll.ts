@@ -1,3 +1,6 @@
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
+
 export default class LoadAllCommand {
   static config = {
     name: "loadAll",
@@ -10,7 +13,7 @@ export default class LoadAllCommand {
   };
 
   constructor(private client) {}
-  async run(api, event, client, args, DataUser, DataThread) {
+  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
     const threadsData = await DataThread.getAll();
     const usersData = await DataUser.getAll();
     // console.log("threads.dataValues", { ...threads });

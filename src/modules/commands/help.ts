@@ -1,5 +1,7 @@
 import { readdirSync } from "fs";
 import { join } from "path";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
 export default class HelpCommand {
   static config = {
@@ -13,7 +15,7 @@ export default class HelpCommand {
 
   constructor(private client) {}
 
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>
       file.endsWith(".ts")
@@ -47,8 +49,7 @@ export default class HelpCommand {
     if (!args[1]) {
       api.sendMessage(
         `-------HELP-------\nThis is a Facebook chat message. Currently, this bot has ${commandCount + noprefixCount} commands\n\n${commandCount} commands has prefix : ${msgPrefix}\n\n${noprefixCount} no prefix: ${msgNpPrefix}`,
-        event.threadID,
-        event.messageID
+        event.threadID
       );
     }
   }

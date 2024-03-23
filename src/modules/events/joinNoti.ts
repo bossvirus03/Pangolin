@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { join } from "path";
+import Ifca from "src/types/type.api";
 
 export default class NotiCommand {
   static config = {
@@ -11,7 +12,7 @@ export default class NotiCommand {
   };
 
   constructor(private client) {}
-  run(api, event) {
+  run(api: Ifca, event) {
     const GifPath = join(process.cwd(), "/src/database/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
     api.getThreadInfo(event.threadID, (err, info) => {

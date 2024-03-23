@@ -1,6 +1,8 @@
 import { join } from "path";
 import * as fs from "fs";
 import * as cache from "memory-cache";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 export default class RuleCommand {
   static config = {
     name: "rule",
@@ -14,7 +16,7 @@ export default class RuleCommand {
   constructor(private client) {}
   pathDataRule = join(process.cwd(), "/src/database/data/rule.json");
 
-  async handleRemoveRule(ruleIndex: number, event, api) {
+  async handleRemoveRule(ruleIndex: number, event: IEvent, api) {
     const previousRule = fs.readFileSync(this.pathDataRule, "utf8");
     const previousRuleArray = JSON.parse(previousRule);
     console.log(ruleIndex);
@@ -50,7 +52,7 @@ export default class RuleCommand {
     }
   }
 
-  async handleAddRule(rule, event, api) {
+  async handleAddRule(rule, event: IEvent, api) {
     let ruleThread = [
       {
         threadID: event.threadID,
@@ -90,26 +92,26 @@ export default class RuleCommand {
     }
     api.sendMessage(`Đã thêm thành công rule: ${rule}`, event.threadID);
   }
-  async event(api, event, client) {
+  async event(api: Ifca, event: IEvent, client) {
     if (event.type === "message_reply") {
       if (event.messageReply.messageID == cache.get("tmp-rule-message")) {
-        if (event.body.startsWith("remove")) {
-          const index = event.body.split("remove")[1].trim();
+        if ((event.body as string).startsWith("remove")) {
+          const index = (event.body as string).split("remove")[1].trim();
           if (!/^\d+(\.\d+)?$/.test(index)) {
             return api.sendMessage("Rule phải là số!", event.threadID);
           }
-          this.handleRemoveRule(index, event, api);
+          this.handleRemoveRule(parseInt(index), event, api);
         }
-        if (event.body.startsWith("add")) {
-          const rule: string = event.body.split("add")[1].trim();
+        if ((event.body as string).startsWith("add")) {
+          const rule: string = (event.body as string).split("add")[1].trim();
           this.handleAddRule(rule, event, api);
         }
       }
     }
   }
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     if (args[1] === "add") {
-      const rule = event.body.split(args[1])[1].trim();
+      const rule = (event.body as string).split(args[1])[1].trim();
       if (!rule) return api.sendMessage("Vui lòng viết rule!", event.threadID);
       this.handleAddRule(rule, event, api);
     }

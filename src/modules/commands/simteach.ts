@@ -1,8 +1,8 @@
-import * as cache from "memory-cache";
 import { join } from "path";
 import * as sqlite3 from "sqlite3";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 sqlite3.verbose();
-import * as stringSimilarity from "string-similarity";
 
 export default class SimCommand {
   static config = {
@@ -14,8 +14,8 @@ export default class SimCommand {
       "Cách dùng: [prefix]Sim on/off\nChức năng: Trò chuyện cùng với simsimi",
   };
 
-  async run(api, event, client, args, DataUser, DataThread) {
-    const body = event.body.split(args[0])[1].split("|");
+  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+    const body = (event.body as string).split(args[0])[1].split("|");
     if (!body[0] || !body[1]) {
       return api.sendMessage(
         "Vui lòng nhập câu hỏi và câu trả lời theo định dạng: câu hỏi | câu trả lời",

@@ -1,6 +1,8 @@
 import * as emoji from "node-emoji";
 import { join } from "path";
 import * as fs from "fs";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 
 export default class autoReaction {
   static config = {
@@ -19,7 +21,7 @@ export default class autoReaction {
     "/src/database/data/autoReaction.json"
   );
 
-  async event(api, event, client, args) {
+  async event(api: Ifca, event: IEvent, client, args) {
     if (event.type == "message") {
       const dataAutoReaction = fs.readFileSync(this.pathAutoReaction, {
         encoding: "utf-8",
@@ -39,10 +41,12 @@ export default class autoReaction {
       }
     }
   }
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     if (!args[1] || !event.mentions)
       return api.sendMessage("Vui lòng tag một người!", event.threadID);
-    const e = event.body.split(Object.values(event.mentions)[0])[1].trim();
+    const e = (event.body as string)
+      .split(Object.values(event.mentions)[0] as string)[1]
+      .trim();
     if (!e) return api.sendMessage("Vui lòng chọn emoji!", event.threadID);
     const mention = Object.keys(event.mentions)[0];
     const listEmojiSupport = ["😍", "😆", "😮", "😢", "😠", "👍", "👎"];

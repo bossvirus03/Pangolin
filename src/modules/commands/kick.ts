@@ -1,3 +1,6 @@
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
+
 export default class SetNameCommand {
   static config = {
     name: "kick",
@@ -10,7 +13,7 @@ export default class SetNameCommand {
   };
 
   constructor(private client) {}
-  async run(api, event, client, args) {
+  async run(api: Ifca, event: IEvent, client, args) {
     try {
       const info: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {

@@ -4,15 +4,17 @@ import { join } from "path";
 import sequelize from "src/database/database";
 import { Thread } from "src/database/models/threadModel";
 import { User } from "src/database/models/userModel";
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
 
 class Listen {
   constructor(
-    private api: any,
+    private api: Ifca,
     private client: any
   ) {}
 
-  async createUserIfNotExists(api, event: any) {
+  async createUserIfNotExists(api: Ifca, event: IEvent) {
     try {
       // Kiểm tra xem kết nối đã được thiết lập chưa
       if (!sequelize.isDefined("User")) {
@@ -48,7 +50,7 @@ class Listen {
     }
   }
 
-  async createThreadIfNotExists(api, event: any) {
+  async createThreadIfNotExists(api: Ifca, event: any) {
     try {
       // Kiểm tra xem kết nối đã được thiết lập chưa
       if (!sequelize.isDefined("Thread")) {
@@ -76,7 +78,7 @@ class Listen {
     }
   }
 
-  async deleteThreadIfNotExists(api, event: any) {
+  async deleteThreadIfNotExists(api: Ifca, event: any) {
     try {
       // Kiểm tra xem kết nối đã được thiết lập chưa
       if (!sequelize.isDefined("Thread")) {
@@ -330,45 +332,46 @@ class Listen {
       }
       const isPermission = await checkPermission(this.client, this.api);
       //load command when cache has command-event-on
-      let commandEventOn = cache.get("command-event-on") ?? [];
-      if (commandEventOn) {
-        if (event.body.startsWith(PREFIX)) {
-          if (!isPermission) return;
-          if (listCommands.includes(args[0])) {
-            this.client.commands
-              .get(args[0])
-              .run(
-                this.api,
-                event,
-                this.client,
-                args,
-                this.UserData,
-                this.ThreadData
-              );
-          } else {
-            var matches = stringSimilarity.findBestMatch(args[0], listCommands);
-            this.api.sendMessage(
-              `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
-              event.threadID
-            );
-          }
-        } else {
-          commandEventOn.forEach((command) => {
-            this.client.commands
-              .get(command.command)
-              .run(
-                this.api,
-                event,
-                this.client,
-                args,
-                this.UserData,
-                this.ThreadData
-              );
-          });
-        }
-      }
+      // let commandEventOn = cache.get("command-event-on") ?? [];
+      // if (commandEventOn) {
+      //   if (event.body.startsWith(PREFIX)) {
+      //     if (!isPermission) return;
+      //     if (listCommands.includes(args[0])) {
+      //       this.client.commands
+      //         .get(args[0])
+      //         .run(
+      //           this.api,
+      //           event: IEvent,
+      //           this.client,
+      //           args,
+      //           this.UserData,
+      //           this.ThreadData
+      //         );
+      //     } else {
+      //       var matches = stringSimilarity.findBestMatch(args[0], listCommands);
+      //       this.api.sendMessage(
+      //         `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
+      //         event.threadID
+      //       );
+      //     }
+      //   } else {
+      //     commandEventOn.forEach((command) => {
+      //       this.client.commands
+      //         .get(command.command)
+      //         .run(
+      //           this.api,
+      //           event: IEvent,
+      //           this.client,
+      //           args,
+      //           this.UserData,
+      //           this.ThreadData
+      //         );
+      //     });
+      //   }
+      // }
       //load all command
-      else if (isPermission) {
+      // else
+      if (isPermission) {
         if (!event.body.startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {
           var matches = stringSimilarity.findBestMatch(args[0], listCommands);
