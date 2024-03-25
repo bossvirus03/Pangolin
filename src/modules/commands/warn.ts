@@ -131,7 +131,6 @@ export default class WarnCommand {
     if (!reason)
       return api.sendMessage("Vui lòng viết lí do warn!", event.threadID);
     if (event.mentions) {
-      console.log(Object.entries(event.mentions));
       if ((Object.entries(event.mentions).length as number) == 1) {
         const warnedId = Object.entries(event.mentions).map((item) => {
           return item[0];

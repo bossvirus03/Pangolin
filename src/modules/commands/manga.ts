@@ -93,15 +93,6 @@ export default class MangaCommand {
                 Promise.all(promises)
                   .then(() => {
                     // All images are downloaded, send the message
-                    // imgChapters.forEach((item) => {
-                    //   api.sendMessage(
-                    //     {
-                    //       attachment: item,
-                    //       body: `Có ${imgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
-                    //     },
-                    //     event.threadID
-                    //   );
-                    // });
                     api.sendMessage(
                       {
                         attachment: imgChapters,
