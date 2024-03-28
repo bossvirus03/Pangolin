@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IUserInThreadData } from "src/types/type.userInThreadData";
 
 export default class CheckttCommand {
   static config = {
@@ -13,13 +14,22 @@ export default class CheckttCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args, UserData, ThreadData) {
+  async run(
+    api: Ifca,
+    event: IEvent,
+    client,
+    args,
+    UserData,
+    ThreadData,
+    UserInThreadData: IUserInThreadData
+  ) {
     api.getThreadInfo(event.threadID, async (err, res) => {
       const users = res.participantIDs;
       const smg = await Promise.all(
         users.map(async (item) => {
-          const res = await UserData.get(item);
-          return { name: res.name, exp: res.exp };
+          const res = await UserInThreadData.get(item, event.threadID);
+          console.log(res);
+          // return { name: res.name, exp: res.exp };
         })
       );
       smg.sort((a, b) => b.exp - a.exp);

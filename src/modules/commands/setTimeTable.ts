@@ -1,7 +1,7 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 
-export default class SayCommand {
+export default class SetTimeTableCommand {
   static config = {
     name: "settimetable",
     version: "1.0.0",

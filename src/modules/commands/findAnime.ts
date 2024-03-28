@@ -31,8 +31,6 @@ export default class RankCommand {
         // const formData = new FormData();
         // formData.append("image", inputStream, { filename: "image.jpg" });
       });
-
-      //   console.log(image);
     }
   }
 }

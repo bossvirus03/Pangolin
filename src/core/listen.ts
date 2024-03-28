@@ -1,9 +1,10 @@
 import { readdirSync } from "fs";
 import * as cache from "memory-cache";
 import { join } from "path";
-import sequelize from "src/database/database";
-import { Thread } from "src/database/models/threadModel";
-import { User } from "src/database/models/userModel";
+import sequelize from "src/db/database";
+import { Thread } from "src/db/models/threadModel";
+import { UserInThread } from "src/db/models/userInThreadModel";
+import { User } from "src/db/models/userModel";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
@@ -78,7 +79,7 @@ class Listen {
     }
   }
 
-  async deleteThreadIfNotExists(api: Ifca, event: any) {
+  async deleteThread(api: Ifca, event: any) {
     try {
       // Kiểm tra xem kết nối đã được thiết lập chưa
       if (!sequelize.isDefined("Thread")) {
@@ -94,6 +95,40 @@ class Listen {
     }
   }
 
+  async logMessageUserInThread(api, event) {
+    try {
+      // Kiểm tra xem kết nối đã được thiết lập chưa
+      if (!sequelize.isDefined("UserInThread")) {
+        await sequelize.authenticate();
+        // Định nghĩa các model
+        sequelize.addModels([UserInThread]);
+      }
+      // Tìm người dùng theo uid (senderID)
+      const user = await UserInThread.findOne({
+        where: { uid: event.senderID, tid: event.threadID },
+      });
+      if (!user) {
+        // Thêm user vào cơ sở dữ liệu nếu không tồn tại
+        const nameUser = await api.getUserInfo(
+          event.senderID,
+          (err, ret) => {}
+        );
+        await UserInThread.create({
+          uid: event.senderID,
+          exp: 0,
+          name: `${nameUser[event.senderID].name}`,
+          tid: event.threadID,
+        });
+      } else {
+        await UserInThread.update(
+          { exp: user.exp + 1 },
+          { where: { uid: event.senderID, tid: event.threadID } }
+        );
+      }
+    } catch (error) {
+      console.error("Error", error);
+    }
+  }
   UserData = {
     set: async (uid, name) => {
       const newUser = await User.create({
@@ -162,6 +197,26 @@ class Listen {
     },
   };
 
+  UserInThreadData = {
+    get: async (uid, tid) => {
+      const res = await UserInThread.findOne({ where: { uid, tid } });
+      if (!res) return null;
+      return res.dataValues;
+    },
+    set: async (uid, name, tid) => {
+      const res = await UserInThread.create({
+        uid,
+        name,
+        tid,
+      });
+      return res;
+    },
+    getAll: async () => {
+      const res = await UserInThread.findAll();
+      if (!res) return null;
+      return res;
+    },
+  };
   listen() {
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>
@@ -188,6 +243,13 @@ class Listen {
         } catch (error) {
           console.error("Error occurred:", error);
         }
+        if (event.isGroup) {
+          try {
+            await this.logMessageUserInThread(this.api, event);
+          } catch (error) {
+            console.error("Error occurred:", error);
+          }
+        }
       }
       if (
         event.type == "event" &&
@@ -208,8 +270,8 @@ class Listen {
         event.logMessageData.leftParticipantFbId == process.env.UID_BOT
       ) {
         try {
-          await sequelize.sync(); // Tạo bảng nếu chưa tồn tại
-          await this.deleteThreadIfNotExists(this.api, event);
+          await sequelize.sync();
+          await this.deleteThread(this.api, event);
         } catch (error) {
           console.error("Error occurred:", error);
         }
@@ -219,7 +281,14 @@ class Listen {
       this.client.events.forEach((value, key) => {
         this.client.events
           .get(key)
-          .run(this.api, event, this.client, this.UserData, this.ThreadData);
+          .run(
+            this.api,
+            event,
+            this.client,
+            this.UserData,
+            this.ThreadData,
+            this.UserInThreadData
+          );
       });
 
       //load all command event
@@ -388,7 +457,8 @@ class Listen {
             this.client,
             args,
             this.UserData,
-            this.ThreadData
+            this.ThreadData,
+            this.UserInThreadData
           );
       }
     });
