@@ -15,7 +15,7 @@ export default class ShortCommand {
   };
 
   constructor(private client) {}
-  partDataShort = join(process.cwd(), "/src/database/data/short.json");
+  partDataShort = join(process.cwd(), "/src/db/data/short.json");
   async handleAddShort(threadID, shortName, shortContent) {
     const previousData = await fs.readFileSync(this.partDataShort, "utf8");
     if (!previousData) {

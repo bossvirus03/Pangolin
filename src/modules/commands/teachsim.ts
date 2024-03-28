@@ -24,7 +24,7 @@ export default class SimCommand {
     }
     const [question, reply] = [body[0].trim(), body[1].trim()];
     const db = new sqlite3.Database(
-      join(process.cwd(), "src/database/data/simsimi.sqlite"),
+      join(process.cwd(), "src/db/data/simsimi.sqlite"),
       sqlite3.OPEN_READWRITE,
       (err) => {
         if (err) {

@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import { ThreadService } from "./thread.service";
-import { Thread } from "src/database/models/threadModel";
+import { Thread } from "src/db/models/threadModel";
 @Controller("thread")
 export class ThreadController {
   constructor(private readonly threadService: ThreadService) {}

@@ -16,10 +16,7 @@ export default class autoReaction {
 
   constructor(private client) {}
 
-  pathAutoReaction = join(
-    process.cwd(),
-    "/src/database/data/autoReaction.json"
-  );
+  pathAutoReaction = join(process.cwd(), "/src/db/data/autoReaction.json");
 
   async event(api: Ifca, event: IEvent, client, args) {
     if (event.type == "message") {

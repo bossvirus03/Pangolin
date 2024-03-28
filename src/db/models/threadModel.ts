@@ -21,6 +21,13 @@ export class Thread extends Model<Thread> {
   rankup?: boolean;
 
   @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+    allowNull: true,
+  })
+  resend?: boolean;
+
+  @Column({
     type: DataType.STRING,
     allowNull: false,
     unique: true,

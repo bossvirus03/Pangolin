@@ -26,14 +26,7 @@ export default class RankUpCommand {
       const item = arr[randomIndex];
       return item;
     }
-    const gifPath = join(
-      process.cwd(),
-      "src",
-      "database",
-      "data",
-      "rank",
-      "gif"
-    );
+    const gifPath = join(process.cwd(), "src", "db", "data", "rank", "gif");
     const listGif = readdirSync(gifPath).filter((file: string) =>
       file.endsWith(".gif")
     );

@@ -13,7 +13,7 @@ export default class NotiCommand {
 
   constructor(private client) {}
   run(api: Ifca, event) {
-    const GifPath = join(process.cwd(), "/src/database/data/join/join.gif");
+    const GifPath = join(process.cwd(), "/src/db/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
     api.getThreadInfo(event.threadID, (err, info) => {
       if (err) {

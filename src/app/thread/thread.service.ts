@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { Thread } from "src/database/models/threadModel";
+import { Thread } from "src/db/models/threadModel";
 
 @Injectable()
 export class ThreadService {

@@ -23,7 +23,7 @@ export default class WarnCommand {
         event.threadID
       );
     }
-    const pathDataWarn = join(process.cwd(), "/src/database/data/warn.json");
+    const pathDataWarn = join(process.cwd(), "/src/db/data/warn.json");
     async function delDataWarn(warnedId) {
       const previousWarn = fs.readFileSync(pathDataWarn, "utf8");
       const previousWarnArray = JSON.parse(previousWarn);

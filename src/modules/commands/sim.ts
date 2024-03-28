@@ -30,7 +30,7 @@ export default class SimCommand {
   }
   async event(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
     const db = new sqlite3.Database(
-      join(process.cwd(), "src/database/data/simsimi.sqlite"),
+      join(process.cwd(), "src/db/data/simsimi.sqlite"),
       sqlite3.OPEN_READWRITE,
       (err) => {
         if (err) {
