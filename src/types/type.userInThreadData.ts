@@ -1,4 +1,4 @@
-import { UserInThread } from "src/database/models/userInThreadModel";
+import { UserInThread } from "src/db/models/userInThreadModel";
 
 export interface IUserInThreadData {
   get(uid: string, tid: string): Promise<UserInThread>;

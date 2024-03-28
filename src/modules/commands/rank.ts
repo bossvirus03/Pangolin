@@ -39,7 +39,7 @@ export default class RankCommand {
     const cardTemplatePath = join(
       process.cwd(),
       "src",
-      "database",
+      "db",
       "data",
       "rank",
       "card",
@@ -107,15 +107,7 @@ export default class RankCommand {
 
     const fimg = canvas.toBuffer();
     await fs.writeFileSync(
-      join(
-        process.cwd(),
-        "src",
-        "database",
-        "data",
-        "rank",
-        "card",
-        "card2.png"
-      ),
+      join(process.cwd(), "src", "db", "data", "rank", "card", "card2.png"),
       fimg
     );
     ctx.fillText(currentLevel, 485, 330.42);
@@ -163,7 +155,7 @@ export default class RankCommand {
             join(
               process.cwd(),
               "src",
-              "database",
+              "db",
               "data",
               "rank",
               "card",

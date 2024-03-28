@@ -14,7 +14,7 @@ export default class RuleCommand {
   };
 
   constructor(private client) {}
-  pathDataRule = join(process.cwd(), "/src/database/data/rule.json");
+  pathDataRule = join(process.cwd(), "/src/db/data/rule.json");
 
   async handleRemoveRule(ruleIndex: number, event: IEvent, api) {
     const previousRule = fs.readFileSync(this.pathDataRule, "utf8");

@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
 import { SequelizeModule } from "@nestjs/sequelize";
-import { User } from "src/database/models/userModel";
+import { User } from "src/db/models/userModel";
 import { join } from "path";
 
 @Module({
@@ -10,7 +10,7 @@ import { join } from "path";
     SequelizeModule.forRoot({
       logging: false,
       dialect: "sqlite",
-      storage: join(process.cwd(), "/src/database/data/database.sqlite"),
+      storage: join(process.cwd(), "/src/db/data/database.sqlite"),
       define: {
         timestamps: false,
       },
