@@ -20,10 +20,6 @@ export default class NotiCommand {
         console.error("Error fetching thread info:", err);
         return;
       }
-      if (!info || !info.imageSrc) {
-        console.error("Image source is undefined or null.");
-        return;
-      }
       const arrPersonJoin = event.logMessageData.addedParticipants.map(
         (item) => {
           return {
@@ -32,6 +28,16 @@ export default class NotiCommand {
           };
         }
       );
+      if (
+        arrPersonJoin.some((item) => {
+          return item.id == process.env.UID_BOT;
+        })
+      ) {
+        return api.sendMessage(
+          `Cảm ơn bạn đã thêm bot vào nhóm\nSử dụng ${process.env.PREFIX}help để xem tất cả các lệnh!`,
+          event.threadID
+        );
+      }
       const nameUsers = arrPersonJoin.map((item) => {
         return item.tag;
       });

@@ -10,7 +10,8 @@ export default class ShortCommand {
     version: "1.0.0",
     author: "Lợi",
     createdAt: "",
-    description: "Cách dùng: [prefix]short\nChức năng: tạo tin nhắn nhanh",
+    description:
+      "Cách dùng: [prefix]short [text1] | [text2]\nChức năng: tạo tin nhắn nhanh",
   };
 
   constructor(private client) {}

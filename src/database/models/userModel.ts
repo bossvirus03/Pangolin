@@ -8,8 +8,6 @@ import {
 
 @Table
 export class User extends Model<User> {
-  //   @AutoIncremen
-
   @Column({
     type: DataType.STRING,
     allowNull: false,
