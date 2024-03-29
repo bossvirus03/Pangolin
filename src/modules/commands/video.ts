@@ -108,6 +108,7 @@ export default class VideoCommand {
     api.sendMessage(
       `Có ${listVideoResult.length} kết quả phù hợp: \n` + smg,
       event.threadID,
+      event.messageID,
       (err, res) => {
         cache.put(
           "list-video-youtube-search",

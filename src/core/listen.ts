@@ -118,11 +118,12 @@ class Listen {
           exp: 0,
           name: `${nameUser[event.senderID].name}`,
           tid: event.threadID,
+          uniqueId: `${event.senderID}${event.threadID}`,
         });
       } else {
         await UserInThread.update(
           { exp: user.exp + 1 },
-          { where: { uid: event.senderID, tid: event.threadID } }
+          { where: { uniqueId: `${event.senderID}${event.threadID}` } }
         );
       }
     } catch (error) {
@@ -131,92 +132,177 @@ class Listen {
   }
   UserData = {
     set: async (uid, name) => {
-      const newUser = await User.create({
-        uid: uid,
-        exp: 0,
-        money: 0,
-        name: name,
-        prefix: null,
-      });
-      console.log("New user created:", newUser.toJSON());
+      try {
+        const check = await User.findOne({ where: { uid } });
+        console.log(check, uid);
+        if (check) return;
+        const newUser = await User.create({
+          uid: uid,
+          exp: 0,
+          money: 0,
+          name: name,
+          prefix: null,
+        });
+        console.log("New user created:", newUser.toJSON());
+      } catch (error) {
+        console.error("Error creating new user:", error);
+        throw error;
+      }
     },
+
     getAll: async () => {
-      const res = await User.findAll();
-      if (!res) return null;
-      return res;
+      try {
+        const res = await User.findAll();
+        return res;
+      } catch (error) {
+        console.error("Error getting all users:", error);
+        throw error;
+      }
     },
+
     get: async (uid) => {
-      const user = await User.findOne({ where: { uid } });
-      if (!user) return null;
-      return user.dataValues;
+      try {
+        const user = await User.findOne({ where: { uid } });
+        return user ? user.dataValues : null;
+      } catch (error) {
+        console.error("Error getting user by id:", error);
+        throw error;
+      }
     },
+
     del: async (uid) => {
-      return await User.destroy({ where: { uid } });
+      try {
+        return await User.destroy({ where: { uid } });
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        throw error;
+      }
     },
   };
 
   ThreadData = {
     set: async (tid, name) => {
-      const newThread = await Thread.create({
-        tid: tid,
-        name: name,
-        prefix: null,
-        rankup: true,
-      });
-      console.log("New thread created:", newThread.toJSON());
+      try {
+        const check = await Thread.findOne({ where: { tid } });
+        if (check) return;
+        const newThread = await Thread.create({
+          tid: tid,
+          name: name,
+          prefix: null,
+          rankup: true,
+        });
+        console.log("New thread created:", newThread.toJSON());
+      } catch (error) {
+        console.error("Error creating new thread:", error);
+      }
     },
+
     setPrefix: async (tid, prefix) => {
-      const res = await Thread.update({ prefix }, { where: { tid } });
-      return res;
+      try {
+        const res = await Thread.update({ prefix }, { where: { tid } });
+        return res;
+      } catch (error) {
+        console.error("Error updating prefix:", error);
+        throw error;
+      }
     },
+
     getAll: async () => {
-      const res = await Thread.findAll();
-      if (!res) return null;
-      return res;
+      try {
+        const res = await Thread.findAll();
+        return res;
+      } catch (error) {
+        console.error("Error getting all threads:", error);
+        throw error;
+      }
     },
+
     get: async (tid) => {
-      const res = await Thread.findOne({ where: { tid } });
-      if (!res) return null;
-      return res.dataValues;
+      try {
+        const res = await Thread.findOne({ where: { tid } });
+        return res ? res.dataValues : null;
+      } catch (error) {
+        console.error("Error getting thread by id:", error);
+        throw error;
+      }
     },
+
     prefix: async (tid) => {
-      const res = await Thread.findOne({ where: { tid } });
-      if (!res) return null;
-      return res.dataValues.prefix;
+      try {
+        const res = await Thread.findOne({ where: { tid } });
+        return res ? res.dataValues.prefix : null;
+      } catch (error) {
+        console.error("Error getting prefix by id:", error);
+        throw error;
+      }
     },
+
     rankup: {
       get: async (tid) => {
-        const res = await Thread.findOne({ where: { tid } });
-        if (!res) return null;
-        return res.dataValues.rankup;
+        try {
+          const res = await Thread.findOne({ where: { tid } });
+          return res ? res.dataValues.rankup : null;
+        } catch (error) {
+          console.error("Error getting rankup status:", error);
+          throw error;
+        }
       },
-      set: async (tid, bool: boolean) => {
-        const res = await Thread.update({ rankup: bool }, { where: { tid } });
-        return res;
+
+      set: async (tid, bool) => {
+        try {
+          const res = await Thread.update({ rankup: bool }, { where: { tid } });
+          return res;
+        } catch (error) {
+          console.error("Error setting rankup status:", error);
+          throw error;
+        }
       },
     },
   };
 
   UserInThreadData = {
     get: async (uid, tid) => {
-      const res = await UserInThread.findOne({ where: { uid, tid } });
-      if (!res) return null;
-      return res.dataValues;
+      try {
+        const res = await UserInThread.findOne({
+          where: { uniqueId: `${uid}${tid}` },
+        });
+        return res ? res.dataValues : null;
+      } catch (error) {
+        console.error("Error getting user in thread:", error);
+        throw error;
+      }
     },
+
     set: async (uid, name, tid) => {
-      const res = await UserInThread.create({
-        uid,
-        name,
-        tid,
-      });
-      return res;
+      try {
+        const check = await UserInThread.findOne({
+          where: { uniqueId: `${uid}${tid}` },
+        });
+        if (check) return;
+        const res = await UserInThread.create({
+          uid,
+          name,
+          tid,
+          uniqueId: `${uid}${tid}`,
+        });
+        return res;
+      } catch (error) {
+        console.error("Error creating user in thread:", error);
+        throw error;
+      }
     },
+
     getAll: async () => {
-      const res = await UserInThread.findAll();
-      if (!res) return null;
-      return res;
+      try {
+        const res = await UserInThread.findAll();
+        return res;
+      } catch (error) {
+        console.error("Error getting all users in threads:", error);
+        throw error;
+      }
     },
   };
+
   listen() {
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>

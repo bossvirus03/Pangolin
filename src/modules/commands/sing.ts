@@ -104,6 +104,7 @@ export default class YtCommand {
     api.sendMessage(
       `Có ${listVideoResult.length} kết quả phù hợp: \n` + smg,
       event.threadID,
+      event.messageID,
       (err, res) => {
         cache.put(
           "list-audio-youtube-search",

@@ -156,6 +156,7 @@ export default class ShortCommand {
         api.sendMessage(
           smg + "\nReply 1 số tương ứng để xoá short message!!",
           event.threadID,
+          event.messageID,
           (err, info) => {
             if (err) reject(err);
             else resolve(info.messageID);

@@ -37,6 +37,7 @@ export default class MangaCommand {
                   api.sendMessage(
                     `Có ${chapters.length} chapter, vui lòng reply để chọn chap cần đọc!`,
                     event.threadID,
+                    event.messageID,
                     (err, res) => {
                       cache.put(
                         "manga-list-chapter",
@@ -151,15 +152,20 @@ export default class MangaCommand {
         i++;
       });
       smg += "Reply số tương ứng để chọn";
-      api.sendMessage(smg, event.threadID, async (err, res) => {
-        const MangaChose = [];
-        MangaChose.push({
-          messageID: res.messageID,
-          threadID: res.threadID,
-          data: result,
-        });
-        cache.put("manga", MangaChose, 10000 * 60);
-      });
+      api.sendMessage(
+        smg,
+        event.threadID,
+        event.messageID,
+        async (err, res) => {
+          const MangaChose = [];
+          MangaChose.push({
+            messageID: res.messageID,
+            threadID: res.threadID,
+            data: result,
+          });
+          cache.put("manga", MangaChose, 10000 * 60);
+        }
+      );
     } catch (error) {
       console.log("Error fetching data:", error);
     }

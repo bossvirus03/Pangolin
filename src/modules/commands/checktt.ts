@@ -28,14 +28,14 @@ export default class CheckttCommand {
       const smg = await Promise.all(
         users.map(async (item) => {
           const res = await UserInThreadData.get(item, event.threadID);
-          console.log(res);
-          // return { name: res.name, exp: res.exp };
+          return { name: res.name, exp: res.exp };
         })
       );
       smg.sort((a, b) => b.exp - a.exp);
       let smgSorted = "Danh sách tương tác trong nhóm: \n";
       let i = 1;
       smg.forEach((user) => {
+        console.log(user);
         smgSorted += `[${i}] ${user.name}: ${user.exp}\n`;
         i++;
       });

@@ -82,6 +82,7 @@ export default class NhentaiCommand {
               body: "18+ cân nhắc trước khi sử dụng",
             },
             event.threadID,
+            event.messageID,
             (err) => {
               if (err) return console.log(err);
             }
