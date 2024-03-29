@@ -17,7 +17,7 @@ export default class RestartCommand {
   pathFile = join(process.cwd(), "/src/db/data/restart.txt");
   async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
     api.sendMessage(global.getLang("Restarting"), event.threadID);
-    fs.writeFileSync(this.pathFile, `${Date.now()}`);
+    fs.writeFileSync(this.pathFile, `${Date.now()} ${event.threadID}`);
     try {
       const { stdout, stderr } = await exec("pm2 restart pangolin");
       console.log("stdout:", stdout);
@@ -26,15 +26,17 @@ export default class RestartCommand {
       console.error("Error executing command:", error);
     }
   }
-  async event(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
-    if (fs.existsSync(this.pathFile)) {
-      const time = parseInt(fs.readFileSync(this.pathFile, "utf-8"));
-      console.log(time, Date.now());
-      api.sendMessage(
-        `✅ | Bot restarted\n⏰ | Time: ${(Date.now() - time) / 1000}s`,
-        event.threadID
-      );
-      fs.unlinkSync(this.pathFile);
-    }
+  async onload(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+    const [time, threadID]: [number, string] = await new Promise(
+      async (rs, rj) => {
+        const dataRestart = fs.readFileSync(this.pathFile, "utf-8").split(" ");
+        const threadID = dataRestart[1];
+        const time = await parseInt(dataRestart[0]);
+        rs([time, threadID]);
+      }
+    );
+    Promise.all([time]);
+    const timeNow = Date.now();
+    api.sendMessage(`Done restarted | ${(timeNow - time) / 1000}s`, threadID);
   }
 }
