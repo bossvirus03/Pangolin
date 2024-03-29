@@ -20,6 +20,7 @@ export default class PinterestCommand {
       const send = msg => api.sendMessage(msg, event.threadID, event.messageID);
       if (/pin|pinterest/.test(str)) {
         const res = (await axios.get(`https://j2download.net/api/pinterest/media?url=${str}`)).data;
+               api.setMessageReaction("⌛", event.messageID, () => {}, true);
         let attachment = [];
         if (res.attachments && res.attachments.length > 0) {
           if (res.attachments[0].type === 'Video') {
@@ -37,6 +38,7 @@ export default class PinterestCommand {
             body: `${res.message || "Không Có Tiêu Đề"}\n`,
             attachment
           });
+                       api.setMessageReaction("✅", event.messageID, () => {}, true);
         }
       }
     } catch (e) {
