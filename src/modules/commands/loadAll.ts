@@ -1,7 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import { IUserInThreadData } from "src/types/type.userInThreadData";
-// import PQueue from "p-queue";
 export default class LoadAllCommand {
   static config = {
     name: "loadAll",
@@ -24,17 +23,16 @@ export default class LoadAllCommand {
     UserInThreadData: IUserInThreadData
   ) {
     try {
-      // const queue = new PQueue({ concurrency: 1 });
       const threadsData = await DataThread.getAll();
-      const usersData = await DataUser.getAll();
       const threads = threadsData.map((item) => {
         return item.dataValues.tid;
       });
-      const users = usersData.map((item) => {
+      let usersData = await DataUser.getAll();
+      let users = usersData.map((item) => {
         return item.dataValues.uid;
       });
       const userInThreads = (await UserInThreadData.getAll()).map((item) => {
-        return { uid: item.dataValues.uid, tid: item.dataValues.tid };
+        return item.dataValues.uniqueId;
       });
       const allTags = [["INBOX"], ["OTHER"]];
       allTags.forEach((item) => {
@@ -53,44 +51,73 @@ export default class LoadAllCommand {
                   const usersFromListBox = box.participants;
                   usersFromListBox.forEach(async (item) => {
                     // Thêm mỗi tác vụ vào hàng đợi
-                    // queue.add(async () => {
+                    usersData = await DataUser.getAll();
+                    users = usersData.map((item) => {
+                      return item.dataValues.uid;
+                    });
                     if (!users.includes(item.userID)) {
-                      await DataUser.set(item.userID, item.name);
+                      const createUser = new Promise<void>(
+                        async (resolve, reject) => {
+                          try {
+                            await DataUser.set(item.userID, item.name); // Assuming DataUser.set() returns a promise
+                            resolve(); // Resolve the promise when the user creation is successful
+                          } catch (error) {
+                            reject(error); // Reject the promise if there's an error during user creation
+                          }
+                        }
+                      );
+
+                      Promise.all([createUser])
+                        .then(() => {
+                          console.log("User created successfully");
+                        })
+                        .catch((error) => {
+                          console.error("Error creating user:", error);
+                        });
                     }
-                    if (
-                      !userInThreads.some(
-                        (data) =>
-                          item.uid === item.userID && data.tid == box.tid
-                      )
-                    ) {
+                    if (!userInThreads.includes(`${item.userID}${box.tid}`)) {
                       await UserInThreadData.set(
                         item.userID,
                         item.name,
                         box.threadID
                       );
                     }
-                    // });
                   });
                 });
-                // await queue.onIdle();
               }
 
               // get list box form chat
               await listBox.forEach(async (item) => {
                 if (!threads.includes(item.threadID)) {
-                  // queue.add(async () => {
                   await DataThread.set(item.threadID, item.name);
-                  // });
                 }
               });
 
-              // get users form chat
               const listUser = list.filter((item) => item.isGroup == false);
               await listUser.forEach(async (item) => {
-                if (!users.includes(item.threadID)) {
-                  // queue.add(async () => {
-                  await DataUser.set(item.threadID, item.name);
-                  // });
+                usersData = await DataUser.getAll();
+                users = usersData.map((item) => {
+                  return item.dataValues.uid;
+                });
+                if (!users.includes(item.userID)) {
+                  const createUser = new Promise<void>(
+                    async (resolve, reject) => {
+                      try {
+                        await DataUser.set(item.userID, item.name); // Assuming DataUser.set() returns a promise
+                        resolve(); // Resolve the promise when the user creation is successful
+                      } catch (error) {
+                        reject(error); // Reject the promise if there's an error during user creation
+                      }
+                    }
+                  );
+
+                  Promise.all([createUser])
+                    .then(() => {
+                      console.log("User created successfully");
+                    })
+                    .catch((error) => {
+                      console.error("Error creating user:", error);
+                    });
                 }
               });
             }
