@@ -20,6 +20,8 @@ export default class FacabookCommand {
       const send = msg => api.sendMessage(msg, event.threadID, event.messageID);
       if (/fb|facebook/.test(str)) {
         const res = (await axios.get(`https://j2download.net/api/facebook/media?url=${str}`)).data;
+        
+                  api.setMessageReaction("⌛", event.messageID, () => {}, true);
         let attachment = [];
         if (res.attachments && res.attachments.length > 0) {
           if (res.attachments[0].type === 'Video') {
@@ -37,6 +39,7 @@ export default class FacabookCommand {
             body: `${res.message || "Không Có Tiêu Đề"}\n`,
             attachment
           });
+                       api.setMessageReaction("✅", event.messageID, () => {}, true);
         }
       }
     } catch (e) {
