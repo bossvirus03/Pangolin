@@ -444,7 +444,7 @@ class Listen {
                   for (const item of info.adminIDs) {
                     if (item.id !== event.senderID) {
                       await api.sendMessage(
-                        `Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                        `⚠ Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
                         event.threadID
                       );
                       isPermission = false;
@@ -470,7 +470,7 @@ class Listen {
                 }
                 if (isAdmin == ADS.length) {
                   api.sendMessage(
-                    `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                    `⚠ Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
                     event.threadID
                   );
                   isPermission = false;
@@ -526,13 +526,17 @@ class Listen {
       // }
       //load all command
       // else
+const uptimeInSeconds = process.uptime();
+  const hours = Math.floor(uptimeInSeconds / 3600);
+  const minutes = Math.floor((uptimeInSeconds % 3600) / 60);
+  const seconds = Math.floor(uptimeInSeconds % 60);
       if (isPermission) {
         if (!event.body.startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {
           var matches = stringSimilarity.findBestMatch(args[0], listCommands);
-          return this.api.sendMessage(
-            `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
-            event.threadID
+          return this.api.shareContact(
+            `⚠ Chưa Nhập Tên Lệnh.\n✏ Lệnh gần Giống Là: ${PREFIX}${listCommands[matches.bestMatchIndex]}\n⏰ Thời Gian Hoạt Động\n - ${hours} Giờ ${minutes} Phút ${seconds} Giây -`,
+            event.senderID, event.threadID
           );
         }
         this.client.commands
