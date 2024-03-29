@@ -42,6 +42,7 @@
     "node-emoji": "^2.1.3",
     "node-superfetch": "^0.3.3",
     "openai": "^4.28.4",
+    "pm2": "^5.3.1",
     "reflect-metadata": "^0.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",

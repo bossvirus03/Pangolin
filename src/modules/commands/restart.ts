@@ -7,10 +7,11 @@ import { exec } from "child_process";
 export default class RestartCommand {
   static config = {
     name: "restart",
-    version: "",
-    author: "",
+    version: "1.0.0",
+    author: "Lợi",
     createdAt: "",
     description: "",
+    permission: 2,
   };
 
   constructor(private client) {}

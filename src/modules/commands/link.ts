@@ -16,7 +16,10 @@ export default class LinkCommand {
     if (!args[1]) return api.sendMessage(event.senderID, event.threadID);
     const propertyValues = Object.keys(event.mentions);
     propertyValues.forEach((item) => {
-      api.sendMessage("https://www.facebook.com/profile.php?id=${item}", event.threadID);
+      api.sendMessage(
+        `https://www.facebook.com/profile.php?id=${item}`,
+        event.threadID
+      );
     });
   }
 }
