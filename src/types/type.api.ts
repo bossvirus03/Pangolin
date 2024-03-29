@@ -18,7 +18,7 @@ export default interface Ifca {
   changeAdminStatus(): Promise<any>;
   changeArchivedStatus(): Promise<any>;
   changeBlockedStatus(): Promise<any>;
-  shareContact(): Promise<any>;
+  shareContact(option: any, messageID: string, threadID: string): Promise<any>;
   editMessage(): Promise<any>;
   changeGroupImage(
     img: any,
