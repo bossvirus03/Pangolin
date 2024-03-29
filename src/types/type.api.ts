@@ -85,6 +85,7 @@ export default interface Ifca {
   sendMessage(
     options: any, //TODO: add sendMessage Option
     ThreadID: string,
+    messageID?: string,
     callback?: (err: Error, info: any) => void
   ): Promise<undefined>;
 

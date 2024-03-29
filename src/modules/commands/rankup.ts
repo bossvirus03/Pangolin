@@ -16,7 +16,7 @@ export default class RankUpCommand {
   constructor(private client) {}
   async event(api: Ifca, event: IEvent, client, DataUser, DataThread) {
     if (!event.senderID) return;
-    const thread = DataThread.rankup.get(event.threadID) || {};
+    const thread = (await DataThread.rankup.get(event.threadID)) || {};
     if (!thread) return;
     const user = await DataUser.get(event.senderID);
     const currentLevel = Math.floor(Math.sqrt(1 + (4 * user.exp) / 3 + 1) / 2);

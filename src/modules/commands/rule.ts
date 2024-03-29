@@ -151,7 +151,7 @@ export default class RuleCommand {
       });
       smg +=
         "\nreply add [rule] để thêm rule hoặc remove [rule index] để xoá rule";
-      api.sendMessage(smg, event.threadID, (err, message) => {
+      api.sendMessage(smg, event.threadID, event.messageID, (err, message) => {
         cache.put("tmp-rule-message", message.messageID, 1000 * 5 * 60);
       });
     }
