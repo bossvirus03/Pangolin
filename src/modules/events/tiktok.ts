@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as axios from "axios";
-import * as Downloader from 'nodejs-file-downloader';
+import Downloader from "nodejs-file-downloader";
 import * as crypto from "crypto";
 import { join } from "path";
 import Ifca from "src/types/type.api";
@@ -16,12 +16,13 @@ export default class TiktokCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event) {
-       try {
+  async run(api: Ifca, event, client, args, DataUser, DataThread) {
+    try {
       const message = urlify(event.body);
-      const send = msg => api.sendMessage(msg, event.threadID, event.messageID);
+      const send = (msg) =>
+        api.sendMessage(msg, event.threadID, event.messageID);
       const id = crypto.randomBytes(16).toString("hex");
-              if (message) {
+      if (message) {
         for (const url of message) {
           if (/tiktok|douyin/.test(message)) {
             try {
@@ -35,12 +36,29 @@ export default class TiktokCommand {
                   directory: "./.temp",
                 });
                 try {
-                  const { filePath, downloadStatus } = await downloader.download();
+                  const { filePath, downloadStatus } =
+                    await downloader.download();
 
                   api.setMessageReaction("⌛", event.messageID, () => {}, true);
 
                   var msg = {
-                    body: `📺 Kênh: ${tiktok.name}\n🔗 URL: https://www.tiktok.com/@${tiktok.unique}\n📝 Tiêu Đề: ${!tiktok.title ? "" : tiktok.title + "\n"}⛳ Quốc Gia: ${tiktok.region}\n⏱️ Thời Gian Load: ${tiktok.times}s\n👀 Lượng Xem: ${toTinyNumber(tiktok.views)}\n👍 Lượt Thích: ${toTinyNumber(tiktok.love)}\n💬 Lượt Bình Luận: ${toTinyNumber(tiktok.comments)}\n🔀 Lượt Chia Sẻ: ${toTinyNumber(tiktok.share)}\n📥 Lượt Tải: ${toTinyNumber(tiktok.download)}\n🎧 Nhạc Gốc: ${tiktok.name_music}\n👤 Tác Giả Music: ${tiktok.author}`,
+                    body: `📺 Kênh: ${tiktok.name}\n🔗 URL: https://www.tiktok.com/@${tiktok.unique}\n📝 Tiêu Đề: ${
+                      !tiktok.title ? "" : tiktok.title + "\n"
+                    }⛳ Quốc Gia: ${tiktok.region}\n⏱️ Thời Gian Load: ${
+                      tiktok.times
+                    }s\n👀 Lượng Xem: ${toTinyNumber(
+                      tiktok.views
+                    )}\n👍 Lượt Thích: ${toTinyNumber(
+                      tiktok.love
+                    )}\n💬 Lượt Bình Luận: ${toTinyNumber(
+                      tiktok.comments
+                    )}\n🔀 Lượt Chia Sẻ: ${toTinyNumber(
+                      tiktok.share
+                    )}\n📥 Lượt Tải: ${toTinyNumber(
+                      tiktok.download
+                    )}\n🎧 Nhạc Gốc: ${tiktok.name_music}\n👤 Tác Giả Music: ${
+                      tiktok.author
+                    }`,
                     attachment: fs.createReadStream(filePath!),
                   };
                   const stats = fs.statSync(filePath!);
@@ -48,7 +66,7 @@ export default class TiktokCommand {
                     return api.sendMessage(
                       "Lỗi không thể tải video",
                       event.threadID,
-                      event.messageID,
+                      event.messageID
                     );
                   const fileSizeInBytes = stats.size;
                   const fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
@@ -56,10 +74,10 @@ export default class TiktokCommand {
                     return api.sendMessage(
                       `Video quá nặng không thể gửi (${~~fileSizeInMegabytes}MB)`,
                       event.threadID,
-                      event.messageID,
+                      event.messageID
                     );
 
-                   api.setMessageReaction("✅", event.messageID, () => {}, true);
+                  api.setMessageReaction("✅", event.messageID, () => {}, true);
                   api.sendMessage(
                     msg,
                     event.threadID,
@@ -68,7 +86,7 @@ export default class TiktokCommand {
                         return api.sendMessage(
                           "Lỗi gửi video không thành công",
                           event.threadID,
-                          event.messageID,
+                          event.messageID
                         );
                       try {
                         setTimeout(() => {
@@ -78,7 +96,7 @@ export default class TiktokCommand {
                         console.error(err);
                       }
                     },
-                    event.messageID,
+                    event.messageID
                   );
                 } catch (error) {
                   api.setMessageReaction("❌", event.messageID, () => {}, true);
@@ -96,9 +114,15 @@ export default class TiktokCommand {
                     directory: "./.temp",
                   });
 
-                  const { filePath, downloadStatus } = await downloader.download();
-                  fs.renameSync(filePath!, `./.temp/${fileID}_${i}.png`);
-                  file.push(fs.createReadStream(`./.temp/${fileID}_${i}.png`));
+                  const { filePath, downloadStatus } =
+                    await downloader.download();
+                  fs.renameSync(
+                    filePath!,
+                    `./.temp/${fileID}_${i}.png`
+                  );
+                  file.push(
+                    fs.createReadStream(`./.temp/${fileID}_${i}.png`)
+                  );
                   file_Path.push(`./.temp/${fileID}_${i}.png`);
                 }
 
@@ -107,13 +131,30 @@ export default class TiktokCommand {
                   directory: "./.temp",
                 });
 
-                const { filePath, downloadStatus } = await downloader.download();
+                const { filePath, downloadStatus } =
+                  await downloader.download();
                 file_Path.push(filePath!);
 
-  api.setMessageReaction("✅", event.messageID, () => {}, true);
+                api.setMessageReaction("✅", event.messageID, () => {}, true);
 
                 var msgArray = {
-                  body: `📺 Kênh: ${tiktok.name}\n🔗 URL: https://www.tiktok.com/@${tiktok.unique}\n📝 Tiêu Đề: ${!tiktok.title ? "" : tiktok.title + "\n"}⛳ Quốc Gia: ${tiktok.region}\n⏱️ Thời Gian Load: ${tiktok.times}s\n👀 Lượng Xem: ${toTinyNumber(tiktok.views)}\n👍 Lượt Thích: ${toTinyNumber(tiktok.love)}\n💬 Lượt Bình Luận: ${toTinyNumber(tiktok.comments)}\n🔀 Lượt Chia Sẻ: ${toTinyNumber(tiktok.share)}\n📥 Lượt Tải: ${toTinyNumber(tiktok.download)}\n🎧 Nhạc Gốc: ${tiktok.name_music}\n👤 Tác Giả Music: ${tiktok.author}`,
+                  body: `📺 Kênh: ${tiktok.name}\n🔗 URL: https://www.tiktok.com/@${tiktok.unique}\n📝 Tiêu Đề: ${
+                    !tiktok.title ? "" : tiktok.title + "\n"
+                  }⛳ Quốc Gia: ${tiktok.region}\n⏱️ Thời Gian Load: ${
+                    tiktok.times
+                  }s\n👀 Lượng Xem: ${toTinyNumber(
+                    tiktok.views
+                  )}\n👍 Lượt Thích: ${toTinyNumber(
+                    tiktok.love
+                  )}\n💬 Lượt Bình Luận: ${toTinyNumber(
+                    tiktok.comments
+                  )}\n🔀 Lượt Chia Sẻ: ${toTinyNumber(
+                    tiktok.share
+                  )}\n📥 Lượt Tải: ${toTinyNumber(
+                    tiktok.download
+                  )}\n🎧 Nhạc Gốc: ${tiktok.name_music}\n👤 Tác Giả Music: ${
+                    tiktok.author
+                  }`,
                   attachment: file,
                 };
 
@@ -125,27 +166,33 @@ export default class TiktokCommand {
                       return api.sendMessage(
                         "Lỗi gửi ảnh không thành công",
                         event.threadID,
-                        event.messageID,
+                        event.messageID
                       );
                     api.sendMessage(
                       {
                         body: "",
                         attachment: fs.createReadStream(filePath!),
                       },
-                      event.threadID,
+                      event.threadID
                     );
                     try {
                       setTimeout(() => {
                         for (let i = 0; i < file_Path.length; i++) {
-                          if (fs.existsSync(file_Path[i]!)) fs.unlinkSync(file_Path[i]!);
+                          if (fs.existsSync(file_Path[i]!))
+                            fs.unlinkSync(file_Path[i]!);
                         }
                       }, 15 * 1000);
                     } catch (err) {
-                      api.setMessageReaction("❌", event.messageID, () => {}, true);
+                      api.setMessageReaction(
+                        "❌",
+                        event.messageID,
+                        () => {},
+                        true
+                      );
                       console.error(err);
                     }
                   },
-                  event.messageID,
+                  event.messageID
                 );
               }
             } catch (err) {
@@ -156,14 +203,16 @@ export default class TiktokCommand {
         }
       }
     } catch (e) {
-      console.log('Error', e);
+      console.log("Error", e);
     }
   }
 }
+
 function urlify(text) {
   const urlRegex = /(https?:\/\/[^\s]+)/gi;
   return text.match(urlRegex);
 }
+
 function toTinyNumber(number: number) {
   switch (true) {
     case number >= 1000000:
@@ -174,6 +223,7 @@ function toTinyNumber(number: number) {
       return number;
   }
 }
+
 async function tiktokDL(url: string) {
   const domain = "https://www.tikwm.com/";
   const res = await axios.post(
@@ -182,7 +232,8 @@ async function tiktokDL(url: string) {
     {
       headers: {
         accept: "application/json, text/javascript, */*; q=0.01",
-        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "content-type":
+          "application/x-www-form-urlencoded; charset=UTF-8",
         // 'cookie': 'current_language=en; _ga=GA1.1.115940210.1660795490; _gcl_au=1.1.669324151.1660795490; _ga_5370HT04Z3=GS1.1.1660795489.1.1.1660795513.0.0.0',
         "sec-ch-ua":
           '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
@@ -196,7 +247,7 @@ async function tiktokDL(url: string) {
         web: 1,
         hd: 1,
       },
-    },
+    }
   );
 
   // console.log(res)
@@ -219,16 +270,4 @@ async function tiktokDL(url: string) {
     name_music: res.data.data.music_info.title,
     author: res.data.data.music_info.author,
   };
-}
-async function streamURL(url, type) {
-  try {
-    const res = await axios.get(url, { responseType: 'arraybuffer' });
-    const path = join(__dirname, `/cache/${Date.now()}.${type}`);
-    fs.writeFileSync(path, res.data);
-    setTimeout(p => fs.unlinkSync(p), 1000 * 60, path);
-    return fs.createReadStream(path);
-  } catch (error) {
-    console.error('Lỗi:', error);
-    throw error; 
-  }
 }

@@ -16,27 +16,23 @@ export default class PinterestCommand {
 
   async run(api: Ifca, event) {
        try {
-    const str = urlify(event.body);
+      const str = urlify(event.body);
       const send = msg => api.sendMessage(msg, event.threadID, event.messageID);
       if (/pin|pinterest/.test(str)) {
         const res = (await axios.get(`https://j2download.net/api/pinterest/media?url=${str}`)).data;
-   let attachment = [];
-            if (res.attachments && res.attachments.length > 0) {
-              if (res.attachments[0].type === 'Video') {
-                for (const pinterest of res.attachments) {
-                  const videoUrl = pinterest.url;
-                  attachment.push(await streamURL(videoUrl, 'mp4'));
-                }
-              } else if (res.attachments[0].type === 'Photo') {
-                for (const attachmentItem of res.attachments) {
-                  const urlImg = attachmentItem.url;
-                  attachment.push(await streamURL(urlImg, 'jpg'));
-                }
-              }
-              send({
-                attachment
-              });
+        let attachment = [];
+        if (res.attachments && res.attachments.length > 0) {
+          if (res.attachments[0].type === 'Video') {
+            for (const pinterest of res.attachments) {
+              const videoUrl = pinterest.url.sd || facebook.url.hd;
+              attachment.push(await streamURL(videoUrl, 'mp4'));
             }
+          } else if (res.attachments[0].type === 'Photo') {
+            for (const attachmentItem of res.attachments) {
+                const urlImg = attachmentItem.url;
+                attachment.push(await streamURL(urlImg, 'jpg'));
+            }
+          }
           send({
             body: `${res.message || "Không Có Tiêu Đề"}\n`,
             attachment
