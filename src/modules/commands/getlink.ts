@@ -12,7 +12,6 @@ export default class GetLinkCommand {
     createdAt: "",
     description:
       "Cách dùng: [prefix]getLink(Reply 1 bức ảnh)\nChức năng: lấy url",
-    permission: 1,
   };
 
   constructor(private client) {}
