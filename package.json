@@ -34,7 +34,7 @@
     "canvas": "^2.11.2",
     "cheerio": "^1.0.0-rc.12",
     "dayjs": "^1.11.10",
-    "facebook-chat-api": "github:bossvirus03/facebook-chat-api",
+    "facebook-chat-api": "github:Nguyenblur/facebook-chat-api",
     "fs": "^0.0.1-security",
     "fs-extra": "^11.2.0",
     "memory-cache": "^0.2.0",
