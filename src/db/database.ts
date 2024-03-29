@@ -10,5 +10,4 @@ const sequelize = new Sequelize({
 });
 
 // Thêm các model vào Sequelize instance
-sequelize.addModels([User, Thread, UserInThread]);
 export default sequelize;

@@ -93,7 +93,7 @@ export default interface Ifca {
   setMessageReaction(
     emoji: string,
     messageID: string,
-    callback: (err) => void
+    callback?: (err) => void
   ): Promise<undefined>;
 
   setTitle(): Promise<any>;

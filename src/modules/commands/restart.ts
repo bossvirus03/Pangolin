@@ -28,16 +28,21 @@ export default class RestartCommand {
     }
   }
   async onload(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
-    const [time, threadID]: [number, string] = await new Promise(
-      async (rs, rj) => {
-        const dataRestart = fs.readFileSync(this.pathFile, "utf-8").split(" ");
-        const threadID = dataRestart[1];
-        const time = await parseInt(dataRestart[0]);
-        rs([time, threadID]);
-      }
-    );
-    Promise.all([time]);
-    const timeNow = Date.now();
-    api.sendMessage(`Done restarted | ${(timeNow - time) / 1000}s`, threadID);
+    if (fs.existsSync(this.pathFile)) {
+      const [time, threadID]: [number, string] = await new Promise(
+        async (rs, rj) => {
+          const dataRestart = fs
+            .readFileSync(this.pathFile, "utf-8")
+            .split(" ");
+          const threadID = dataRestart[1];
+          const time = await parseInt(dataRestart[0]);
+          rs([time, threadID]);
+        }
+      );
+      Promise.all([time]);
+      const timeNow = Date.now();
+      api.sendMessage(`Done restarted | ${(timeNow - time) / 1000}s`, threadID);
+      fs.unlinkSync(this.pathFile);
+    }
   }
 }

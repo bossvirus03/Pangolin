@@ -16,6 +16,7 @@ export default class NotiCommand {
   async run(api: Ifca, event) {
     const GifPath = join(process.cwd(), "/src/db/data/leave/leave.gif");
     if (event.logMessageType === "log:unsubscribe") {
+      // console.log(event);
       const infoUser = await api.getUserInfo(
         event.logMessageData.leftParticipantFbId,
         (err, user) => {
@@ -23,7 +24,7 @@ export default class NotiCommand {
         }
       );
 
-      if (event.logMessageData.leftParticipantFbId === event.author) {
+      if (event.logMessageData.leftParticipantFbId == event.author) {
         api.sendMessage(
           {
             body:

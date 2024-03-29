@@ -1,5 +1,4 @@
 import { readdirSync } from "fs";
-import * as cache from "memory-cache";
 import { join } from "path";
 import sequelize from "src/db/database";
 import { Thread } from "src/db/models/threadModel";
@@ -16,38 +15,41 @@ class Listen {
   ) {}
 
   async createUserIfNotExists(api: Ifca, event: IEvent) {
-    try {
-      // Kiểm tra xem kết nối đã được thiết lập chưa
-      if (!sequelize.isDefined("User")) {
-        await sequelize.authenticate();
-        // Định nghĩa các model
-        sequelize.addModels([User]);
-      }
+    if (event.type == "message") {
+      try {
+        // Kiểm tra xem kết nối đã được thiết lập chưa
+        if (!sequelize.isDefined("User")) {
+          await sequelize.authenticate();
+          // Định nghĩa các model
+          sequelize.addModels([User]);
+          sequelize.sync();
+        }
 
-      // Tìm người dùng theo uid (senderID)
-      const user = await User.findOne({ where: { uid: event.senderID } });
-      if (!user) {
-        // Thêm user vào cơ sở dữ liệu nếu không tồn tại
-        const nameUser = await api.getUserInfo(
-          event.senderID,
-          (err, ret) => {}
-        );
-        const newUser = await User.create({
-          uid: event.senderID,
-          exp: 0,
-          money: 0,
-          name: `${nameUser[event.senderID].name}`,
-          prefix: null,
-        });
-        console.log("New user created:", newUser.toJSON());
-      } else {
-        await User.update(
-          { exp: user.exp + 1 },
-          { where: { uid: event.senderID } }
-        );
+        // Tìm người dùng theo uid (senderID)
+        const user = await User.findOne({ where: { uid: event.senderID } });
+        if (!user) {
+          // Thêm user vào cơ sở dữ liệu nếu không tồn tại
+          const nameUser = await api.getUserInfo(
+            event.senderID,
+            (err, ret) => {}
+          );
+          const newUser = await User.create({
+            uid: event.senderID,
+            name: `${nameUser[event.senderID].name}`,
+            exp: 0,
+            money: 0,
+            prefix: null,
+          });
+          console.log("New user created:", newUser.toJSON());
+        } else {
+          await User.update(
+            { exp: user.exp + 1 },
+            { where: { uid: event.senderID } }
+          );
+        }
+      } catch (error) {
+        console.error("Error finding or creating user:", error);
       }
-    } catch (error) {
-      console.error("Error finding or creating user:", error);
     }
   }
 
@@ -58,6 +60,7 @@ class Listen {
         await sequelize.authenticate();
         // Định nghĩa các model
         sequelize.addModels([Thread]);
+        sequelize.sync();
       }
 
       // Tìm group theo tid (threadID)
@@ -86,6 +89,7 @@ class Listen {
         await sequelize.authenticate();
         // Định nghĩa các model
         sequelize.addModels([Thread]);
+        sequelize.sync();
       }
       // Xoá group khỏi cơ sở dữ liệu
       await Thread.destroy({ where: { tid: event.threadID } });
@@ -96,57 +100,61 @@ class Listen {
   }
 
   async logMessageUserInThread(api, event) {
-    try {
-      // Kiểm tra xem kết nối đã được thiết lập chưa
-      if (!sequelize.isDefined("UserInThread")) {
-        await sequelize.authenticate();
-        // Định nghĩa các model
-        sequelize.addModels([UserInThread]);
-      }
-      // Tìm người dùng theo uid (senderID)
-      const user = await UserInThread.findOne({
-        where: { uid: event.senderID, tid: event.threadID },
-      });
-      if (!user) {
-        // Thêm user vào cơ sở dữ liệu nếu không tồn tại
-        const nameUser = await api.getUserInfo(
-          event.senderID,
-          (err, ret) => {}
-        );
-        await UserInThread.create({
-          uid: event.senderID,
-          exp: 0,
-          name: `${nameUser[event.senderID].name}`,
-          tid: event.threadID,
-          uniqueId: `${event.senderID}${event.threadID}`,
+    if (event.type == "message") {
+      try {
+        // Kiểm tra xem kết nối đã được thiết lập chưa
+        if (!sequelize.isDefined("UserInThread")) {
+          await sequelize.authenticate();
+          // Định nghĩa các model
+          sequelize.addModels([UserInThread]);
+          sequelize.sync();
+        }
+        // Tìm người dùng theo uid (senderID)
+        const user = await UserInThread.findOne({
+          where: { uniqueId: `${event.senderID}${event.threadID}` },
         });
-      } else {
-        await UserInThread.update(
-          { exp: user.exp + 1 },
-          { where: { uniqueId: `${event.senderID}${event.threadID}` } }
-        );
+        if (!user) {
+          // Thêm user vào cơ sở dữ liệu nếu không tồn tại
+          const nameUser = await api.getUserInfo(
+            event.senderID,
+            (err, ret) => {}
+          );
+          await UserInThread.create({
+            uid: event.senderID,
+            exp: 0,
+            name: `${nameUser[event.senderID].name}`,
+            tid: event.threadID,
+            uniqueId: `${event.senderID}${event.threadID}`,
+          });
+        } else {
+          await UserInThread.update(
+            { exp: user.exp + 1 },
+            { where: { uniqueId: `${event.senderID}${event.threadID}` } }
+          );
+        }
+      } catch (error) {
+        console.error("Error", error);
       }
-    } catch (error) {
-      console.error("Error", error);
     }
   }
   UserData = {
     set: async (uid, name) => {
-      try {
-        const check = await User.findOne({ where: { uid } });
-        console.log(check, uid);
-        if (check) return;
-        const newUser = await User.create({
-          uid: uid,
-          exp: 0,
-          money: 0,
-          name: name,
-          prefix: null,
-        });
-        console.log("New user created:", newUser.toJSON());
-      } catch (error) {
-        console.error("Error creating new user:", error);
-        throw error;
+      if (uid && name) {
+        try {
+          const check = await User.findOne({ where: { uid } });
+          if (check) return;
+          const newUser = await User.create({
+            uid: uid,
+            exp: 0,
+            money: 0,
+            name: name,
+            prefix: null,
+          });
+          console.log("New user created:", newUser.toJSON());
+        } catch (error) {
+          console.error("Error creating new user:", error);
+          throw error;
+        }
       }
     },
 
@@ -303,7 +311,9 @@ class Listen {
     },
   };
 
-  listen() {
+  async listen() {
+    sequelize.addModels([User, Thread, UserInThread]);
+    await sequelize.sync();
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>
       file.endsWith(".ts")
@@ -321,22 +331,19 @@ class Listen {
     }
     this.api.setOptions({ listenEvents: true });
     this.api.listenMqtt(async (err, event) => {
-      if (!event) return;
-      if (event.type == "message") {
+      try {
+        await this.createUserIfNotExists(this.api, event);
+      } catch (error) {
+        console.error("Error occurred:", error);
+      }
+      if (event.isGroup) {
         try {
-          await sequelize.sync(); // Tạo bảng nếu chưa tồn tại
-          await this.createUserIfNotExists(this.api, event);
+          await this.logMessageUserInThread(this.api, event);
         } catch (error) {
           console.error("Error occurred:", error);
         }
-        if (event.isGroup) {
-          try {
-            await this.logMessageUserInThread(this.api, event);
-          } catch (error) {
-            console.error("Error occurred:", error);
-          }
-        }
       }
+      if (!event) return;
       if (
         event.type == "event" &&
         event.logMessageType == "log:subscribe" &&
@@ -381,176 +388,153 @@ class Listen {
       this.client.event.forEach((value, key) => {
         this.client.event
           .get(key)
-          .event(this.api, event, this.client, this.UserData, this.ThreadData);
-      });
-
-      if (event.body == undefined) return;
-      let args = event.body.trim().split(" ");
-      let listNoprefix = [];
-      this.client.noprefix.forEach((value, key) => {
-        listNoprefix.push(key);
-      });
-
-      if (listNoprefix.includes(args[0])) {
-        this.client.noprefix
-          .get(args[0])
-          .noprefix(
+          .event(
             this.api,
             event,
             this.client,
-            args,
-            this.UserData,
-            this.ThreadData
-          );
-      }
-
-      let listCommands = [];
-
-      const PREFIX =
-        (await this.ThreadData.prefix(event.threadID)) ||
-        this.client.config.PREFIX ||
-        ";";
-      args = event.body.slice(PREFIX.length).trim().split(" ");
-
-      this.client.commands.forEach((value, key) => {
-        listCommands.push(key);
-      });
-
-      async function checkPermission(client, api) {
-        const ADMINS = process.env.ADMINS;
-        const commandPath = join(process.cwd(), "src", "modules", "commands");
-        const commandFiles = readdirSync(commandPath).filter((file: string) =>
-          file.endsWith(".ts")
-        );
-        for (const file of commandFiles) {
-          const filePath = join(commandPath, file);
-          const CommandClass = require(filePath).default;
-          if (!CommandClass) continue;
-          const { config } = CommandClass;
-          const commandInstance = new CommandClass(client);
-          if (commandInstance.run) {
-            if (config.name == args[0]) {
-              if (config.permission == 1) {
-                let isPermission = true;
-                try {
-                  const info: { adminIDs: { id: string }[] } =
-                    await new Promise((resolve, reject) => {
-                      api.getThreadInfo(event.threadID, (err, info) => {
-                        if (err) reject(err);
-                        else resolve(info);
-                      });
-                    });
-
-                  for (const item of info.adminIDs) {
-                    if (item.id !== event.senderID) {
-                      await api.sendMessage(
-                        `⚠ Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
-                        event.threadID
-                      );
-                      isPermission = false;
-                    }
-                  }
-                  return isPermission;
-                } catch (error) {
-                  // Handle error
-                  console.error("Error occurred:", error);
-                  return false; // Assuming permission is denied in case of error
-                }
-              }
-
-              // check permissions for admin bot
-              else if (config.permission == 2) {
-                let isPermission = true;
-                const ADS = JSON.parse(ADMINS);
-                let isAdmin = 0;
-                for (let id of ADS) {
-                  if (id != event.senderID) {
-                    isAdmin++;
-                  }
-                }
-                if (isAdmin == ADS.length) {
-                  api.sendMessage(
-                    `⚠ Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
-                    event.threadID
-                  );
-                  isPermission = false;
-                }
-                return isPermission;
-              } else {
-                return true;
-              }
-            } else {
-              return true;
-            }
-          }
-        }
-      }
-      const isPermission = await checkPermission(this.client, this.api);
-      //load command when cache has command-event-on
-      // let commandEventOn = cache.get("command-event-on") ?? [];
-      // if (commandEventOn) {
-      //   if (event.body.startsWith(PREFIX)) {
-      //     if (!isPermission) return;
-      //     if (listCommands.includes(args[0])) {
-      //       this.client.commands
-      //         .get(args[0])
-      //         .run(
-      //           this.api,
-      //           event: IEvent,
-      //           this.client,
-      //           args,
-      //           this.UserData,
-      //           this.ThreadData
-      //         );
-      //     } else {
-      //       var matches = stringSimilarity.findBestMatch(args[0], listCommands);
-      //       this.api.sendMessage(
-      //         `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
-      //         event.threadID
-      //       );
-      //     }
-      //   } else {
-      //     commandEventOn.forEach((command) => {
-      //       this.client.commands
-      //         .get(command.command)
-      //         .run(
-      //           this.api,
-      //           event: IEvent,
-      //           this.client,
-      //           args,
-      //           this.UserData,
-      //           this.ThreadData
-      //         );
-      //     });
-      //   }
-      // }
-      //load all command
-      // else
-const uptimeInSeconds = process.uptime();
-  const hours = Math.floor(uptimeInSeconds / 3600);
-  const minutes = Math.floor((uptimeInSeconds % 3600) / 60);
-  const seconds = Math.floor(uptimeInSeconds % 60);
-      if (isPermission) {
-        if (!event.body.startsWith(PREFIX)) return;
-        if (!listCommands.includes(args[0])) {
-          var matches = stringSimilarity.findBestMatch(args[0], listCommands);
-          return this.api.shareContact(
-            `⚠ Chưa Nhập Tên Lệnh.\n✏ Lệnh gần Giống Là: ${PREFIX}${listCommands[matches.bestMatchIndex]}\n⏰ Thời Gian Hoạt Động\n - ${hours} Giờ ${minutes} Phút ${seconds} Giây -`,
-            event.senderID, event.threadID
-          );
-        }
-        this.client.commands
-          .get(args[0])
-          .run(
-            this.api,
-            event,
-            this.client,
-            args,
             this.UserData,
             this.ThreadData,
             this.UserInThreadData
           );
+      });
+      if (event.body != undefined) {
+        let args = event.body.trim().split(" ");
+        let listNoprefix = [];
+        this.client.noprefix.forEach((value, key) => {
+          listNoprefix.push(key);
+        });
+
+        if (listNoprefix.includes(args[0])) {
+          this.client.noprefix
+            .get(args[0])
+            .noprefix(
+              this.api,
+              event,
+              this.client,
+              args,
+              this.UserData,
+              this.ThreadData,
+              this.UserInThreadData
+            );
+        }
+
+        let listCommands = [];
+        const PREFIX =
+          (await this.ThreadData.prefix(event.threadID)) ||
+          this.client.config.PREFIX ||
+          ";";
+        args = event.body.slice(PREFIX.length).trim().split(" ");
+
+        this.client.commands.forEach((value, key) => {
+          listCommands.push(key);
+        });
+
+        async function checkPermission(client, api: Ifca) {
+          const ADMINS = process.env.ADMINS;
+          const commandPath = join(process.cwd(), "src", "modules", "commands");
+          const commandFiles = readdirSync(commandPath).filter((file: string) =>
+            file.endsWith(".ts")
+          );
+          for (const file of commandFiles) {
+            const filePath = join(commandPath, file);
+            const CommandClass = require(filePath).default;
+            if (!CommandClass) continue;
+            const { config } = CommandClass;
+            const commandInstance = new CommandClass(client);
+            if (commandInstance.run) {
+              if (config.name == args[0]) {
+                if (config.permission == 1) {
+                  let isPermission = true;
+                  try {
+                    const info: { adminIDs: { id: string }[] } =
+                      await new Promise((resolve, reject) => {
+                        api.getThreadInfo(event.threadID, (err, info) => {
+                          if (err) reject(err);
+                          else resolve(info);
+                        });
+                      });
+
+                    for (const item of info.adminIDs) {
+                      if (item.id !== event.senderID) {
+                        await api.sendMessage(
+                          `Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                          event.threadID
+                        );
+                        isPermission = false;
+                      }
+                    }
+                    return isPermission;
+                  } catch (error) {
+                    // Handle error
+                    console.error("Error occurred:", error);
+                    return false; // Assuming permission is denied in case of error
+                  }
+                }
+
+                // check permissions for admin bot
+                else if (config.permission == 2) {
+                  let isPermission = true;
+                  const ADS = JSON.parse(ADMINS);
+                  let isAdmin = 0;
+                  for (let id of ADS) {
+                    if (id != event.senderID) {
+                      isAdmin++;
+                    }
+                  }
+                  if (isAdmin == ADS.length) {
+                    api.sendMessage(
+                      `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                      event.threadID
+                    );
+                    isPermission = false;
+                  }
+                  return isPermission;
+                } else {
+                  return true;
+                }
+              } else {
+                return true;
+              }
+            }
+          }
+        }
+        const isPermission = await checkPermission(this.client, this.api);
+        if (isPermission) {
+          if (!event.body.startsWith(PREFIX)) return;
+          if (!listCommands.includes(args[0])) {
+            var matches = stringSimilarity.findBestMatch(args[0], listCommands);
+            return this.api.sendMessage(
+              `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
+              event.threadID
+            );
+          }
+          this.client.commands
+            .get(args[0])
+            .run(
+              this.api,
+              event,
+              this.client,
+              args,
+              this.UserData,
+              this.ThreadData,
+              this.UserInThreadData
+            );
+        }
       }
+      // if (event.type == "message") {
+      // try {
+      //   await this.createUserIfNotExists(this.api, event);
+      // } catch (error) {
+      //   console.error("Error occurred:", error);
+      // }
+      // if (event.isGroup) {
+      //   try {
+      //     await this.logMessageUserInThread(this.api, event);
+      //   } catch (error) {
+      //     console.error("Error occurred:", error);
+      //   }
+      // }
+      // }
     });
   }
 }
