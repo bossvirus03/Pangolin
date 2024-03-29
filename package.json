@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "./run.sh",
+    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -34,7 +34,7 @@
     "canvas": "^2.11.2",
     "cheerio": "^1.0.0-rc.12",
     "dayjs": "^1.11.10",
-    "facebook-chat-api": "github:bossvirus03/facebook-chat-api",
+    "facebook-chat-api": "github:Nguyenblur/facebook-chat-api",
     "fs": "^0.0.1-security",
     "fs-extra": "^11.2.0",
     "memory-cache": "^0.2.0",
@@ -42,7 +42,6 @@
     "node-emoji": "^2.1.3",
     "node-superfetch": "^0.3.3",
     "openai": "^4.28.4",
-    "pm2": "^5.3.1",
     "reflect-metadata": "^0.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
@@ -52,7 +51,9 @@
     "sequelize-typescript": "^2.1.6",
     "sqlite3": "^5.1.7",
     "string-similarity": "^4.0.4",
-    "ytdl-core": "^4.11.5"
+    "ytdl-core": "^4.11.5",
+    "nodejs-file-downloader": "",
+    "crypto": ""
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
