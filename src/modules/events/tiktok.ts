@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import axios from "axios";
-import Downloader from "nodejs-file-downloader";
+const Downloader = require("nodejs-file-downloader");
 import * as crypto from "crypto";
 import { join } from "path";
 import Ifca from "src/types/type.api";
@@ -18,11 +18,8 @@ export default class TiktokCommand {
 
   async run(api: Ifca, event) {
     if (event.body === undefined) return;
-
     try {
       const message = urlify(event.body);
-      const send = (msg) =>
-        api.sendMessage(msg, event.threadID, event.messageID);
       const id = crypto.randomBytes(16).toString("hex");
       if (message) {
         for (const url of message) {
@@ -35,7 +32,7 @@ export default class TiktokCommand {
                 api.setMessageReaction("📥", event.messageID);
                 const downloader = new Downloader({
                   url: tiktok.nowm,
-                  directory: "./.temp",
+                  directory: join(process.cwd(), "/public/videos"),
                 });
                 try {
                   const { filePath, downloadStatus } =
@@ -62,28 +59,8 @@ export default class TiktokCommand {
                       event.threadID,
                       event.messageID
                     );
-
                   api.setMessageReaction("✅", event.messageID);
-                  api.sendMessage(
-                    msg,
-                    event.threadID,
-                    event.messageID,
-                    (error: any, info) => {
-                      if (error)
-                        return api.sendMessage(
-                          "Lỗi gửi video không thành công",
-                          event.threadID,
-                          event.messageID
-                        );
-                      try {
-                        setTimeout(() => {
-                          fs.unlinkSync(filePath!);
-                        }, 15 * 1000);
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }
-                  );
+                  api.sendMessage(msg, event.threadID, event.messageID);
                 } catch (error) {
                   api.setMessageReaction("❌", event.messageID);
                   console.log("Download failed", error);
@@ -97,19 +74,28 @@ export default class TiktokCommand {
                 for (let i = 0; i < tiktok.images.length; i++) {
                   const downloader = new Downloader({
                     url: tiktok.images[i],
-                    directory: "./.temp",
+                    directory: join(process.cwd(), "/public/videos"),
                   });
 
                   const { filePath, downloadStatus } =
                     await downloader.download();
-                  fs.renameSync(filePath!, `./.temp/${fileID}_${i}.png`);
-                  file.push(fs.createReadStream(`./.temp/${fileID}_${i}.png`));
-                  file_Path.push(`./.temp/${fileID}_${i}.png`);
+                  fs.renameSync(
+                    filePath!,
+                    join(process.cwd(), `/public/videos/${fileID}_${i}.png`)
+                  );
+                  file.push(
+                    fs.createReadStream(
+                      join(process.cwd(), `/public/videos/${fileID}_${i}.png`)
+                    )
+                  );
+                  file_Path.push(
+                    join(process.cwd(), `/public/videos/${fileID}_${i}.png`)
+                  );
                 }
 
                 const downloader = new Downloader({
                   url: tiktok.music,
-                  directory: "./.temp",
+                  directory: join(process.cwd(), "/public/videos"),
                 });
 
                 const { filePath, downloadStatus } =
@@ -206,7 +192,7 @@ async function tiktokDL(url: string) {
     }
   );
 
-  // console.log(res)
+  // console.log("fadsfasdf", res.data);
 
   return {
     code: res.data.code,

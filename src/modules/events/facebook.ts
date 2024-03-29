@@ -20,6 +20,7 @@ export default class FacabookCommand {
       const str = urlify(event.body);
       const send = (msg) =>
         api.sendMessage(msg, event.threadID, event.messageID);
+      // console.log(`https://j2download.net/api/facebook/media?url=${str}`);
       if (/fb|facebook/.test(str)) {
         const res = (
           await axios.get(
@@ -57,7 +58,7 @@ function urlify(text) {
 async function streamURL(url, type) {
   try {
     const res = await axios.get(url, { responseType: "arraybuffer" });
-    const path = join(__dirname, `/cache/${Date.now()}.${type}`);
+    const path = join(process.cwd(), `/public/videos/${Date.now()}.${type}`);
     fs.writeFileSync(path, res.data);
     setTimeout((p) => fs.unlinkSync(p), 1000 * 60, path);
     return fs.createReadStream(path);
