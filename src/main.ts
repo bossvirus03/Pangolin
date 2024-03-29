@@ -42,8 +42,33 @@ async function bootstrap() {
       noprefix: new Map(),
       onload: new Array(),
       event: new Map(),
+      language: new Object(),
     };
 
+    const LangData = (
+      await readFileSync(
+        join(
+          process.cwd(),
+          `/src/lang/${client.config.LANGUAGE_CODE || "en"}.lang`
+        ),
+        "utf-8"
+      ).split(/\r?\n|\r/)
+    ).filter((item) => item && item.charAt(0) != "#");
+
+    LangData.forEach((item) => {
+      const splitItem = item.split("=");
+      client.language[splitItem[0]] = splitItem[1];
+    });
+
+    global.getLang = function (...args: any[]) {
+      const lang = client.language;
+      if (!lang.hasOwnProperty(args[0])) throw new Error("Invalid language");
+      let text = lang[args[0]];
+      args.forEach((key, index) => {
+        text = text.replace(`\$${index}`, args[index]);
+      });
+      return text;
+    };
     //load commands, event
     const loadCommands = new HandleCommand(client);
     const loadEvents = new HandleEvent(client);

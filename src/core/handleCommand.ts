@@ -1,4 +1,4 @@
-import { Logger } from "@nestjs/common";
+import { ConsoleLogger, Logger } from "@nestjs/common";
 import { readdirSync } from "fs";
 import { join } from "path";
 import * as tsNode from "ts-node";
@@ -68,7 +68,9 @@ class HandleCommand {
       }
     }
 
-    console.log(`Loaded ${commandCount} commands, ${noprefixCount} noprefix`);
+    console.log(
+      global.getLang("LoadCommandCount", commandCount, noprefixCount)
+    );
   }
 }
 

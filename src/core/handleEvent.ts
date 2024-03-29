@@ -58,7 +58,7 @@ class HandleEvent {
       }
     }
 
-    console.log(`Loaded ${eventCount} event!`);
+    console.log(global.getLang("LoadEventCount", eventCount));
   }
 }
 
