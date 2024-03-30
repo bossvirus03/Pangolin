@@ -22,6 +22,9 @@ export default class GetLinkCommand {
           api.sendMessage(
             `${++index}. ${item.url}`,
             event.threadID,
+            (err) => {
+              if (err) console.log(err);
+            },
             event.messageID
           );
         });

@@ -11,8 +11,17 @@ export default class NotiCommand {
     description: "Thông báo khi có thành viên mới rời nhóm chat",
   };
 
+  static message = {
+    vi: {
+      join: `Chào mừng $0 đã đến với $1 $2 là thành viên thứ $3 của nhóm.`,
+      addBot: `Cảm ơn bạn đã thêm bot vào nhóm\nSử dụng $0help để xem tất cả các lệnh!`,
+    },
+    en: {
+      listCommand: "",
+    },
+  };
   constructor(private client) {}
-  run(api: Ifca, event) {
+  run(api, event, client, UserData, ThreadData, UserInThreadData, getLang) {
     const GifPath = join(process.cwd(), "/src/db/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
     api.getThreadInfo(event.threadID, async (err, info) => {
@@ -28,22 +37,22 @@ export default class NotiCommand {
           };
         }
       );
-      // console.log(arrPersonJoin);
-      if (arrPersonJoin.includes({ id: process.env.UID_BOT })) {
+      if (arrPersonJoin.some((item) => item.id == process.env.UID_BOT)) {
         return api.sendMessage(
-          `Cảm ơn bạn đã thêm bot vào nhóm\nSử dụng ${process.env.PREFIX}help để xem tất cả các lệnh!`,
+          getLang("addBot", process.env.PREFIX),
           event.threadID
         );
       } else {
         const nameUsers = arrPersonJoin.map((item) => {
           return item.tag;
         });
-        const msgBody =
-          `Chào mừng ` +
-          (nameUsers.length > 1 ? nameUsers.join(" và ") : nameUsers[0]) +
-          ` đã đến với ${info.threadName}.` +
-          (nameUsers.length > 1 ? ` ${nameUsers.length} bạn` : " Bạn") +
-          ` là thành viên thứ ${info.participantIDs.length} của nhóm.`;
+        const msgBody = getLang(
+          "join",
+          nameUsers.length > 1 ? nameUsers.join(" và ") : nameUsers[0],
+          info.threadName,
+          nameUsers.length > 1 ? ` ${nameUsers.length} bạn` : " Bạn",
+          info.participantIDs.length
+        );
         api.sendMessage(
           {
             body: msgBody,

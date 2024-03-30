@@ -4,6 +4,7 @@ import sequelize from "src/db/database";
 import { Thread } from "src/db/models/threadModel";
 import { UserInThread } from "src/db/models/userInThreadModel";
 import { User } from "src/db/models/userModel";
+import ConfigGuideLang from "src/lang/LangConfig";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
@@ -372,6 +373,11 @@ class Listen {
 
       // load all event
       this.client.events.forEach((value, key) => {
+        const configGuideLang = new ConfigGuideLang(this.client, key);
+        function getLang(key, ...args: any[]) {
+          const message = configGuideLang.getLang(key, args);
+          return message;
+        }
         this.client.events
           .get(key)
           .run(
@@ -380,7 +386,8 @@ class Listen {
             this.client,
             this.UserData,
             this.ThreadData,
-            this.UserInThreadData
+            this.UserInThreadData,
+            getLang
           );
       });
 
@@ -399,6 +406,11 @@ class Listen {
       });
       if (event.body != undefined) {
         let args = event.body.trim().split(" ");
+        let configGuideLang = new ConfigGuideLang(this.client, args[0]);
+        function getLangNoprefix(key, ...args) {
+          const message = configGuideLang.getLang(key, args);
+          return message;
+        }
         let listNoprefix = [];
         this.client.noprefix.forEach((value, key) => {
           listNoprefix.push(key);
@@ -414,7 +426,8 @@ class Listen {
               args,
               this.UserData,
               this.ThreadData,
-              this.UserInThreadData
+              this.UserInThreadData,
+              getLangNoprefix
             );
         }
 
@@ -428,7 +441,6 @@ class Listen {
         this.client.commands.forEach((value, key) => {
           listCommands.push(key);
         });
-
         async function checkPermission(client, api: Ifca) {
           const ADMINS = process.env.ADMINS;
           const commandPath = join(process.cwd(), "src", "modules", "commands");
@@ -465,9 +477,8 @@ class Listen {
                     }
                     return isPermission;
                   } catch (error) {
-                    // Handle error
                     console.error("Error occurred:", error);
-                    return false; // Assuming permission is denied in case of error
+                    return false;
                   }
                 }
 
@@ -508,6 +519,11 @@ class Listen {
               event.threadID
             );
           }
+          configGuideLang = new ConfigGuideLang(this.client, args[0]);
+          function getLang(key, ...args: any[]) {
+            const message = configGuideLang.getLang(key, args);
+            return message;
+          }
           this.client.commands
             .get(args[0])
             .run(
@@ -517,24 +533,11 @@ class Listen {
               args,
               this.UserData,
               this.ThreadData,
-              this.UserInThreadData
+              this.UserInThreadData,
+              getLang
             );
         }
       }
-      // if (event.type == "message") {
-      // try {
-      //   await this.createUserIfNotExists(this.api, event);
-      // } catch (error) {
-      //   console.error("Error occurred:", error);
-      // }
-      // if (event.isGroup) {
-      //   try {
-      //     await this.logMessageUserInThread(this.api, event);
-      //   } catch (error) {
-      //     console.error("Error occurred:", error);
-      //   }
-      // }
-      // }
     });
   }
 }

@@ -11,11 +11,32 @@ export default class HelpCommand {
     createdAt: "",
     description:
       "Cách dùng: [prefix]help or help [command name]\nChức năng: xem bot có bao nhiêu lệnh or xem hướng dẫn cách dùng của 1 lệnh nào đó",
+    guide: {
+      vi: "",
+      en: "",
+    },
+  };
+  static message = {
+    vi: {
+      listCommand: `-------HELP-------\nThis is a Facebook chat message. Currently, this bot has $0 commands\n\n$1 commands has prefix : $2\n\n$3 no prefix: $4`,
+    },
+    en: {
+      listCommand: "",
+    },
   };
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run(
+    api: Ifca,
+    event: IEvent,
+    client,
+    args,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+    getLang
+  ) {
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>
       file.endsWith(".ts")
@@ -48,7 +69,14 @@ export default class HelpCommand {
 
     if (!args[1]) {
       api.sendMessage(
-        `-------HELP-------\nThis is a Facebook chat message. Currently, this bot has ${commandCount + noprefixCount} commands\n\n${commandCount} commands has prefix : ${msgPrefix}\n\n${noprefixCount} no prefix: ${msgNpPrefix}`,
+        getLang(
+          "listCommand",
+          commandCount + noprefixCount,
+          commandCount,
+          msgPrefix,
+          noprefixCount,
+          msgNpPrefix
+        ),
         event.threadID
       );
     }
