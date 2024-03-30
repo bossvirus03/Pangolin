@@ -1,3 +1,7 @@
 LoadCommandCount=Đã tải thành công $1 commands, $2 noprefix
 LoadEventCount=Đã tải thành công $1 event
 Restarting=Đang khởi động lại....
+Unauthorized=Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng $1help $2 để xem chi tiết!
+InvalidCommand=Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh $1?
+UserCreated=Đã thêm người dùng: $1
+ErrorOccurred=Có lỗi xảy ra: $1

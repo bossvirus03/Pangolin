@@ -37,6 +37,7 @@ export default class ConfigGuideLang {
       const { message } = EventClass;
       const { config } = EventClass;
       if (this.command == config.name) {
+        if (!message) return null;
         let text = message[CurrentLanguage][key];
         args.forEach((key, index) => {
           text = text.replace(`\$${index}`, args[index]);

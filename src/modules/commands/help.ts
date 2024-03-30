@@ -25,8 +25,9 @@ export default class HelpCommand {
       command: "------$0-------\nChức Năng: $1\nCách dùng: $2",
     },
     en: {
-      listCommand: "",
-      command: "",
+      listCommand:
+        "-------HELP-------\nThis is a Facebook chat message. Currently, this bot has $0 commands\n\n$1 commands has prefix : $2\n\n$3 no prefix: $4",
+      command: "------$0-------\nFunction: $1\nUse: $2",
     },
   };
 
@@ -42,6 +43,7 @@ export default class HelpCommand {
     UserInThreadData,
     getLang
   ) {
+    console.log(global.getLang("Restarting"));
     const CurrentLanguage = process.env.LANGUAGE_CODE || "en";
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>

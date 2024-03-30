@@ -8,13 +8,39 @@ export default class AiCommand {
     version: "1.0.0",
     author: "Lợi",
     createdAt: "",
-    description:
-      "Cách dùng: [prefix]ai [on/off] rồi nhắn question: [ câu hỏi ]\nChức năng: đặt câu hỏi gì đó cho chat gpt",
+    description: {
+      vi: "đặt câu hỏi gì đó cho chat gpt",
+      en: "ask question to chat GPT",
+    },
+    guide: {
+      vi: "[prefix]ai [on/off] rồi nhắn question: [ câu hỏi ]",
+      en: "[prefix]ai [on/off] and then question: [ question ]",
+    },
+  };
+
+  static message = {
+    vi: {
+      running: "Chat bot ai đang hoạt động!",
+      disabled: "Chat bot AI đã tắt!",
+    },
+    en: {
+      running: "Chat bot ai is running!",
+      disabled: "Chat bot AI is disabled!",
+    },
   };
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run(
+    api: Ifca,
+    event: IEvent,
+    client,
+    args,
+    DataUser,
+    DataThread,
+    UserInThreadData,
+    getLang
+  ) {
     // handle pre command event
     function getPrevCommandEvent() {
       const cachedArray = cache.get("command-event-on");
@@ -34,14 +60,14 @@ export default class AiCommand {
         threadID: event.threadID,
       });
       cache.put("command-event-on", prevCommandEventOn, 60 * 1000 * 5); // Time in ms
-      api.sendMessage("Chat bot ai is running", event.threadID);
+      api.sendMessage(getLang("running"), event.threadID);
     }
     if (args[1] == "off") {
       const newPrevCommandEventOn = prevCommandEventOn.filter(
         (item) => item.command != "ai" && item.threadID != event.threadID
       );
       cache.put("command-event-on", newPrevCommandEventOn, 60 * 1000 * 5); // Time in ms
-      api.sendMessage("Chat bot AI is disabled!!", event.threadID);
+      api.sendMessage(getLang("disabled"), event.threadID);
     }
 
     // handle logic event

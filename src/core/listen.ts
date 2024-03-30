@@ -151,7 +151,7 @@ class Listen {
             name: name,
             prefix: null,
           });
-          console.log("New user created:", newUser.toJSON());
+          console.log(global.getLang("UserCreated", newUser.toJSON()));
         } catch (error) {
           console.error("Error creating new user:", error);
           throw error;
@@ -335,13 +335,13 @@ class Listen {
       try {
         await this.createUserIfNotExists(this.api, event);
       } catch (error) {
-        console.error("Error occurred:", error);
+        global.getLang("ErrorOccurred", error);
       }
       if (event.isGroup) {
         try {
           await this.logMessageUserInThread(this.api, event);
         } catch (error) {
-          console.error("Error occurred:", error);
+          global.getLang("ErrorOccurred", error);
         }
       }
       if (!event) return;
@@ -355,7 +355,7 @@ class Listen {
           await sequelize.sync(); // Tạo bảng nếu chưa tồn tại
           await this.createThreadIfNotExists(this.api, event);
         } catch (error) {
-          console.error("Error occurred:", error);
+          global.getLang("ErrorOccurred", error);
         }
       }
       if (
@@ -367,7 +367,7 @@ class Listen {
           await sequelize.sync();
           await this.deleteThread(this.api, event);
         } catch (error) {
-          console.error("Error occurred:", error);
+          global.getLang("ErrorOccurred", error);
         }
       }
 
@@ -470,7 +470,7 @@ class Listen {
                     for (const item of info.adminIDs) {
                       if (item.id !== event.senderID) {
                         await api.sendMessage(
-                          `Bạn không có quyền sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                          global.getLang("Unauthorized", PREFIX, config.name),
                           event.threadID
                         );
                         isPermission = false;
@@ -478,7 +478,8 @@ class Listen {
                     }
                     return isPermission;
                   } catch (error) {
-                    console.error("Error occurred:", error);
+                    global.getLang("ErrorOccurred", error);
+
                     return false;
                   }
                 }
@@ -494,7 +495,7 @@ class Listen {
                   }
                   if (isAdmin == ADS.length) {
                     api.sendMessage(
-                      `Bạn không có quyển sử dụng lệnh này, vui lòng sử dụng ${PREFIX}help ${config.name} để xem chi tiết!`,
+                      global.getLang("Unauthorized", PREFIX, config.name),
                       event.threadID
                     );
                     isPermission = false;
@@ -508,15 +509,19 @@ class Listen {
           }
         }
         const isPermission = await checkPermission(this.client, this.api);
+
+        if (!event.body.startsWith(PREFIX)) return;
+        if (!listCommands.includes(args[0])) {
+          var matches = stringSimilarity.findBestMatch(args[0], listCommands);
+          return this.api.sendMessage(
+            global.getLang(
+              "InvalidCommand",
+              listCommands[matches.bestMatchIndex]
+            ),
+            event.threadID
+          );
+        }
         if (isPermission) {
-          if (!event.body.startsWith(PREFIX)) return;
-          if (!listCommands.includes(args[0])) {
-            var matches = stringSimilarity.findBestMatch(args[0], listCommands);
-            return this.api.sendMessage(
-              `Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh ${listCommands[matches.bestMatchIndex]}?`,
-              event.threadID
-            );
-          }
           configGuideLang = new ConfigGuideLang(this.client, args[0]);
           function getLang(key, ...args: any[]) {
             const message = configGuideLang.getLang(key, args);

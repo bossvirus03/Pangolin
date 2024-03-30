@@ -23,7 +23,8 @@ export default class PingCommand {
       noPrefix: "PONG! no prefix",
     },
     en: {
-      listCommand: "",
+      prefix: "PONG! prefix",
+      noPrefix: "PONG! no prefix",
     },
   };
   constructor(private client) {}

@@ -1,2 +1,7 @@
 LoadCommandCount=Loaded $1 commands, $2 noprefix
 LoadEventCount=Loaded $1 event
+Restarting=Restarting....
+Unauthorized=You are not authorized to use this command, please use $1help $2 to view details!
+InvalidCommand=Your command is invalid! Do you want to use $1?
+UserCreated=Created user: $1
+ErrorOccurred=Error occurred: $2
