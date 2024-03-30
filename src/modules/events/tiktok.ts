@@ -60,7 +60,25 @@ export default class TiktokCommand {
                       event.messageID
                     );
                   api.setMessageReaction("✅", event.messageID);
-                  api.sendMessage(msg, event.threadID, event.messageID);
+                  api.sendMessage(
+                    msg,
+                    event.threadID,
+                    (err, info) => {
+                      if (err)
+                        return api.sendMessage(
+                          "Có lỗi xảy ra khi gửi video",
+                          event.threadID,
+                          event.messageID
+                        );
+                      setTimeout(
+                        () => {
+                          fs.unlinkSync(filePath!);
+                        },
+                        15 * 60 * 1000
+                      );
+                    },
+                    event.messageID
+                  );
                 } catch (error) {
                   api.setMessageReaction("❌", event.messageID);
                   console.log("Download failed", error);

@@ -455,6 +455,7 @@ class Listen {
             const commandInstance = new CommandClass(client);
             if (commandInstance.run) {
               if (config.name == args[0]) {
+                // check permissions group admin
                 if (config.permission == 1) {
                   let isPermission = true;
                   try {
@@ -481,7 +482,6 @@ class Listen {
                     return false;
                   }
                 }
-
                 // check permissions for admin bot
                 else if (config.permission == 2) {
                   let isPermission = true;
@@ -503,8 +503,6 @@ class Listen {
                 } else {
                   return true;
                 }
-              } else {
-                return true;
               }
             }
           }

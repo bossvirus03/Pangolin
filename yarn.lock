@@ -3200,7 +3200,7 @@ extsprintf@^1.2.0, extsprintf@1.3.0:
 
 "facebook-chat-api@github:bossvirus03/facebook-chat-api":
   version "1.8.0"
-  resolved "git+ssh://git@github.com/bossvirus03/facebook-chat-api.git#83567707a436d4c764f2b50ce9aa67e7157edd42"
+  resolved "git+ssh://git@github.com/bossvirus03/facebook-chat-api.git#523b295c9317239bbbd0c653885086e578ad6a36"
   dependencies:
     bluebird "^3.0.0"
     cheerio "^0.22.0"
