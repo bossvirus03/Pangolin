@@ -1,22 +1,46 @@
-import { Controller, Get, Post, Body, Param } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
 import { UserService } from "./user.service";
-import { User } from "src/db/models/userModel";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import mongoose from "mongoose";
 
-@Controller("users")
+@Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(":uid")
-  async findById(@Param("uid") uid: string): Promise<User> {
-    return this.userService.findByUid(uid);
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
+
   @Get()
-  async findAll(): Promise<User[]> {
+  findAll() {
     return this.userService.findAll();
   }
 
-  @Post()
-  async createUser(@Body() userData: Partial<User>): Promise<User> {
-    return this.userService.createUser(userData);
+  @Get(":id")
+  findOne(@Param("id") id: mongoose.Types.ObjectId) {
+    return this.userService.findOne(id);
+  }
+
+  @Patch(":id")
+  update(
+    @Param("id") id: mongoose.Types.ObjectId,
+    @Body() updateUserDto: UpdateUserDto
+  ) {
+    return this.userService.update(id, updateUserDto);
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: mongoose.Types.ObjectId) {
+    return this.userService.remove(id);
   }
 }

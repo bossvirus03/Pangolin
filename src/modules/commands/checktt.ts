@@ -8,9 +8,24 @@ export default class CheckttCommand {
     version: "1.0.0",
     author: "Lợi",
     createdAt: "",
-    description:
-      "Cách dùng: [prefix]checktt\nChức năng: Xem thông tin các thành viên trong nhóm có số tương tác",
     permission: 1,
+    description: {
+      vi: "Kiểm tra số lượt thành viên tương tác trong nhóm",
+      en: "Check the number of member interactions in the group",
+    },
+    guide: {
+      vi: "[prefix]checktt",
+      en: "[prefix]checktt",
+    },
+  };
+
+  static message = {
+    vi: {
+      listInteract: "Danh sách thành viên tương tác trong nhóm: \n$0",
+    },
+    en: {
+      listInteract: "List member interactions in the group: \n$0",
+    },
   };
 
   constructor(private client) {}
@@ -21,25 +36,29 @@ export default class CheckttCommand {
     args,
     UserData,
     ThreadData,
-    UserInThreadData: IUserInThreadData
+    UserInThreadData: IUserInThreadData,
+    getLang
   ) {
     api.getThreadInfo(event.threadID, async (err, res) => {
       const users = res.participantIDs;
       const smg = await Promise.all(
         users.map(async (item) => {
           const res = await UserInThreadData.get(item, event.threadID);
-          return { name: res.name, exp: res.exp };
+          if (res) {
+            return { name: res.name, exp: res.exp };
+          }
         })
       );
       smg.sort((a, b) => b.exp - a.exp);
-      let smgSorted = "Danh sách tương tác trong nhóm: \n";
+      let smgSorted = "";
       let i = 1;
       smg.forEach((user) => {
-        console.log(user);
-        smgSorted += `[${i}] ${user.name}: ${user.exp}\n`;
-        i++;
+        if (user) {
+          smgSorted += `[${i}] ${user.name}: ${user.exp}\n`;
+          i++;
+        }
       });
-      api.sendMessage(`${smgSorted}`, event.threadID);
+      api.sendMessage(getLang("listInteract", smgSorted), event.threadID);
     });
   }
 }

@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import {
+  Body,
+  Controller,
+  Post,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Get,
+  Request,
+} from "@nestjs/common";
+import { AuthService } from "./auth.service";
+import { LocalAuthGuard } from "./guards/local-auth.guard";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+import { IsPublic } from "../lib/decorator/customize";
+import { CreateUserDto, RegisterUserDto } from "../user/dto/create-user.dto";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @IsPublic()
+  @UseGuards(LocalAuthGuard)
+  @Post("login")
+  signIn(@Request() req) {
+    return this.authService.login(req.user.username, req.user.password);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @IsPublic()
+  @Post("register")
+  register(@Body() registerUserDto: RegisterUserDto) {
+    return this.authService.register(registerUserDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Get("profile")
+  getProfile(@Request() req) {
+    return req.user;
   }
 }

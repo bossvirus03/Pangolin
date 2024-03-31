@@ -1,29 +1,107 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "src/db/models/userModel";
-import { Sequelize } from "sequelize-typescript";
-import { InjectModel } from "@nestjs/sequelize";
+import { InjectModel } from "@nestjs/mongoose";
+import { CreateUserDto, RegisterUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { User, UserDocument } from "./schema/user.schema";
+import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
+import mongoose from "mongoose";
+import { compareSync, genSaltSync, hashSync } from "bcrypt";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User)
-    private readonly userModel: typeof User,
-    private readonly sequelize: Sequelize
+    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>
   ) {}
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+  genHashPassword(password: string) {
+    const saltRounds = 10;
+    const salt = genSaltSync(saltRounds);
+    const hash = hashSync(password, salt);
+    return hash;
   }
 
-  async findByUid(uid: string): Promise<User> {
-    return this.userModel.findOne({ where: { uid } });
+  async isValidPassword(password: string, hashPassword: string) {
+    const isValid = compareSync(password, hashPassword);
+    return isValid;
+  }
+  findUserById(_id: mongoose.Types.ObjectId) {
+    return this.userModel.findOne({ _id });
   }
 
-  async createUser(userData: Partial<User>): Promise<User> {
-    return this.userModel.create(userData);
+  async findUserByUsername(username: string) {
+    return await this.userModel.findOne({ username });
   }
 
-  async rawQuery(sql: string): Promise<any[]> {
-    return this.sequelize.query(sql, { raw: true });
+  async findUserByEmail(email: string) {
+    return await this.userModel.findOne({ email });
+  }
+
+  async checkAlreadyExit(email, username) {
+    const isAlreadyEmail = await this.findUserByUsername(email);
+    const isAlreadyUsername = await this.findUserByUsername(username);
+    if (isAlreadyEmail || isAlreadyUsername) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  async create(createUserDto: CreateUserDto) {
+    const IsAlready = await this.checkAlreadyExit(
+      createUserDto.email,
+      createUserDto.username
+    );
+    if (IsAlready) {
+      return {
+        status: 400,
+        message: global.getLang("EmailOrPasswordAlready"),
+      };
+    }
+    const passwordHashed = this.genHashPassword(createUserDto.password);
+    const user = this.userModel.create({
+      ...createUserDto,
+      password: passwordHashed,
+    });
+    const { password, ...result } = (await user).toObject();
+    return result;
+  }
+  async register(createUserDto: RegisterUserDto) {
+    const IsAlready = await this.checkAlreadyExit(
+      createUserDto.email,
+      createUserDto.username
+    );
+    if (IsAlready) {
+      return {
+        status: 400,
+        message: global.getLang("EmailOrPasswordAlready"),
+      };
+    }
+    const passwordHashed = this.genHashPassword(createUserDto.password);
+    const user = this.userModel.create({
+      ...createUserDto,
+      role: "USER",
+      password: passwordHashed,
+    });
+    const { password, ...result } = (await user).toObject();
+    return result;
+  }
+
+  findAll() {
+    return this.userModel.find();
+  }
+
+  findOne(id: mongoose.Types.ObjectId) {
+    const user = this.userModel.findOne({ id });
+    // const  { _id, email, gender, username, role } = user
+
+    return user;
+  }
+
+  update(id: mongoose.Types.ObjectId, updateUserDto: UpdateUserDto) {
+    const { _id, email, gender, username, role } = updateUserDto;
+    return this.userModel.updateOne({ id, updateUserDto });
+  }
+
+  remove(id: mongoose.Types.ObjectId) {
+    return this.userModel.deleteOne({ id });
   }
 }

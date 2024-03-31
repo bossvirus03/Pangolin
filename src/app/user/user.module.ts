@@ -1,24 +1,15 @@
 import { Module } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
-import { SequelizeModule } from "@nestjs/sequelize";
-import { User } from "src/db/models/userModel";
-import { join } from "path";
+import { MongooseModule } from "@nestjs/mongoose";
+import { User, UserSchema } from "./schema/user.schema";
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      logging: false,
-      dialect: "sqlite",
-      storage: join(process.cwd(), "/src/db/data/database.sqlite"),
-      define: {
-        timestamps: false,
-      },
-      models: [User],
-    }),
-    SequelizeModule.forFeature([User]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

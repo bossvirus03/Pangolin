@@ -1,14 +1,15 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { NestFactory, Reflector } from "@nestjs/core";
+import { AppModule } from "./app/app.module";
 import { readFileSync } from "fs";
 import { promisify } from "util";
 import * as loginModule from "facebook-chat-api";
 import { join } from "path";
 import { ConfigService } from "@nestjs/config";
-import { Logger } from "@nestjs/common";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import HandleCommand from "./core/handleCommand";
 import HandleEvent from "./core/handleEvent";
 import Listen from "./core/listen";
+import { JwtAuthGuard } from "./app/auth/guards/jwt-auth.guard";
 
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
@@ -17,6 +18,12 @@ async function bootstrap() {
   /** =========== APP ===========*/
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  const reflector = app.get(Reflector);
+  app.useGlobalGuards(new JwtAuthGuard(reflector));
+
   const port = configService.get("PORT") || 3000;
   await app.listen(port, () => {
     Logger.log(`🚀Application is running on: http://localhost:${port}`);

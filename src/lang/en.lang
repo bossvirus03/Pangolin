@@ -5,3 +5,6 @@ Unauthorized=You are not authorized to use this command, please use $1help $2 to
 InvalidCommand=Your command is invalid! Do you want to use $1?
 UserCreated=Created user: $1
 ErrorOccurred=Error occurred: $2
+EmailOrPasswordAlready=Email or Username is already taken!
+InvalidUserNameOrPassword=Invalid user name or password!
+InvalidAccessToken=The access token is invalid or has expired. Please try again!

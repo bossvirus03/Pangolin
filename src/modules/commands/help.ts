@@ -11,7 +11,7 @@ export default class HelpCommand {
     createdAt: "",
     description: {
       vi: "xem bot có bao nhiêu lệnh or xem hướng dẫn cách dùng của 1 lệnh nào đó",
-      en: "xem bot có bao nhiêu lệnh or xem hướng dẫn cách dùng của 1 lệnh nào đó",
+      en: "see how many commands the bot has or see the instructions for using a certain command",
     },
     guide: {
       vi: "[prefix]help hoặc help [command name]",

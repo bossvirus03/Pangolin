@@ -5,3 +5,6 @@ Unauthorized=Bạn không có quyền sử dụng lệnh này, vui lòng sử d�
 InvalidCommand=Lệnh của bạn không hợp lệ! Có phải bạn muốn sử dụng lệnh $1?
 UserCreated=Đã thêm người dùng: $1
 ErrorOccurred=Có lỗi xảy ra: $1
+EmailOrPasswordAlready=Email hoặc username đã tồn tại vui lòng thử lại!
+InvalidUserNameOrPassword=Tên tài khoản hoặc mật khẩu không hợp lệ!
+InvalidAccessToken=Access token không hợp lệ hoặc đã hết hạn. Vui lòng thử lại!

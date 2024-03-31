@@ -10,10 +10,34 @@ export default class autoReaction {
     version: "1.0.0",
     author: "Lợi",
     createdAt: "",
-    description:
-      "Cách dùng: autoReaction @mention [emoji] or autoReaction @mention off\nChức năng: Tự động thả reaction khi ai đó nhắn",
+    description: {
+      vi: "Tự động thả reaction khi ai đó nhắn",
+      en: "Auto reaction when someone send message",
+    },
+    guide: {
+      vi: "[prefix]autoReaction @mention [emoji] ",
+      en: "[prefix]autoReaction @mention [emoji] ",
+    },
   };
-
+  static message = {
+    vi: {
+      tagOne: "Vui lòng tag một người!",
+      chooseEmoji: "Vui lòng chọn emoji",
+      turnOffCommand: "Đã tắt auto-reaction người dùng $0",
+      listEmojiSupport: "Chỉ hỗ trợ các emoji: $0",
+      notFoundEmoji: "Không Tồn tại emoji $0",
+      responseMain: "Từ giờ cứ khi $0 nhắn thì bot sẽ reaction $1",
+    },
+    en: {
+      tagOne: "Please tag a person!",
+      chooseEmoji: "Please choose emoji",
+      turnOffCommand: "Disabled auto-reaction user $0",
+      listEmojiSupport: "Only emojis are supported: $0",
+      notFoundEmoji: "Not found emoji $0",
+      responseMain:
+        "From now on, every time $0 messages, the bot will react $1",
+    },
+  };
   constructor(private client) {}
 
   pathAutoReaction = join(process.cwd(), "/src/db/data/autoReaction.json");
@@ -38,13 +62,27 @@ export default class autoReaction {
       }
     }
   }
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run(
+    api: Ifca,
+    event: IEvent,
+    client,
+    args,
+    DataUser,
+    DataThread,
+    UserInThreadData,
+    getLang
+  ) {
     if (!args[1] || !event.mentions)
-      return api.sendMessage("Vui lòng tag một người!", event.threadID);
+      return api.sendMessage(
+        getLang("tagOne"),
+        event.threadID,
+        () => {},
+        event.messageID
+      );
     const e = (event.body as string)
       .split(Object.values(event.mentions)[0] as string)[1]
       .trim();
-    if (!e) return api.sendMessage("Vui lòng chọn emoji!", event.threadID);
+    if (!e) return api.sendMessage(getLang("chooseEmoji"), event.threadID);
     const mention = Object.keys(event.mentions)[0];
     const listEmojiSupport = ["😍", "😆", "😮", "😢", "😠", "👍", "👎"];
     // if turn off auto-reaction
@@ -70,7 +108,7 @@ export default class autoReaction {
       }
       return api.sendMessage(
         {
-          body: `Đã tắt auto-reaction người dùng ${Object.values(event.mentions)[0]}`,
+          body: getLang("turnOffCommand", Object.values(event.mentions)[0]),
           mentions: [
             {
               tag: Object.values(event.mentions)[0],
@@ -85,11 +123,11 @@ export default class autoReaction {
 
     // if emoji is not exits
     if (!emoji.has(e))
-      return api.sendMessage("Không Tồn tại emoji " + e, event.threadID);
+      return api.sendMessage(getLang("notFoundEmoji", e), event.threadID);
 
     if (!listEmojiSupport.includes(e))
       return api.sendMessage(
-        "Chỉ hỗ trợ các emoji: " + listEmojiSupport.join(", "),
+        getLang("listEmojiSupport", listEmojiSupport.join(", ")),
         event.threadID
       );
     let autoReactionUser = [
@@ -160,7 +198,7 @@ export default class autoReaction {
     }
     api.sendMessage(
       {
-        body: `Từ giờ cứ khi ${Object.values(event.mentions)[0]} nhắn thì bot sẽ reaction ${e}`,
+        body: getLang("responseMain", Object.values(event.mentions)[0], e),
         mentions: [
           {
             tag: Object.values(event.mentions)[0],

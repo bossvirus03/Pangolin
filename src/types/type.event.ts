@@ -19,4 +19,6 @@ export default interface IEvent {
   isGroup?: boolean;
   statuses?: number;
   messageReply: messageReply;
+  logMessageType?: string;
+  logMessageData?: any;
 }

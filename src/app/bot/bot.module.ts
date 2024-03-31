@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { ThreadService } from "./thread.service";
-import { ThreadController } from "./thread.controller";
+import { BotService } from "./bot.service";
+import { BotController } from "./bot.controller";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { join } from "path";
+import { User } from "src/db/models/userModel";
 import { Thread } from "src/db/models/threadModel";
-
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -14,11 +14,11 @@ import { Thread } from "src/db/models/threadModel";
       define: {
         timestamps: false,
       },
-      models: [Thread],
+      models: [User, Thread],
     }),
-    SequelizeModule.forFeature([Thread]),
+    SequelizeModule.forFeature([User, Thread]),
   ],
-  controllers: [ThreadController],
-  providers: [ThreadService],
+  controllers: [BotController],
+  providers: [BotService],
 })
-export class ThreadModule {}
+export class BotModule {}
