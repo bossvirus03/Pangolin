@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserService } from "../user/user.service";
 import { JwtService } from "@nestjs/jwt";
-import { CreateUserDto, RegisterUserDto } from "../user/dto/create-user.dto";
+import { RegisterUserDto } from "../user/dto/create-user.dto";
 import IUser from "../interfaces/user/user.interface";
 import { ConfigService } from "@nestjs/config";
 import ms from "ms";
@@ -39,6 +39,8 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
       user: {
         _id: user._id,
+        name: user.name,
+        email: user.email,
         username: user.username,
         role: user.role,
         type: user.type,
@@ -79,16 +81,20 @@ export class AuthService {
         refresh_token: refreshToken,
         access_token: this.jwtService.sign(payload),
         user: {
+          _id: checkAlreadyUser._id,
+          name: checkAlreadyUser.name,
+          email: checkAlreadyUser.email,
           username: checkAlreadyUser.username,
           role: checkAlreadyUser.role,
           type: checkAlreadyUser.type,
-          sub: checkAlreadyUser._id,
         },
       };
     } else {
       const newUser = await this.userService.createUserSocialMedia(user);
       const payload = {
         username: newUser.username,
+        name: checkAlreadyUser.name,
+        email: checkAlreadyUser.email,
         role: newUser.role,
         type: newUser.type,
         sub: newUser._id,
@@ -103,6 +109,7 @@ export class AuthService {
         refresh_token: refreshToken,
         access_token: this.jwtService.sign(payload),
         user: {
+          _id: checkAlreadyUser._id,
           username: newUser.username,
           role: newUser.role,
           type: newUser.type,
