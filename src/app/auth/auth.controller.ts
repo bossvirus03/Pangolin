@@ -7,11 +7,12 @@ import {
   UseGuards,
   Get,
   Request,
+  Res,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { IsPublic } from "../lib/decorator/customize";
+import { Cookies, IsPublic } from "../lib/decorator/customize";
 import { CreateUserDto, RegisterUserDto } from "../user/dto/create-user.dto";
 
 @Controller("auth")
@@ -21,8 +22,8 @@ export class AuthController {
   @IsPublic()
   @UseGuards(LocalAuthGuard)
   @Post("login")
-  signIn(@Request() req) {
-    return this.authService.login(req.user.username, req.user.password);
+  signIn(@Request() req, @Res({ passthrough: true }) res: Response) {
+    return this.authService.login(req.user, res);
   }
 
   @IsPublic()
@@ -31,8 +32,21 @@ export class AuthController {
     return this.authService.register(registerUserDto);
   }
 
+  @IsPublic()
+  @Get("refresh")
+  handleRefresh(
+    @Cookies("refresh_token") refresh: string,
+    @Res() response: Response
+  ) {
+    return this.authService.processNewToken(refresh, response);
+  }
   @Get("profile")
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @Get("logout")
+  logout(@Request() req) {
+    return this.authService.logout(req.user);
   }
 }

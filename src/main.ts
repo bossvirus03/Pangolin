@@ -10,6 +10,7 @@ import HandleCommand from "./core/handleCommand";
 import HandleEvent from "./core/handleEvent";
 import Listen from "./core/listen";
 import { JwtAuthGuard } from "./app/auth/guards/jwt-auth.guard";
+import cookieParser from "cookie-parser";
 
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
@@ -24,6 +25,7 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
+  app.use(cookieParser());
   const port = configService.get("PORT") || 3000;
   await app.listen(port, () => {
     Logger.log(`🚀Application is running on: http://localhost:${port}`);

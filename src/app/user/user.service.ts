@@ -89,6 +89,9 @@ export class UserService {
     return this.userModel.find();
   }
 
+  findUserToken(refreshToken: string) {
+    return this.userModel.findOne({ refresh_token: refreshToken });
+  }
   findOne(id: mongoose.Types.ObjectId) {
     const user = this.userModel.findOne({ id });
     // const  { _id, email, gender, username, role } = user
@@ -99,6 +102,9 @@ export class UserService {
   update(id: mongoose.Types.ObjectId, updateUserDto: UpdateUserDto) {
     const { _id, email, gender, username, role } = updateUserDto;
     return this.userModel.updateOne({ id, updateUserDto });
+  }
+  updateRefreshToken(id: mongoose.Types.ObjectId, refresh_token: string) {
+    return this.userModel.updateOne({ id, refresh_token });
   }
 
   remove(id: mongoose.Types.ObjectId) {

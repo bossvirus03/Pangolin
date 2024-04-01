@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 export default class WeatherCommand {
