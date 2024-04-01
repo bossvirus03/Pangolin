@@ -1,11 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { CreateUserDto, RegisterUserDto } from "./dto/create-user.dto";
+import {
+  CreateUserCredentialDto,
+  CreateUserDto,
+  RegisterUserDto,
+} from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User, UserDocument } from "./schema/user.schema";
 import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 import mongoose from "mongoose";
 import { compareSync, genSaltSync, hashSync } from "bcrypt";
+import IUser from "../interfaces/user/user.interface";
 
 @Injectable()
 export class UserService {
@@ -28,7 +33,7 @@ export class UserService {
     return this.userModel.findOne({ _id });
   }
 
-  async findUserByUsername(username: string) {
+  async findUserByUsername(username: string): Promise<IUser> {
     return await this.userModel.findOne({ username });
   }
 
@@ -59,7 +64,16 @@ export class UserService {
     const passwordHashed = this.genHashPassword(createUserDto.password);
     const user = this.userModel.create({
       ...createUserDto,
+      status: "ACTIVE",
       password: passwordHashed,
+    });
+    const { password, ...result } = (await user).toObject();
+    return result;
+  }
+  async createUserSocialMedia(createUserDto: CreateUserCredentialDto) {
+    const user = this.userModel.create({
+      ...createUserDto,
+      status: "ACTIVE",
     });
     const { password, ...result } = (await user).toObject();
     return result;

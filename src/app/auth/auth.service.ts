@@ -26,13 +26,9 @@ export class AuthService {
     }
     return null;
   }
-  async login(
-    user,
-    res
-  ): Promise<{ access_token: string; refresh_token: string }> {
+  async login(user, res) {
     const payload = { sub: user._id, username: user.username, role: user.role };
     const refreshToken = await this.createRefreshToken(payload);
-    console.log(ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")));
     await res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
       maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
@@ -41,6 +37,13 @@ export class AuthService {
     return {
       refresh_token: refreshToken,
       access_token: await this.jwtService.signAsync(payload),
+      user: {
+        _id: user._id,
+        username: user.username,
+        role: user.role,
+        type: user.type,
+        status: user.status,
+      },
     };
   }
   async register(registerUserDto: RegisterUserDto): Promise<any> {
@@ -54,6 +57,60 @@ export class AuthService {
     });
     return refresh_token;
   }
+
+  async handleUserSocialMedia(user, res) {
+    const checkAlreadyUser = await this.userService.findUserByUsername(
+      user.username
+    );
+    if (checkAlreadyUser) {
+      const payload = {
+        username: checkAlreadyUser.username,
+        role: checkAlreadyUser.role,
+        type: checkAlreadyUser.type,
+        sub: checkAlreadyUser._id,
+      };
+      const refreshToken = this.createRefreshToken(payload);
+      res.cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
+      });
+      this.userService.updateRefreshToken(user._id, refreshToken);
+      return {
+        refresh_token: refreshToken,
+        access_token: this.jwtService.sign(payload),
+        user: {
+          username: checkAlreadyUser.username,
+          role: checkAlreadyUser.role,
+          type: checkAlreadyUser.type,
+          sub: checkAlreadyUser._id,
+        },
+      };
+    } else {
+      const newUser = await this.userService.createUserSocialMedia(user);
+      const payload = {
+        username: newUser.username,
+        role: newUser.role,
+        type: newUser.type,
+        sub: newUser._id,
+      };
+      const refreshToken = this.createRefreshToken(payload);
+      res.cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
+      });
+      this.userService.updateRefreshToken(user._id, refreshToken);
+      return {
+        refresh_token: refreshToken,
+        access_token: this.jwtService.sign(payload),
+        user: {
+          username: newUser.username,
+          role: newUser.role,
+          type: newUser.type,
+          sub: newUser._id,
+        },
+      };
+    }
+  }
   async processNewToken(refreshToken, res) {
     try {
       //verify that the refresh token
@@ -65,14 +122,12 @@ export class AuthService {
       const user = await this.userService.findUserToken(refreshToken);
 
       if (user) {
-        const { username, _id, email, role } = user;
+        const { username, _id, email, role, type } = user;
         const payload = {
           username,
-          email,
-          _id,
+          type,
           role,
-          sub: "token login",
-          iss: "from server",
+          sub: _id,
         };
 
         // create new token
@@ -85,6 +140,7 @@ export class AuthService {
 
         return {
           access_token: this.jwtService.sign(payload),
+          refreshToken: newRefreshToken,
           user: { _id, role, email, username },
         };
       } else {

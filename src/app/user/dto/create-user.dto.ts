@@ -15,6 +15,18 @@ export class CreateUserDto {
   role: string;
 
   gender: string;
+
+  @IsNotEmpty()
+  type: string;
+
+  status: string;
+}
+export class CreateUserCredentialDto {
+  @IsNotEmpty()
+  username: string;
+
+  @IsNotEmpty()
+  type: string;
 }
 export class RegisterUserDto {
   @IsNotEmpty()
@@ -26,6 +38,9 @@ export class RegisterUserDto {
 
   @IsNotEmpty()
   username: string;
+
+  @IsNotEmpty()
+  name: string;
 
   gender: string;
 }

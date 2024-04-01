@@ -6,7 +6,9 @@ export class UpdateUserDto extends OmitType(CreateUserDto, [
   "password",
 ] as const) {
   _id: mongoose.Types.ObjectId;
+  name: string;
   username: string;
+  status: string;
   gender: string;
   email: string;
   role: string;

@@ -49,4 +49,13 @@ export class AuthController {
   logout(@Request() req) {
     return this.authService.logout(req.user);
   }
+
+  @IsPublic()
+  @Post("social-media")
+  async socialMediaLogin(
+    @Body() user,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return this.authService.handleUserSocialMedia(user, res);
+  }
 }

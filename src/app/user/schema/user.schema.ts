@@ -9,6 +9,9 @@ export class User {
   username: string;
 
   @Prop()
+  name: string;
+
+  @Prop()
   password: string;
 
   @Prop()
@@ -19,6 +22,12 @@ export class User {
 
   @Prop()
   gender: string;
+
+  @Prop()
+  status: string;
+
+  @Prop({ default: "SYSTEM" })
+  type: string;
 
   @Prop()
   refresh_token: string;
