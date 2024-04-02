@@ -10,6 +10,9 @@ export class UpdateUserDto extends OmitType(CreateUserDto, [
   username: string;
   status: string;
   gender: string;
+  password: string;
   email: string;
   role: string;
+  resetPasswordExpires: Date;
+  resetPasswordToken: string;
 }

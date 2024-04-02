@@ -10,4 +10,6 @@ export default interface IUser {
   role: string;
   type?: string;
   status?: string;
+  resetPasswordExpires?: Date;
+  resetPasswordToken?: string;
 }

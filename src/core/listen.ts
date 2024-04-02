@@ -457,7 +457,6 @@ class Listen {
               if (config.name == args[0]) {
                 // check permissions group admin
                 if (config.permission == 1) {
-                  let isPermission = true;
                   try {
                     const info: { adminIDs: { id: string }[] } =
                       await new Promise((resolve, reject) => {
@@ -466,17 +465,18 @@ class Listen {
                           else resolve(info);
                         });
                       });
-
-                    for (const item of info.adminIDs) {
-                      if (item.id !== event.senderID) {
-                        await api.sendMessage(
-                          global.getLang("Unauthorized", PREFIX, config.name),
-                          event.threadID
-                        );
-                        isPermission = false;
-                      }
+                    const checkIsPermission = info.adminIDs.some(
+                      (item) => item.id == event.senderID
+                    );
+                    if (checkIsPermission) {
+                      return true;
+                    } else {
+                      await api.sendMessage(
+                        global.getLang("Unauthorized", PREFIX, config.name),
+                        event.threadID
+                      );
+                      return false;
                     }
-                    return isPermission;
                   } catch (error) {
                     global.getLang("ErrorOccurred", error);
 

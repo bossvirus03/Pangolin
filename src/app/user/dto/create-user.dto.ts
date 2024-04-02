@@ -20,6 +20,10 @@ export class CreateUserDto {
   type: string;
 
   status: string;
+
+  resetPasswordExpires: Date;
+
+  resetPasswordToken: string;
 }
 export class CreateUserCredentialDto {
   @IsNotEmpty()

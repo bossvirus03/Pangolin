@@ -36,6 +36,9 @@ export class UserService {
   async findUserByUsername(username: string): Promise<IUser> {
     return await this.userModel.findOne({ username });
   }
+  async findByResetPasswordToken(resetPasswordToken: string): Promise<IUser> {
+    return await this.userModel.findOne({ resetPasswordToken });
+  }
 
   async findUserByEmail(email: string) {
     return await this.userModel.findOne({ email });
@@ -96,7 +99,11 @@ export class UserService {
       password: passwordHashed,
     });
     const { password, ...result } = (await user).toObject();
-    return result;
+    return {
+      status: 200,
+      message: "Created successfully",
+      result,
+    };
   }
 
   findAll() {
@@ -108,17 +115,14 @@ export class UserService {
   }
   findOne(id: mongoose.Types.ObjectId) {
     const user = this.userModel.findOne({ id });
-    // const  { _id, email, gender, username, role } = user
-
     return user;
   }
 
-  update(id: mongoose.Types.ObjectId, updateUserDto: UpdateUserDto) {
-    const { _id, email, gender, username, role } = updateUserDto;
-    return this.userModel.updateOne({ id, updateUserDto });
+  update(_id: mongoose.Types.ObjectId, updateUserDto) {
+    return this.userModel.updateOne({ _id }, { ...updateUserDto });
   }
-  updateRefreshToken(id: mongoose.Types.ObjectId, refresh_token: string) {
-    return this.userModel.updateOne({ id, refresh_token });
+  updateRefreshToken(_id: mongoose.Types.ObjectId, refresh_token: string) {
+    return this.userModel.updateOne({ _id }, { refresh_token });
   }
 
   remove(id: mongoose.Types.ObjectId) {

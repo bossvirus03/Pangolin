@@ -1,17 +1,23 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UserService } from "../user/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { RegisterUserDto } from "../user/dto/create-user.dto";
 import IUser from "../interfaces/user/user.interface";
 import { ConfigService } from "@nestjs/config";
 import ms from "ms";
-
+import * as crypto from "crypto";
+import { MailerService } from "@nestjs-modules/mailer";
 @Injectable()
 export class AuthService {
   constructor(
     private configService: ConfigService,
     private userService: UserService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailsService: MailerService
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
@@ -49,7 +55,8 @@ export class AuthService {
     };
   }
   async register(registerUserDto: RegisterUserDto): Promise<any> {
-    return this.userService.register(registerUserDto);
+    const res = await this.userService.register(registerUserDto);
+    return res;
   }
 
   createRefreshToken(payload: any) {
@@ -163,6 +170,59 @@ export class AuthService {
     return {
       statusCode: 200,
       message: "OK",
+    };
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new BadRequestException("User not found");
+    }
+
+    const resetPasswordToken = crypto.randomBytes(20).toString("hex"); // Tạo một mã xác thực ngẫu nhiên
+    const resetPasswordExpires = new Date(Date.now() + 3600000); // Tạo một thời gian hết hạn sau 1 giờ
+
+    await this.userService.update(user._id, {
+      resetPasswordExpires,
+      resetPasswordToken,
+    });
+
+    const mailOptions = {
+      to: user.email,
+      from: "no_reply@example.com", // replace with your email
+      subject: "Password Reset",
+      template: "./forgotPassword",
+      context: {
+        port: "3002",
+        token: resetPasswordToken,
+      },
+    };
+
+    await this.mailsService.sendMail(mailOptions);
+    return {
+      statusCode: 200,
+      message: "OK",
+    };
+  }
+
+  async resetPassword(token, newPassword) {
+    const user = await this.userService.findByResetPasswordToken(token);
+    console.log("user: " + user);
+    const newDate = new Date(Date.now());
+    if (!user || user.resetPasswordExpires < newDate) {
+      throw new BadRequestException("Invalid or expired token");
+    }
+
+    const updateDto = {
+      password: await this.userService.genHashPassword(newPassword),
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
+    };
+    await this.userService.update(user._id, updateDto);
+    return {
+      message: "OK",
+      statusCode: 200,
     };
   }
 }

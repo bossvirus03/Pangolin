@@ -11,6 +11,7 @@ import HandleEvent from "./core/handleEvent";
 import Listen from "./core/listen";
 import { JwtAuthGuard } from "./app/auth/guards/jwt-auth.guard";
 import cookieParser from "cookie-parser";
+import { TransformInterceptor } from "./app/core/transform.interceptor";
 
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
@@ -18,11 +19,18 @@ const login: Function = loginModule.default || loginModule;
 async function bootstrap() {
   /** =========== APP ===========*/
   const app = await NestFactory.create(AppModule);
+  const reflector = app.get(Reflector);
   const configService = app.get(ConfigService);
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const reflector = app.get(Reflector);
+  app.useGlobalInterceptors(new TransformInterceptor());
+
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   app.use(cookieParser());

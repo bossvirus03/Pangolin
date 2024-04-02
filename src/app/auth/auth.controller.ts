@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Post,
-  HttpCode,
-  HttpStatus,
   UseGuards,
   Get,
   Request,
@@ -11,9 +9,8 @@ import {
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { Cookies, IsPublic } from "../lib/decorator/customize";
-import { CreateUserDto, RegisterUserDto } from "../user/dto/create-user.dto";
+import { RegisterUserDto } from "../user/dto/create-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -57,5 +54,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ) {
     return this.authService.handleUserSocialMedia(user, res);
+  }
+  @IsPublic()
+  @Post("forgot-password")
+  async forgotPassword(@Body("email") email: string) {
+    return this.authService.forgotPassword(email);
+  }
+  @IsPublic()
+  @Post("reset-password")
+  async resetPassword(@Body() body) {
+    return this.authService.resetPassword(body.token, body.password);
   }
 }
