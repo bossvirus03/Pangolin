@@ -43,6 +43,8 @@ export class AuthService {
     return {
       refresh_token: refreshToken,
       access_token: await this.jwtService.signAsync(payload),
+      expires_in:
+        Date.now() + ms(this.configService.get<string>("JWT_ACCESS_EXPIRE")),
       user: {
         _id: user._id,
         name: user.name,
@@ -71,6 +73,7 @@ export class AuthService {
     const checkAlreadyUser = await this.userService.findUserByUsername(
       user.username
     );
+    console.log("checkAlreadyUser", checkAlreadyUser);
     if (checkAlreadyUser) {
       const payload = {
         username: checkAlreadyUser.username,
@@ -86,6 +89,8 @@ export class AuthService {
       this.userService.updateRefreshToken(user._id, refreshToken);
       return {
         refresh_token: refreshToken,
+        expires_in:
+          Date.now() + ms(this.configService.get<string>("JWT_ACCESS_EXPIRE")),
         access_token: this.jwtService.sign(payload),
         user: {
           _id: checkAlreadyUser._id,
@@ -97,26 +102,35 @@ export class AuthService {
         },
       };
     } else {
-      const newUser = await this.userService.createUserSocialMedia(user);
       const payload = {
-        username: newUser.username,
-        name: checkAlreadyUser.name,
-        email: checkAlreadyUser.email,
-        role: newUser.role,
-        type: newUser.type,
-        sub: newUser._id,
+        username: user.username,
+        name: user.name,
+        email: user.username,
+        role: user.role,
+        type: user.type,
+        sub: user._id,
       };
       const refreshToken = this.createRefreshToken(payload);
       res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
         maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
       });
-      this.userService.updateRefreshToken(user._id, refreshToken);
+      const newUser = await this.userService.createUserSocialMedia({
+        username: user.username,
+        name: user.name,
+        email: user.username,
+        role: user.role,
+        type: user.type,
+        status: "active",
+        refresh_token: refreshToken,
+      });
       return {
         refresh_token: refreshToken,
+        expires_in:
+          Date.now() + ms(this.configService.get<string>("JWT_ACCESS_EXPIRE")),
         access_token: this.jwtService.sign(payload),
         user: {
-          _id: checkAlreadyUser._id,
+          _id: newUser._id,
           username: newUser.username,
           role: newUser.role,
           type: newUser.type,
@@ -151,10 +165,13 @@ export class AuthService {
         res.cookie("refresh_token", newRefreshToken);
         //update user with refresh token
         await this.userService.updateRefreshToken(user._id, newRefreshToken);
-
+        const access_token = await this.jwtService.sign(payload);
         return {
-          access_token: this.jwtService.sign(payload),
-          refreshToken: newRefreshToken,
+          access_token: access_token,
+          expires_in:
+            Date.now() +
+            ms(this.configService.get<string>("JWT_ACCESS_EXPIRE")),
+          refresh_token: newRefreshToken,
           user: { _id, role, email, username },
         };
       } else {
@@ -165,8 +182,9 @@ export class AuthService {
     }
   }
 
-  async logout(user: IUser) {
+  async logout(user: IUser, response) {
     await this.userService.updateRefreshToken(user._id, null);
+    response.clearCookie("refresh_token");
     return {
       statusCode: 200,
       message: "OK",
@@ -194,7 +212,7 @@ export class AuthService {
       subject: "Password Reset",
       template: "./forgotPassword",
       context: {
-        port: "3002",
+        port: "3000",
         token: resetPasswordToken,
       },
     };
@@ -208,7 +226,6 @@ export class AuthService {
 
   async resetPassword(token, newPassword) {
     const user = await this.userService.findByResetPasswordToken(token);
-    console.log("user: " + user);
     const newDate = new Date(Date.now());
     if (!user || user.resetPasswordExpires < newDate) {
       throw new BadRequestException("Invalid or expired token");
@@ -221,7 +238,7 @@ export class AuthService {
     };
     await this.userService.update(user._id, updateDto);
     return {
-      message: "OK",
+      message: "Reset Password Successfully!",
       statusCode: 200,
     };
   }

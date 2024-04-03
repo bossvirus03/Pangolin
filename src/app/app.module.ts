@@ -39,10 +39,10 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
           },
         },
         template: {
-          dir: process.cwd() + "/src/app/templates/",
+          dir: process.cwd() + "/src/app/templates/email",
           adapter: new HandlebarsAdapter(),
           options: {
-            strict: true,
+            strict: false,
           },
         },
         preview: configService.get("EMAIL_PREVIEW") === "true" ? true : false,

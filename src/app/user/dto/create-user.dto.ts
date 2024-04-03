@@ -27,10 +27,23 @@ export class CreateUserDto {
 }
 export class CreateUserCredentialDto {
   @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
   username: string;
 
   @IsNotEmpty()
   type: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  role?: string;
+
+  status?: string;
+
+  refresh_token?: string;
 }
 export class RegisterUserDto {
   @IsNotEmpty()

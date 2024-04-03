@@ -6,11 +6,13 @@ import {
   Get,
   Request,
   Res,
+  Param,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { Cookies, IsPublic } from "../lib/decorator/customize";
 import { RegisterUserDto } from "../user/dto/create-user.dto";
+import { Response } from "express";
 
 @Controller("auth")
 export class AuthController {
@@ -31,11 +33,11 @@ export class AuthController {
 
   @IsPublic()
   @Get("refresh")
-  handleRefresh(
+  async handleRefresh(
     @Cookies("refresh_token") refresh: string,
-    @Res() response: Response
+    @Res({ passthrough: true }) response: Response
   ) {
-    return this.authService.processNewToken(refresh, response);
+    return await this.authService.processNewToken(refresh, response);
   }
   @Get("profile")
   getProfile(@Request() req) {
@@ -43,8 +45,8 @@ export class AuthController {
   }
 
   @Get("logout")
-  logout(@Request() req) {
-    return this.authService.logout(req.user);
+  logout(@Request() req, @Res({ passthrough: true }) response: Response) {
+    return this.authService.logout(req.user, response);
   }
 
   @IsPublic()
@@ -61,8 +63,8 @@ export class AuthController {
     return this.authService.forgotPassword(email);
   }
   @IsPublic()
-  @Post("reset-password")
-  async resetPassword(@Body() body) {
-    return this.authService.resetPassword(body.token, body.password);
+  @Post("reset-password/:token")
+  async resetPassword(@Body("password") password, @Param() param) {
+    return this.authService.resetPassword(param.token, password);
   }
 }
