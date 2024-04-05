@@ -7,6 +7,7 @@ import {
   Request,
   Res,
   Param,
+  Req,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
@@ -32,11 +33,13 @@ export class AuthController {
   }
 
   @IsPublic()
-  @Get("refresh")
+  @Post("refresh")
   async handleRefresh(
-    @Cookies("refresh_token") refresh: string,
-    @Res({ passthrough: true }) response: Response
+    @Request() request,
+    @Res({ passthrough: true }) response
   ) {
+    const refresh = request.cookies["refresh_token"];
+    console.log(JSON.stringify(refresh));
     return await this.authService.processNewToken(refresh, response);
   }
   @Get("profile")

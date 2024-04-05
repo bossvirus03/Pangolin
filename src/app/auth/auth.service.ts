@@ -33,7 +33,12 @@ export class AuthService {
     return null;
   }
   async login(user, res) {
-    const payload = { sub: user._id, username: user.username, role: user.role };
+    const payload = {
+      _id: user._id,
+      sub: user._id,
+      username: user.username,
+      role: user.role,
+    };
     const refreshToken = await this.createRefreshToken(payload);
     await res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
@@ -73,20 +78,22 @@ export class AuthService {
     const checkAlreadyUser = await this.userService.findUserByUsername(
       user.username
     );
-    console.log("checkAlreadyUser", checkAlreadyUser);
+    // console.log();
     if (checkAlreadyUser) {
       const payload = {
+        _id: checkAlreadyUser._id,
+        name: checkAlreadyUser.name,
         username: checkAlreadyUser.username,
         role: checkAlreadyUser.role,
         type: checkAlreadyUser.type,
         sub: checkAlreadyUser._id,
       };
       const refreshToken = this.createRefreshToken(payload);
-      res.cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
-      });
-      this.userService.updateRefreshToken(user._id, refreshToken);
+      const update = await this.userService.updateRefreshToken(
+        checkAlreadyUser._id,
+        refreshToken
+      );
+      console.log("dfasdfasdf", update);
       return {
         refresh_token: refreshToken,
         expires_in:
@@ -152,6 +159,7 @@ export class AuthService {
       if (user) {
         const { username, _id, email, role, type } = user;
         const payload = {
+          _id,
           username,
           type,
           role,
@@ -165,7 +173,7 @@ export class AuthService {
         res.cookie("refresh_token", newRefreshToken);
         //update user with refresh token
         await this.userService.updateRefreshToken(user._id, newRefreshToken);
-        const access_token = await this.jwtService.sign(payload);
+        const access_token = await this.jwtService.signAsync(payload);
         return {
           access_token: access_token,
           expires_in:
@@ -183,7 +191,9 @@ export class AuthService {
   }
 
   async logout(user: IUser, response) {
-    await this.userService.updateRefreshToken(user._id, null);
+    console.log(user);
+    const update = await this.userService.updateRefreshToken(user._id, null);
+    console.log(update);
     response.clearCookie("refresh_token");
     return {
       statusCode: 200,

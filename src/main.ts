@@ -40,9 +40,8 @@ async function bootstrap() {
   });
 
   /**============ BOT ============= */
-  // Using promisify to convert the callback-based login function to Promise-based
-  const loginAsync = promisify(login);
   try {
+    const loginAsync = promisify(login);
     const loginPath = {
       appState: JSON.parse(
         readFileSync(
@@ -100,9 +99,6 @@ async function bootstrap() {
       const ListenEvent = new Listen(api, client);
       ListenEvent.listen();
     });
-
-    // Starting the application after successful login
-    console.log("Application is listening on port 3000");
   } catch (error) {
     console.error("Error during login:", error);
     // Handle login error

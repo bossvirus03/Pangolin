@@ -119,6 +119,8 @@ export class UserService {
   }
 
   update(_id: mongoose.Types.ObjectId, updateUserDto) {
+    // console.log(_id);
+    // console.log(updateUserDto);
     return this.userModel.updateOne({ _id }, { ...updateUserDto });
   }
   updateRefreshToken(_id: mongoose.Types.ObjectId, refresh_token: string) {
