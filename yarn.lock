@@ -3675,7 +3675,7 @@ extsprintf@^1.2.0:
 
 "facebook-chat-api@github:bossvirus03/facebook-chat-api":
   version "1.8.0"
-  resolved "https://codeload.github.com/bossvirus03/facebook-chat-api/tar.gz/66e71dc93deabd1a20b77d146bb46528017ae4c5"
+  resolved "https://codeload.github.com/bossvirus03/facebook-chat-api/tar.gz/97914ca86f734b9b88439879d0108aa79a9da2bc"
   dependencies:
     bluebird "^3.0.0"
     cheerio "^0.22.0"

@@ -35,11 +35,11 @@ export class AuthController {
   @IsPublic()
   @Post("refresh")
   async handleRefresh(
-    @Request() request,
+    @Body("refresh_token") refresh,
     @Res({ passthrough: true }) response
   ) {
-    const refresh = request.cookies["refresh_token"];
-    console.log(JSON.stringify(refresh));
+    // const refresh = request.cookies["refresh_token"];
+    // console.log(JSON.stringify(refresh));
     return await this.authService.processNewToken(refresh, response);
   }
   @Get("profile")
@@ -49,6 +49,7 @@ export class AuthController {
 
   @Get("logout")
   logout(@Request() req, @Res({ passthrough: true }) response: Response) {
+    console.log("run logout");
     return this.authService.logout(req.user, response);
   }
 

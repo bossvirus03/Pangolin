@@ -21,4 +21,5 @@ export default interface IEvent {
   messageReply: messageReply;
   logMessageType?: string;
   logMessageData?: any;
+  reaction?: string;
 }

@@ -146,7 +146,7 @@ export default class WarnCommand {
         await handleWarning(warnedId[0], reason);
         const previousWarn = fs.readFileSync(pathDataWarn, "utf8");
         JSON.parse(previousWarn).forEach((item) => {
-          if (item.warnedId[0] == warnedId[0]) {
+          if (item.warnedId == warnedId[0]) {
             if (item.reason.length == 3) {
               let i = 1;
               api.sendMessage(
@@ -166,6 +166,7 @@ export default class WarnCommand {
                 event.threadID
               );
             }
+            console.log(item.reason);
             if (item.reason.length == 4) {
               let i = 1;
               api.sendMessage(

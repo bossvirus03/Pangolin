@@ -41,7 +41,8 @@ export default class NameCommand {
   ) {
     // logic here
   }
-  async event(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async event(api: Ifca, event: IEvent, client, DataUser, DataThread) {
+    //no agrs
     // logic
   }
   async noprefix(

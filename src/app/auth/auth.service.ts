@@ -155,6 +155,7 @@ export class AuthService {
 
       //get user
       const user = await this.userService.findUserToken(refreshToken);
+      console.log(user);
 
       if (user) {
         const { username, _id, email, role, type } = user;
@@ -169,8 +170,8 @@ export class AuthService {
         // create new token
         const newRefreshToken = this.createRefreshToken(payload);
 
-        res.clearCookie("refresh_token");
-        res.cookie("refresh_token", newRefreshToken);
+        // res.clearCookie("refresh_token");
+        // res.cookie("refresh_token", newRefreshToken);
         //update user with refresh token
         await this.userService.updateRefreshToken(user._id, newRefreshToken);
         const access_token = await this.jwtService.signAsync(payload);

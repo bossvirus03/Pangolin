@@ -13,11 +13,15 @@ export default class RunCommand {
 
   constructor(private client) {}
   async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
-    const script = (event.body as string).split(args[0])[1].trim();
+    // const script = (event.body as string).split(args[0])[1].trim();
+    const script = `(api, event, client, args, DataUser, DataThread) => {
+      ${(event.body as string).split(args[0])[1].trim()}
+  }`;
     try {
-      eval(script);
+      const scriptFunction = eval(script);
+      scriptFunction(api, event, client, args, DataUser, DataThread);
     } catch (error) {
-      api.sendMessage("Lỗi khi thực thi mã:" + error, event.threadID);
+      api.sendMessage("Lỗi khi thực thi mã: " + error, event.threadID);
     }
   }
 }
