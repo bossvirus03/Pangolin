@@ -12,6 +12,7 @@ import Listen from "./core/listen";
 import { JwtAuthGuard } from "./app/auth/guards/jwt-auth.guard";
 import cookieParser from "cookie-parser";
 import { TransformInterceptor } from "./app/core/transform.interceptor";
+import OnTime from "./modules/ontime";
 
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
@@ -98,6 +99,10 @@ async function bootstrap() {
       //listen event
       const ListenEvent = new Listen(api, client);
       ListenEvent.listen();
+
+      //
+      const schedulerService = app.get(OnTime);
+      schedulerService.scheduleTask(api);
     });
   } catch (error) {
     console.error("Error during login:", error);

@@ -10,6 +10,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { softDeletePlugin } from "soft-delete-plugin-mongoose";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import OnTime from "src/modules/ontime";
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -55,6 +56,6 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
     BotModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, OnTime],
 })
 export class AppModule {}
