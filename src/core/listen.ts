@@ -99,6 +99,28 @@ class Listen {
       console.error("Error", error);
     }
   }
+  async deleteUserInThread(api: Ifca, event: any) {
+    console.log(event);
+    try {
+      // Kiểm tra xem kết nối đã được thiết lập chưa
+      if (!sequelize.isDefined("Thread")) {
+        await sequelize.authenticate();
+        // Định nghĩa các model
+        sequelize.addModels([UserInThread]);
+        sequelize.sync();
+      }
+      // Xoá user khỏi cơ sở dữ liệu
+      await UserInThread.destroy({
+        where: {
+          uid: event.logMessageData.leftParticipantFbId,
+          tid: event.threadID,
+        },
+      });
+      console.log("User deleted from thread");
+    } catch (error) {
+      console.error("Error", error);
+    }
+  }
 
   async logMessageUserInThread(api, event) {
     if (event.type == "message") {
@@ -332,6 +354,7 @@ class Listen {
     }
     this.api.setOptions({ listenEvents: true });
     this.api.listenMqtt(async (err, event) => {
+      // create user if not already
       try {
         await this.createUserIfNotExists(this.api, event);
       } catch (error) {
@@ -344,7 +367,10 @@ class Listen {
           global.getLang("ErrorOccurred", error);
         }
       }
+
       if (!event) return;
+
+      // Create a new thread when the bot is added to a group
       if (
         event.type == "event" &&
         event.logMessageType == "log:subscribe" &&
@@ -358,6 +384,8 @@ class Listen {
           global.getLang("ErrorOccurred", error);
         }
       }
+
+      // Delete thread when the bot is removed
       if (
         event.type == "event" &&
         event.logMessageType == "log:unsubscribe" &&
@@ -366,6 +394,16 @@ class Listen {
         try {
           await sequelize.sync();
           await this.deleteThread(this.api, event);
+        } catch (error) {
+          global.getLang("ErrorOccurred", error);
+        }
+      }
+
+      // Delete a user of threads data when a user is removed or leave
+      if (event.type == "event" && event.logMessageType == "log:unsubscribe") {
+        try {
+          await sequelize.sync();
+          await this.deleteUserInThread(this.api, event);
         } catch (error) {
           global.getLang("ErrorOccurred", error);
         }
