@@ -533,14 +533,13 @@ class Listen {
                 // check permissions for admin bot
                 else if (config.permission == 2) {
                   let isPermission = true;
-                  const ADS = JSON.parse(ADMINS);
                   let isAdmin = 0;
-                  for (let id of ADS) {
+                  for (let id of ADMINS) {
                     if (id != event.senderID) {
                       isAdmin++;
                     }
                   }
-                  if (isAdmin == ADS.length) {
+                  if (isAdmin == ADMINS.length) {
                     api.sendMessage(
                       global.getLang("Unauthorized", PREFIX, config.name),
                       event.threadID

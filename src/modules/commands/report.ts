@@ -9,7 +9,7 @@ import axios from "axios";
 import { IUserInThreadData } from "src/types/type.userInThreadData";
 sqlite3.verbose();
 
-export default class SimCommand {
+export default class ReportCommand {
   static config = {
     name: "report",
     version: "1.0.0",
@@ -69,7 +69,6 @@ export default class SimCommand {
           `/public/images/${index}_sendAd_${event.senderID}.jpg`
         );
         try {
-          console.log(item.url);
           const response = await axios.get(item.url, {
             responseType: "arraybuffer",
           });
@@ -152,7 +151,6 @@ export default class SimCommand {
           getLang("adminResponse", event.body),
           reportInfo.threadID,
           () => {}
-          // reportInfo.messageID
         );
       }
     }
