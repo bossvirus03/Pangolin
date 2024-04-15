@@ -8,7 +8,7 @@ import ConfigGuideLang from "src/lang/LangConfig";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
-
+import * as fs from "fs";
 class Listen {
   constructor(
     private api: Ifca,
@@ -335,6 +335,9 @@ class Listen {
   };
 
   async listen() {
+    const configPath = join(process.cwd(), "pangolin.config.json");
+    const dataConfig = fs.readFileSync(configPath, "utf8");
+    const config = JSON.parse(dataConfig);
     sequelize.addModels([User, Thread, UserInThread]);
     await sequelize.sync();
     const commandPath = join(process.cwd(), "src", "modules", "commands");
@@ -480,7 +483,7 @@ class Listen {
           listCommands.push(key);
         });
         async function checkPermission(client, api: Ifca) {
-          const ADMINS = process.env.ADMINS;
+          const ADMINS = config.admins;
           const commandPath = join(process.cwd(), "src", "modules", "commands");
           const commandFiles = readdirSync(commandPath).filter((file: string) =>
             file.endsWith(".ts")
