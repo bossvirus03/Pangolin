@@ -434,6 +434,11 @@ class Listen {
 
       //load all command event
       this.client.event.forEach((value, key) => {
+        const configGuideLang = new ConfigGuideLang(this.client, key);
+        function getLang(key, ...args: any[]) {
+          const message = configGuideLang.getLang(key, args);
+          return message;
+        }
         this.client.event
           .get(key)
           .event(
@@ -442,7 +447,8 @@ class Listen {
             this.client,
             this.UserData,
             this.ThreadData,
-            this.UserInThreadData
+            this.UserInThreadData,
+            getLang
           );
       });
       if (event.body != undefined) {
