@@ -1,0 +1,94 @@
+import Ifca from "src/types/type.api";
+import IEvent from "src/types/type.event";
+import axios, { AxiosResponse } from "axios";
+import FormData from "form-data";
+import * as fs from "fs";
+import { join, basename } from "path";
+
+async function downloadImage(url: string, type: string): Promise<string> {
+  try {
+    const response: AxiosResponse<ArrayBuffer> = await axios.get(url, {
+      responseType: "arraybuffer",
+    });
+    const filePath = join(
+      process.cwd(),
+      `/public/images/${Date.now()}.${type}`
+    );
+    const buffer = Buffer.from(response.data);
+    fs.writeFileSync(filePath, buffer);
+    setTimeout(() => fs.unlinkSync(filePath), 2 * 1000 * 60);
+    return filePath;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export default class TachCommand {
+  static config = {
+    name: "test",
+    version: "1.0.0",
+    author: "Nguyên Blue",
+    createdAt: "",
+    description:
+      "Cách dùng: [prefix]tach (Reply 1 bức ảnh)\nChức năng: tách nền ảnh",
+  };
+
+  constructor(private client) {}
+
+  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+    const filePath = join(process.cwd(), `/public/images/${Date.now()}.png`);
+    if (event.type == "message_reply") {
+      if (
+        event.messageReply.attachments &&
+        event.messageReply.attachments.length > 0
+      ) {
+        try {
+          const content = event.messageReply.attachments[0].url;
+          const inputPath = await downloadImage(content, "png");
+
+          const formData = new FormData();
+          formData.append("size", "auto");
+          formData.append(
+            "image_file",
+            fs.createReadStream(inputPath),
+            basename(inputPath)
+          );
+
+          const response: AxiosResponse<ArrayBuffer> = await axios.post(
+            "https://api.remove.bg/v1.0/removebg",
+            formData,
+            {
+              headers: {
+                ...formData.getHeaders(),
+                "X-Api-Key": "BAZLAqaKNTHHtTf5CZNa7YGU",
+              },
+              responseType: "arraybuffer",
+            }
+          );
+
+          if (response.status != 200) {
+            console.error("Error:", response.status, response.statusText);
+            throw new Error("Failed to process the image");
+          }
+          const buffer = Buffer.from(response.data);
+          fs.writeFileSync(inputPath, buffer);
+          api.sendMessage(
+            {
+              body: `✅ Xử lý ảnh thành công`,
+              attachment: fs.createReadStream(inputPath),
+            },
+            event.threadID
+          );
+        } catch (error) {
+          console.error("Request failed:", error);
+          api.sendMessage(`Có lỗi xảy ra`, event.threadID);
+        }
+      } else {
+        return;
+      }
+    } else {
+      api.sendMessage("Vui lòng reply ít nhất 1 hình ảnh!", event.threadID);
+    }
+  }
+}
