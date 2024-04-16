@@ -120,9 +120,9 @@ export default class autodown {
 │› Spotify: ✅
 │› Zingmp3: ✅
 │› WhatsApp: ❎
-│› YouTube: ❎
+│› YouTube: ✅
 │› Weibo: ❎
-│› Twitter: ❎
+│› Twitter: ✅
 │› Kuaishou: ✅
 │› Reddit: ❎
 ╰─────────────⭓
@@ -149,9 +149,9 @@ export default class autodown {
 │› Spotify: ✅
 │› Zingmp3: ✅
 │› WhatsApp: ❎
-│› YouTube: ❎
+│› YouTube: ✅
 │› Weibo: ❎
-│› Twitter: ❎
+│› Twitter: ✅
 │› Kuaishou: ✅
 │› Reddit: ❎
 ╰─────────────⭓
@@ -207,7 +207,7 @@ export default class autodown {
               );
               await api.sendMessage(
                 {
-                  body: `${res.message || "Không Có Tiêu Đề"}\n`,
+                  body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
                 event.threadID
@@ -234,7 +234,7 @@ export default class autodown {
               }
               await api.sendMessage(
                 {
-                  body: `${res.message || "Không Có Tiêu Đề"}\n`,
+                  body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
                 event.threadID
@@ -249,7 +249,7 @@ export default class autodown {
             if (res.video) {
               await api.sendMessage(
                 {
-                  body: `${res.title || "Không Có Tiêu Đề"}\n${res.description || "Không Có Mô Tả"}`,
+                  body: `〈 Autodown Social Network 〉\n${res.title || "Không Có Tiêu Đề"}\n${res.description || "Không Có Mô Tả"}`,
                   attachment: await streamURL(res.video, "mp4"),
                 },
                 event.threadID
@@ -264,8 +264,23 @@ export default class autodown {
             if (res.audio[0].url) {
               await api.sendMessage(
                 {
-                  body: `${res.title || "Không Có Tiêu Đề"}\n`,
+                  body: `〈 Autodown Social Network 〉\n${res.title || "Không Có Tiêu Đề"}\n`,
                   attachment: await streamURL(res.audio[0].url, "mp3"),
+                },
+                event.threadID
+              );
+            }
+            } else if (/twitter|tw|x/.test(url)) {
+            const res = (
+              await axios.get(
+                `https://nguyenmanh.name.vn/api/twitterDL?url=${url}&apikey=AVny3Riw`
+              )
+            ).data;
+            if (res.result.SD) {
+              await api.sendMessage(
+                {
+                  body: `〈 Autodown Social Network 〉\n`,
+                  attachment: await streamURL(res.result.SD, "mp4"),
                 },
                 event.threadID
               );
@@ -279,7 +294,7 @@ export default class autodown {
             if (res.result.preview_audio) {
               await api.sendMessage(
                 {
-                  body: `${res.result.name || "Không Có Tiêu Đề"}\n`,
+                  body: `〈 Autodown Social Network 〉\n${res.result.name || "Không Có Tiêu Đề"}\n`,
                   attachment: await streamURL(res.result.preview_audio, "mp3"),
                 },
                 event.threadID
@@ -292,6 +307,7 @@ export default class autodown {
             if (res.data.result) {
               await api.sendMessage(
                 {
+                body: `〈 Autodown Social Network 〉\n`,
                   attachment: await streamURL(res.data.result, "mp3"),
                 },
                 event.threadID
@@ -306,7 +322,7 @@ export default class autodown {
             if (res.result.videonowatermark) {
               await api.sendMessage(
                 {
-                  body: `${res.result.photo.caption || "Không Có Tiêu Đề"}\n`,
+                  body: `〈 Autodown Social Network 〉\n${res.result.photo.caption || "Không Có Tiêu Đề"}\n`,
                   attachment: await streamURL(
                     res.result.videonowatermark,
                     "mp4"
@@ -334,7 +350,7 @@ export default class autodown {
               }
               await api.sendMessage(
                 {
-                  body: `${res.message || "Không Có Tiêu Đề"}\n`,
+                  body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
                 event.threadID
@@ -366,7 +382,7 @@ export default class autodown {
               }
               await api.sendMessage(
                 {
-                  body: `${res.message || "Không Có Tiêu Đề"}\n`,
+                  body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
                 event.threadID
