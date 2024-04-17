@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class SetPrefixCommand {
   static config = {
@@ -13,7 +14,7 @@ export default class SetPrefixCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
     await ThreadData.setPrefix(event.threadID, args[1]);
     api.sendMessage("Đã đổi prefix thành " + args[1], event.threadID);
   }

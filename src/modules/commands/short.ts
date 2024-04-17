@@ -3,6 +3,10 @@ import IEvent from "src/types/type.event";
 import * as cache from "memory-cache";
 import * as fs from "fs";
 import { join } from "path";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class ShortCommand {
   static config = {
@@ -108,7 +112,7 @@ export default class ShortCommand {
       }
     }
   }
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
     if (args[1]) {
       const short = (event.body as string).split(args[0])[1].trim().split("|");
       const shortName = short[0].trim();
@@ -166,7 +170,13 @@ export default class ShortCommand {
       cache.put("short", messageID);
     }
   }
-  async event({ api, event, client, args, UserData, ThreadData }) {
+  async event({
+    api,
+    event,
+    client,
+    UserData,
+    ThreadData,
+  }: IPangolinListenEvent) {
     const listShortFromThread = await fs.readFileSync(
       this.partDataShort,
       "utf-8",

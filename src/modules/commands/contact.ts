@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class ContactCommand {
   static config = {
@@ -12,7 +13,7 @@ export default class ContactCommand {
 
   constructor(private client) {}
 
-  run({ api, event, args }) {
+  run({ api, event, args }: IPangolinRun) {
     api.shareContact("", event.senderID, event.threadID);
   }
 }

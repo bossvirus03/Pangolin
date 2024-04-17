@@ -2,6 +2,7 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class HelpCommand {
   static config = {
@@ -42,12 +43,12 @@ export default class HelpCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     console.log(global.getLang("Restarting"));
     const CurrentLanguage = process.env.LANGUAGE_CODE || "en";
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>
-      file.endsWith(".ts")
+      file.endsWith(".ts"),
     );
     let commandCount = 0;
     let noprefixCount = 0;
@@ -70,7 +71,7 @@ export default class HelpCommand {
         ];
         api.sendMessage(
           getLang("command", config.name, description, guide),
-          event.threadID
+          event.threadID,
         );
       }
       if (commandInstance.run) {
@@ -91,9 +92,9 @@ export default class HelpCommand {
           commandCount,
           msgPrefix,
           noprefixCount,
-          msgNpPrefix
+          msgNpPrefix,
         ),
-        event.threadID
+        event.threadID,
       );
     }
   }

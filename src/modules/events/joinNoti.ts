@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { join } from "path";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinEvent } from "src/types/type.pangolin-handle";
 
 export default class NotiCommand {
   static config = {
@@ -27,7 +28,15 @@ export default class NotiCommand {
     },
   };
   constructor(private client) {}
-  run({ api, event, client, UserData, ThreadData, UserInThreadData, getLang }) {
+  run({
+    api,
+    event,
+    client,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+    getLang,
+  }: IPangolinEvent) {
     const GifPath = join(process.cwd(), "/src/db/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
     api.getThreadInfo(event.threadID, async (err, info) => {
@@ -41,12 +50,12 @@ export default class NotiCommand {
             tag: item.fullName,
             id: item.userFbId,
           };
-        }
+        },
       );
       if (arrPersonJoin.some((item) => item.id == process.env.UID_BOT)) {
         return api.sendMessage(
           getLang("addBot", process.env.PREFIX),
-          event.threadID
+          event.threadID,
         );
       } else {
         const nameUsers = arrPersonJoin.map((item) => {
@@ -73,7 +82,7 @@ export default class NotiCommand {
             : process.env.LANGUAGE_CODE == "vi"
               ? " Bạn"
               : "You",
-          getNumberRank(info.participantIDs.length)
+          getNumberRank(info.participantIDs.length),
         );
         api.sendMessage(
           {
@@ -81,7 +90,7 @@ export default class NotiCommand {
             mentions: arrPersonJoin,
             attachment: fs.createReadStream(GifPath),
           },
-          event.threadID
+          event.threadID,
         );
       }
     });

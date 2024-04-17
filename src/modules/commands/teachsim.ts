@@ -2,6 +2,7 @@ import { join } from "path";
 import * as sqlite3 from "sqlite3";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 sqlite3.verbose();
 
 export default class SimCommand {
@@ -14,7 +15,7 @@ export default class SimCommand {
       "Cách dùng: [prefix]Sim on/off\nChức năng: Trò chuyện cùng với simsimi",
   };
 
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
     const body = (event.body as string).split(args[0])[1].split("|");
     if (!body[0] || !body[1]) {
       return api.sendMessage(

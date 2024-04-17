@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class RunCommand {
   static config = {
@@ -12,7 +13,7 @@ export default class RunCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
     // const script = (event.body as string).split(args[0])[1].trim();
     const script = `(api, event, client, args, UserData, ThreadData) => {
       ${(event.body as string).split(args[0])[1].trim()}

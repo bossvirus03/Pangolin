@@ -1,6 +1,7 @@
 import axios from "axios";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class WikiCommand {
   static config = {
@@ -12,7 +13,7 @@ export default class WikiCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     let content = args.join(" ");
     let url = `https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&format=json& =&titles=${event.body}`;
     // if (args[0] == "en") {

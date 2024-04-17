@@ -3,6 +3,7 @@ import IEvent from "src/types/type.event";
 import { join } from "path";
 import fs from "fs";
 import axios from "axios";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class GhepCommand {
   static config = {
@@ -15,7 +16,7 @@ export default class GhepCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     try {
       const threadInfo: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
@@ -44,11 +45,11 @@ export default class GhepCommand {
       const [avatar1, avatar2] = await Promise.all([
         axios.get(
           `https://graph.facebook.com/${event.senderID}/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`,
-          { responseType: "arraybuffer" }
+          { responseType: "arraybuffer" },
         ),
         axios.get(
           `https://graph.facebook.com/${randomUser}/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`,
-          { responseType: "arraybuffer" }
+          { responseType: "arraybuffer" },
         ),
       ]);
 

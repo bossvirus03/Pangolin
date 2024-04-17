@@ -3,6 +3,7 @@ import IEvent from "src/types/type.event";
 import axios from "axios";
 import fs from "fs-extra";
 import { join } from "path";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class LamNetCommand {
   static config = {
@@ -15,7 +16,7 @@ export default class LamNetCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const pathie = join(process.cwd(), `/public/images/zombie.jpg`);
     const { threadID } = event;
 
@@ -26,7 +27,7 @@ export default class LamNetCommand {
     if (!photoUrl) {
       api.sendMessage(
         "🤖 𝙿𝚕𝚎𝚊𝚜𝚎 𝚛𝚎𝚙𝚕𝚢 𝚝𝚘 𝚊 𝚙𝚑𝚘𝚝𝚘 𝚝𝚘 𝚙𝚛𝚘𝚌𝚎𝚎𝚍 𝚞𝚙𝚜𝚌𝚊𝚕𝚒𝚗𝚐 𝚒𝚖𝚊𝚐𝚎𝚜.",
-        threadID
+        threadID,
       );
       return;
     }
@@ -37,7 +38,7 @@ export default class LamNetCommand {
       async () => {
         try {
           const response = await axios.get(
-            `https://hazee-upscale.replit.app/upscale?url=${encodeURIComponent(photoUrl)}&face_enhance=true`
+            `https://hazee-upscale.replit.app/upscale?url=${encodeURIComponent(photoUrl)}&face_enhance=true`,
           );
           const processedImageURL = response.data.hazescale;
           const img = (
@@ -52,12 +53,12 @@ export default class LamNetCommand {
               attachment: fs.createReadStream(pathie),
             },
             threadID,
-            () => fs.unlinkSync(pathie)
+            () => fs.unlinkSync(pathie),
           );
         } catch (error) {
           api.sendMessage(`🚫 𝙴𝚛𝚛𝚘𝚛 𝚙𝚛𝚘𝚌𝚎𝚜𝚜𝚒𝚗𝚐 𝚒𝚖𝚊𝚐𝚎: ${error}`, threadID);
         }
-      }
+      },
     );
   }
 }

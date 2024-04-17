@@ -2,6 +2,10 @@ import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import fs from "fs";
 import { join } from "path";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class AutosetnameCommand {
   static config = {
@@ -14,7 +18,7 @@ export default class AutosetnameCommand {
 
   constructor(private client) {}
 
-  async event({ api, event, client, args }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     const { threadID } = event;
     const pathData = join(process.cwd(), `/src/db/data/autosetname.json`);
 
@@ -25,12 +29,12 @@ export default class AutosetnameCommand {
       }
 
       const memJoin = event.logMessageData.addedParticipants.map(
-        (info) => info.userFbId
+        (info) => info.userFbId,
       );
       for (const idUser of memJoin) {
         const dataJson = JSON.parse(fs.readFileSync(pathData, "utf-8"));
         const thisThread = dataJson.find(
-          (item) => item.threadID == threadID
+          (item) => item.threadID == threadID,
         ) || { threadID, nameUser: [] };
         if (thisThread.nameUser.length != 0) {
           const setName = thisThread.nameUser[0];
@@ -49,7 +53,7 @@ export default class AutosetnameCommand {
             {
               body: `Đã đặt biệt danh cho thành viên mới: ${setName} ${senderInfo}`,
             },
-            threadID
+            threadID,
           );
         }
       }
@@ -72,7 +76,7 @@ export default class AutosetnameCommand {
     }
   }
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const { threadID } = event;
     const pathData = join(process.cwd(), `/src/db/data/autosetname.json`);
     const content = args.slice(2).join(" ");
@@ -87,12 +91,12 @@ export default class AutosetnameCommand {
         if (content.length == 0)
           return api.sendMessage(
             "→ Phần cấu hình tên thành viên mới không được bỏ trống!",
-            threadID
+            threadID,
           );
         if (thisThread.nameUser.length > 0)
           return api.sendMessage(
             "→ Vui lòng xóa cấu hình tên cũ trước khi đặt tên mới!!!",
-            threadID
+            threadID,
           );
         thisThread.nameUser.push(content);
         const threadInfo: any = await new Promise((resolve, reject) => {
@@ -107,7 +111,7 @@ export default class AutosetnameCommand {
         fs.writeFileSync(pathData, JSON.stringify(dataJson, null, 4), "utf-8");
         api.sendMessage(
           `→ Đặt cấu hình tên thành viên mới thành công\n→ Preview: ${content}`,
-          threadID
+          threadID,
         );
         break;
       }
@@ -117,20 +121,20 @@ export default class AutosetnameCommand {
         if (thisThread.nameUser.length == 0)
           return api.sendMessage(
             "→ Nhóm bạn chưa đặt cấu hình tên thành viên mới!!",
-            threadID
+            threadID,
           );
         thisThread.nameUser = [];
         fs.writeFileSync(pathData, JSON.stringify(dataJson, null, 4), "utf-8");
         api.sendMessage(
           `→ Xóa thành công phần cấu hình tên thành viên mới`,
-          threadID
+          threadID,
         );
         break;
       }
       default: {
         api.sendMessage(
           `〈 HDSD 〉\n→ Dùng: autosetname add <name> để cấu hình biệt danh cho thành viên mới\n→ Dùng: autosetname remove để xóa cấu hình đặt biệt danh cho thành viên mới`,
-          threadID
+          threadID,
         );
       }
     }

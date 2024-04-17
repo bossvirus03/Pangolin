@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class UidCommand {
   static config = {
@@ -12,7 +13,7 @@ export default class UidCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     if (!args[1]) return api.sendMessage(event.senderID, event.threadID);
     const propertyValues = Object.keys(event.mentions);
     propertyValues.forEach((item) => {

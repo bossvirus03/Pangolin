@@ -3,6 +3,10 @@ import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as fs from "fs";
 import * as cache from "memory-cache";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class ExportCommand {
   static config = {
@@ -41,7 +45,7 @@ export default class ExportCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     const folderPath = join(process.cwd(), "/src/modules/commands");
     // Read directory
     const files: any = await new Promise((resolve, reject) => {
@@ -64,7 +68,13 @@ export default class ExportCommand {
       event.messageID,
     );
   }
-  async event({ api, event, client, UserData, ThreadData }) {
+  async event({
+    api,
+    event,
+    client,
+    UserData,
+    ThreadData,
+  }: IPangolinListenEvent) {
     const messageID = cache.get("messageID");
     if (event.type === "message_reply") {
       if (messageID && event.messageReply.messageID == messageID) {

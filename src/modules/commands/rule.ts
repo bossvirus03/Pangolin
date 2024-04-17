@@ -3,6 +3,10 @@ import * as fs from "fs";
 import * as cache from "memory-cache";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 export default class RuleCommand {
   static config = {
     name: "rule",
@@ -42,11 +46,11 @@ export default class RuleCommand {
           JSON.stringify(dataRuleAfterUpdate),
           {
             encoding: "utf-8",
-          }
+          },
         );
         api.sendMessage(
           `Đã xóa thành công rule ${ruleIndex}!!`,
-          event.threadID
+          event.threadID,
         );
       }
     }
@@ -92,7 +96,7 @@ export default class RuleCommand {
     }
     api.sendMessage(`Đã thêm thành công rule: ${rule}`, event.threadID);
   }
-  async event({ api, event, client }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     if (event.type === "message_reply") {
       if (event.messageReply.messageID == cache.get("tmp-rule-message")) {
         if ((event.body as string).startsWith("remove")) {
@@ -109,7 +113,7 @@ export default class RuleCommand {
       }
     }
   }
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     if (args[1] === "add") {
       const rule = (event.body as string).split(args[1])[1].trim();
       if (!rule) return api.sendMessage("Vui lòng viết rule!", event.threadID);
@@ -136,7 +140,7 @@ export default class RuleCommand {
       const previousWarn = fs.readFileSync(this.pathDataRule, "utf8");
       const previousWarnArray = JSON.parse(previousWarn);
       const ruleOfThread = previousWarnArray.filter(
-        (item) => item.threadID === event.threadID
+        (item) => item.threadID === event.threadID,
       );
       const name = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
@@ -157,7 +161,7 @@ export default class RuleCommand {
         (err, message) => {
           cache.put("tmp-rule-message", message.messageID, 1000 * 5 * 60);
         },
-        event.messageID
+        event.messageID,
       );
     }
   }

@@ -2,6 +2,7 @@ import axios from "axios";
 import { join } from "path";
 import * as fs from "fs";
 import { createCanvas, loadImage } from "canvas";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class NameCommand {
   static config = {
@@ -41,7 +42,7 @@ export default class NameCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     const canvasWidth = 900;
     const canvasHeight = 1200;
     const canvas = createCanvas(canvasWidth, canvasHeight);

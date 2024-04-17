@@ -1,6 +1,7 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import fast from "fast-speedtest-api";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class FastCommand {
   static config = {
     name: "fast",
@@ -11,7 +12,7 @@ export default class FastCommand {
   };
 
   constructor(private client) {}
-  async run(api, event, client, args) {
+  async run({ api, event, client, args }: IPangolinRun) {
     try {
       const speedTest = new fast({
         token: "YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm",
@@ -27,14 +28,14 @@ export default class FastCommand {
         "🚀 Speed: " + resault + " Mbps",
         event.threadID,
         () => {},
-        event.messageID
+        event.messageID,
       );
     } catch {
       return api.sendMessage(
         "⚠️ Không thể speedtest ngay lúc này, hãy thử lại sau!",
         event.threadID,
         () => {},
-        event.messageID
+        event.messageID,
       );
     }
   }

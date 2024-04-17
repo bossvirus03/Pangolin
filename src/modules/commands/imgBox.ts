@@ -3,6 +3,7 @@ import * as fs from "fs";
 import { join } from "path";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class ImgBoxCommand {
   static config = {
@@ -16,7 +17,7 @@ export default class ImgBoxCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
     if (event.type == "message_reply") {
       const imgPath = join(
         process.cwd(),

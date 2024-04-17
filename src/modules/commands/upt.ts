@@ -4,6 +4,7 @@ import * as os from "os";
 import moment from "moment-timezone";
 import fs from "fs";
 import * as nodeDiskInfo from "node-disk-info";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class UptCommand {
   static config = {
@@ -15,14 +16,14 @@ export default class UptCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const ping = Date.now();
     async function getDependencyCount() {
       try {
         await fs.promises.access("package.json");
         const packageJsonString = await fs.promises.readFile(
           "package.json",
-          "utf-8"
+          "utf-8",
         );
         const packageJson = JSON.parse(packageJsonString);
 
@@ -32,7 +33,7 @@ export default class UptCommand {
 
         const depCount = Object.keys(packageJson.dependencies || {}).length;
         const devDepCount = Object.keys(
-          packageJson.devDependencies || {}
+          packageJson.devDependencies || {},
         ).length;
 
         return { depCount, devDepCount };

@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class GetLinkCommand {
   static config = {
@@ -12,7 +13,7 @@ export default class GetLinkCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
     if (event.type == "message_reply") {
       if (event.messageReply.attachments) {
         event.messageReply.attachments.forEach((item, index) => {

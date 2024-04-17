@@ -4,6 +4,10 @@ import IEvent from "src/types/type.event";
 import * as fs from "fs";
 import * as cache from "memory-cache";
 import { join } from "path";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 export default class SendAllCommand {
   static config = {
     name: "sendAll", //your command name
@@ -44,7 +48,7 @@ export default class SendAllCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     const sendAllPath = join(process.cwd(), "/src/db/data/sendAll.json");
     async function pushMessageID(ID) {
       let messageID = [ID];
@@ -142,7 +146,7 @@ export default class SendAllCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinListenEvent) {
     const sendAllPath = join(process.cwd(), "/src/db/data/sendAll.json");
     const dataMessageID = fs.readFileSync(sendAllPath, "utf8");
     if (!dataMessageID) return;

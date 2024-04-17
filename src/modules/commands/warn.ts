@@ -2,6 +2,7 @@ import { join } from "path";
 import * as fs from "fs";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class WarnCommand {
   static config = {
@@ -16,11 +17,11 @@ export default class WarnCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     if (event.type === "message_reply" && event.mentions) {
       return api.sendMessage(
         "Chỉ reply hoặc chỉ tag user cần warn!",
-        event.threadID
+        event.threadID,
       );
     }
     const pathDataWarn = join(process.cwd(), "/src/db/data/warn.json");
@@ -28,7 +29,7 @@ export default class WarnCommand {
       const previousWarn = fs.readFileSync(pathDataWarn, "utf8");
       const previousWarnArray = JSON.parse(previousWarn);
       const newDataWarn = previousWarnArray.filter(
-        (item) => item.warnedId != warnedId
+        (item) => item.warnedId != warnedId,
       );
       await fs.writeFileSync(pathDataWarn, JSON.stringify(newDataWarn), {
         encoding: "utf-8",
@@ -74,7 +75,7 @@ export default class WarnCommand {
       }
       api.sendMessage(
         `Đã warn thành công user ${warnedId} với lí do: ${reason}`,
-        event.threadID
+        event.threadID,
       );
     }
     if (event.type === "message_reply") {
@@ -96,7 +97,7 @@ export default class WarnCommand {
                 body: `${info[warnedId].name} bạn đã bị báo cảnh báo 3 lần: ${item.reason.map(
                   (item) => {
                     return `\n${i++}. ${item}`;
-                  }
+                  },
                 )} \nBạn còn 1 lần nữa là sẽ bị kick khỏi nhóm!`,
                 mentions: [
                   {
@@ -105,14 +106,14 @@ export default class WarnCommand {
                   },
                 ],
               },
-              event.threadID
+              event.threadID,
             );
           }
           if (item.reason.length == 4) {
             let i = 1;
             api.sendMessage(
               `Bạn đã bị báo cảnh báo 4 lần! Good bye...`,
-              event.threadID
+              event.threadID,
             );
             api.removeUserFromGroup(warnedId, event.threadID);
             delDataWarn(warnedId);
@@ -123,10 +124,10 @@ export default class WarnCommand {
     if (!args[1] || !event.mentions)
       return api.sendMessage(
         "Vui lòng tag một người! hoặc reply tin nhắn của người cần warn",
-        event.threadID
+        event.threadID,
       );
     const reason = (event.body as string).split(
-      Object.values(event.mentions)[0] as string
+      Object.values(event.mentions)[0] as string,
     )[1];
     if (!reason)
       return api.sendMessage("Vui lòng viết lí do warn!", event.threadID);
@@ -154,7 +155,7 @@ export default class WarnCommand {
                   body: `${info[warnedId[0]].name} bạn đã bị báo cảnh báo 3 lần: ${item.reason.map(
                     (item) => {
                       return `\n${i++}. ${item}`;
-                    }
+                    },
                   )} \nBạn còn 1 lần nữa là sẽ bị kick khỏi nhóm!`,
                   mentions: [
                     {
@@ -163,7 +164,7 @@ export default class WarnCommand {
                     },
                   ],
                 },
-                event.threadID
+                event.threadID,
               );
             }
             console.log(item.reason);
@@ -171,7 +172,7 @@ export default class WarnCommand {
               let i = 1;
               api.sendMessage(
                 `Bạn đã bị báo cảnh báo 4 lần! Good bye...`,
-                event.threadID
+                event.threadID,
               );
               api.removeUserFromGroup(warnedId, event.threadID);
               delDataWarn(warnedId);
@@ -181,7 +182,7 @@ export default class WarnCommand {
       } else {
         return api.sendMessage(
           "Vui lòng tag một người! hoặc reply tin nhắn của người cần warn",
-          event.threadID
+          event.threadID,
         );
       }
     }

@@ -2,6 +2,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class WeatherCommand {
   static config = {
     name: "weather",
@@ -14,13 +15,13 @@ export default class WeatherCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, args }) {
+  async run({ api, event, args }: IPangolinRun) {
     const toDay = dayjs().format("YYYY-MM-DD");
     const getIp = await axios.get(
-      `https://ipinfo.io?token=${process.env.YOUR_IPINFO_API_KEY}`
+      `https://ipinfo.io?token=${process.env.YOUR_IPINFO_API_KEY}`,
     );
     const getWeather = await axios.get(
-      `https://api.weatherapi.com/v1/marine.json?q=${getIp.data.ip}&dt=${toDay}&lang=vi&key=${process.env.YOUR_WEATHER_API_KEY}`
+      `https://api.weatherapi.com/v1/marine.json?q=${getIp.data.ip}&dt=${toDay}&lang=vi&key=${process.env.YOUR_WEATHER_API_KEY}`,
     );
     if (getWeather) {
       let smg =

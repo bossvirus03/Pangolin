@@ -3,6 +3,10 @@ import { join } from "path";
 import * as fs from "fs";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class autoReaction {
   static config = {
@@ -42,7 +46,7 @@ export default class autoReaction {
 
   pathAutoReaction = join(process.cwd(), "/src/db/data/autoReaction.json");
 
-  async event({ api, event, client, args }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     if (event.type == "message") {
       const dataAutoReaction = fs.readFileSync(this.pathAutoReaction, {
         encoding: "utf-8",
@@ -71,7 +75,7 @@ export default class autoReaction {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     if (!args[1] || !event.mentions)
       return api.sendMessage(
         getLang("tagOne"),

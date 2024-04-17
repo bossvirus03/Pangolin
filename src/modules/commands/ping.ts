@@ -1,5 +1,9 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinNoprefix,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class PingCommand {
   static config = {
@@ -38,7 +42,7 @@ export default class PingCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     api.sendMessage(getLang("prefix"), event.threadID);
   }
 
@@ -51,7 +55,7 @@ export default class PingCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinNoprefix) {
     api.sendMessage(getLang("noPrefix"), event.threadID);
   }
 }

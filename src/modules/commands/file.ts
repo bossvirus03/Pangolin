@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { join } from "path";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class FileCommand {
   static config = {
@@ -62,7 +63,7 @@ export default class FileCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     try {
       const rootDirectory = process.cwd();
       let msg = "";

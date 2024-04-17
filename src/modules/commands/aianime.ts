@@ -3,6 +3,7 @@ import IEvent from "src/types/type.event";
 import axios from "axios";
 import fs from "fs-extra";
 import { join } from "path";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class AianimeCommand {
   static config = {
@@ -15,7 +16,7 @@ export default class AianimeCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const { threadID } = event;
     if (event.type == "message_reply") {
       if (event.messageReply.attachments) {
@@ -23,7 +24,7 @@ export default class AianimeCommand {
           const attachments = event.messageReply.attachments;
           const promises = attachments.map(async (item) => {
             const res = await axios.get(
-              `https://sumiproject.io.vn/imgur?link=${encodeURIComponent(item.url)}`
+              `https://sumiproject.io.vn/imgur?link=${encodeURIComponent(item.url)}`,
             );
             const link = res.data.uploaded.image;
             api.sendMessage(
@@ -32,22 +33,22 @@ export default class AianimeCommand {
               (err, info) =>
                 setTimeout(() => {
                   api.unsendMessage(info.messageID);
-                }, 5000)
+                }, 5000),
             );
             const rec = await axios.get(
-              `https://apichatbot.sumiproject.io.vn/phototoanime?url=${link}`
+              `https://apichatbot.sumiproject.io.vn/phototoanime?url=${link}`,
             );
             const imageURL = `https://www.drawever.com${rec.data}`;
             const imagePath = join(
               process.cwd(),
-              `/public/images/${Date.now()}.jpeg`
+              `/public/images/${Date.now()}.jpeg`,
             );
             const imageResponse = await axios.get(imageURL, {
               responseType: "arraybuffer",
             });
             fs.writeFileSync(
               imagePath,
-              Buffer.from(imageResponse.data, "binary")
+              Buffer.from(imageResponse.data, "binary"),
             );
             return {
               body: `✅ Xử lý ảnh thành công`,
@@ -66,7 +67,7 @@ export default class AianimeCommand {
               (err) => {
                 if (err) console.log(err);
               },
-              event.messageID
+              event.messageID,
             );
           });
         } catch (error) {

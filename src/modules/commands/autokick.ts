@@ -2,6 +2,10 @@ import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import fs from "fs";
 import { join } from "path";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class AutokickCommand {
   static config = {
@@ -15,7 +19,7 @@ export default class AutokickCommand {
 
   constructor(private client) {}
 
-  async event({ api, event, client, args }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     try {
       const filePath = join(process.cwd(), `/src/db/data/autokick.json`);
       const encoding = "utf8";
@@ -24,7 +28,7 @@ export default class AutokickCommand {
         fs.writeFileSync(
           filePath,
           '{"Trangthai": "on", "tukhoa": [], "userId": {}}',
-          "utf-8"
+          "utf-8",
         );
       }
 
@@ -65,17 +69,17 @@ export default class AutokickCommand {
                 if (result.success) {
                   await api.sendMessage(
                     `✅ ${senderInfo} đã bị xóa khỏi nhóm do vi phạm quá nhiều lần.`,
-                    threadID
+                    threadID,
                   );
                   delete jsonData.userId[userId];
                   fs.writeFileSync(
                     filePath,
                     JSON.stringify(jsonData, null, 2),
-                    "utf-8"
+                    "utf-8",
                   );
                 } else {
                   console.error(
-                    `Failed to remove user ${senderInfo} from group ${threadID}`
+                    `Failed to remove user ${senderInfo} from group ${threadID}`,
                   );
                 }
               } else {
@@ -83,11 +87,11 @@ export default class AutokickCommand {
                 fs.writeFileSync(
                   filePath,
                   JSON.stringify(jsonData, null, 2),
-                  "utf-8"
+                  "utf-8",
                 );
                 await api.sendMessage(
                   `✅ Ghi nhận lỗi vi phạm từ người dùng ${senderInfo}. Số lần vi phạm: ${kickCount + 1}/3`,
-                  threadID
+                  threadID,
                 );
               }
             } catch (error) {
@@ -102,7 +106,7 @@ export default class AutokickCommand {
     }
   }
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const { threadID } = event;
     const filePath = join(process.cwd(), `/src/db/data/autokick.json`);
 
@@ -111,7 +115,7 @@ export default class AutokickCommand {
         fs.writeFileSync(
           filePath,
           '{"Trangthai": "on", "tukhoa": [], "userId": {}}',
-          "utf-8"
+          "utf-8",
         );
       }
 
@@ -123,14 +127,14 @@ export default class AutokickCommand {
         fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), "utf-8");
         await api.sendMessage(
           `Đã bật tính năng tự động kiểm tra từ cấm.`,
-          threadID
+          threadID,
         );
       } else if (args[1] === "off") {
         jsonData.Trangthai = "off";
         fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), "utf-8");
         await api.sendMessage(
           `Đã tắt tính năng tự động kiểm tra từ cấm.`,
-          threadID
+          threadID,
         );
       } else if (args[1] === "list") {
         const bannedWords = jsonData.tukhoa || [];
@@ -142,7 +146,7 @@ export default class AutokickCommand {
             : "Danh sách từ cấm trống.";
         await api.sendMessage(
           `Danh sách từ cấm:\n${bannedWordsList}`,
-          threadID
+          threadID,
         );
       } else if (args[1] === "remove") {
         const index = parseInt(args[2]);
@@ -154,11 +158,11 @@ export default class AutokickCommand {
             fs.writeFileSync(
               filePath,
               JSON.stringify(jsonData, null, 2),
-              "utf-8"
+              "utf-8",
             );
             await api.sendMessage(
               `Đã xóa từ cấm số ${index} thành công.`,
-              threadID
+              threadID,
             );
           } else {
             await api.sendMessage(`Số list không hợp lệ.`, threadID);
@@ -166,7 +170,7 @@ export default class AutokickCommand {
         } else {
           await api.sendMessage(
             `Vui lòng nhập một số nguyên là số thứ tự của từ cấm cần xóa.`,
-            threadID
+            threadID,
           );
         }
       } else if (args[1] === "removeall") {
@@ -174,7 +178,7 @@ export default class AutokickCommand {
         fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), "utf-8");
         await api.sendMessage(
           `Đã xóa tất cả từ cấm trong danh sách.`,
-          threadID
+          threadID,
         );
       } else if (args[1] === "add") {
         const newKeyword = args.slice(2).join(" ").toLowerCase();
@@ -185,22 +189,22 @@ export default class AutokickCommand {
           fs.writeFileSync(
             filePath,
             JSON.stringify(jsonData, null, 2),
-            "utf-8"
+            "utf-8",
           );
           await api.sendMessage(
             `Đã thêm từ cấm "${newKeyword}" vào danh sách.`,
-            threadID
+            threadID,
           );
         } else {
           await api.sendMessage(
             `Vui lòng nhập từ khóa cấm cần thêm.`,
-            threadID
+            threadID,
           );
         }
       } else {
         await api.sendMessage(
           "Lệnh không hợp lệ. Vui lòng sử dụng 'autokick on', 'autokick off', 'autokick list', 'autokick remove [số list cần xóa]', 'autokick removeall' hoặc 'autokick add [từ khóa cấm]'.",
-          threadID
+          threadID,
         );
       }
     } catch (error) {

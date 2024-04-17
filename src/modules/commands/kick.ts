@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class SetNameCommand {
   static config = {
@@ -13,7 +14,7 @@ export default class SetNameCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     try {
       const info: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
@@ -31,7 +32,7 @@ export default class SetNameCommand {
       ) {
         return api.sendMessage(
           "Bạn cần set cho bot làm admin để sử dụng lệnh này",
-          event.threadID
+          event.threadID,
         );
       }
     } catch (err) {
@@ -61,7 +62,7 @@ export default class SetNameCommand {
           };
         }),
       },
-      event.threadID
+      event.threadID,
     );
   }
 }

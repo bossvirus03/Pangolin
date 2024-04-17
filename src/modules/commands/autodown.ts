@@ -4,6 +4,10 @@ import { join } from "path";
 import fs from "fs";
 import axios from "axios";
 import * as ytdl from "@distube/ytdl-core";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 function urlify(text) {
   const urlRegex = /(https?:\/\/[^\s]+)/gi;
@@ -21,7 +25,9 @@ async function playVideo(api, event, video) {
   const path = join(process.cwd(), `/public/videos/${Date.now()}.mp4`);
   const videoUrl = video.formats.filter(
     (item) =>
-      item.hasAudio == true && item.hasAudio == true && item.quality == "medium"
+      item.hasAudio == true &&
+      item.hasAudio == true &&
+      item.quality == "medium",
   )[0].url;
   try {
     const { videoId, title } = video.player_response.videoDetails;
@@ -31,7 +37,7 @@ async function playVideo(api, event, video) {
           "Xin lỗi video này quá dài bạn vui lòng tự nhấn xem tại: " +
             "https://www.youtube.com/watch?v=" +
             videoId,
-          event.threadID
+          event.threadID,
         );
         return;
       }
@@ -44,7 +50,7 @@ async function playVideo(api, event, video) {
             attachment: video,
             body: title,
           },
-          event.threadID
+          event.threadID,
         );
       });
     });
@@ -99,7 +105,7 @@ export default class autodown {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     try {
       const duongdan = join(process.cwd(), `/src/db/data/autodown.json`);
       if (args[1] === "on") {
@@ -127,7 +133,7 @@ export default class autodown {
 │› Reddit: ❎
 ╰─────────────⭓
 `,
-          event.threadID
+          event.threadID,
         );
       } else if (args[1] === "off") {
         const fileExists = fs.existsSync(duongdan);
@@ -156,13 +162,13 @@ export default class autodown {
 │› Reddit: ❎
 ╰─────────────⭓
 `,
-            event.threadID
+            event.threadID,
           );
         }
       } else {
         await api.sendMessage(
           "Lệnh không hợp lệ. Vui lòng sử dụng 'autodown on' hoặc 'autodown off'.",
-          event.threadID
+          event.threadID,
         );
       }
     } catch (error) {
@@ -170,7 +176,7 @@ export default class autodown {
     }
   }
 
-  async event({ api, event, client }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     try {
       const encoding = "utf8";
       const duongdan = join(process.cwd(), `/src/db/data/autodown.json`);
@@ -191,7 +197,7 @@ export default class autodown {
           } else if (/fb|facebook/.test(url)) {
             const res = (
               await axios.get(
-                `https://j2download.net/api/facebook/media?url=${url}`
+                `https://j2download.net/api/facebook/media?url=${url}`,
               )
             ).data;
             if (res.attachments && res.attachments.length > 0) {
@@ -203,20 +209,20 @@ export default class autodown {
                   } else if (facebook.type === "Photo") {
                     return await streamURL(facebook.url, "jpg");
                   }
-                })
+                }),
               );
               await api.sendMessage(
                 {
                   body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/ig|instagam|threads/.test(url)) {
             const res = (
               await axios.get(
-                `https://j2download.net/api/instagram/media?url=${url}`
+                `https://j2download.net/api/instagram/media?url=${url}`,
               )
             ).data;
             let attachment = [];
@@ -237,13 +243,13 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/capcut/.test(url)) {
             const res = (
               await axios.get(
-                `https://apichatbot.sumiproject.io.vn/capcutdowload?url=${url}`
+                `https://apichatbot.sumiproject.io.vn/capcutdowload?url=${url}`,
               )
             ).data;
             if (res.video) {
@@ -252,13 +258,13 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n${res.title || "Không Có Tiêu Đề"}\n${res.description || "Không Có Mô Tả"}`,
                   attachment: await streamURL(res.video, "mp4"),
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/soundcloud/.test(url)) {
             const res = (
               await axios.get(
-                `https://sumiproject.io.vn/soundcloud/dowload?link=${url}`
+                `https://sumiproject.io.vn/soundcloud/dowload?link=${url}`,
               )
             ).data;
             if (res.audio[0].url) {
@@ -267,13 +273,13 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n${res.title || "Không Có Tiêu Đề"}\n`,
                   attachment: await streamURL(res.audio[0].url, "mp3"),
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/twitter|tw|x/.test(url)) {
             const res = (
               await axios.get(
-                `https://nguyenmanh.name.vn/api/twitterDL?url=${url}&apikey=AVny3Riw`
+                `https://nguyenmanh.name.vn/api/twitterDL?url=${url}&apikey=AVny3Riw`,
               )
             ).data;
             if (res.result.SD) {
@@ -282,13 +288,13 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n`,
                   attachment: await streamURL(res.result.SD, "mp4"),
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/spotify/.test(url)) {
             const res = (
               await axios.get(
-                `https://nguyenmanh.name.vn/api/spDL?url=${url}&apikey=AVny3Riw`
+                `https://nguyenmanh.name.vn/api/spDL?url=${url}&apikey=AVny3Riw`,
               )
             ).data;
             if (res.result.preview_audio) {
@@ -297,12 +303,12 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n${res.result.name || "Không Có Tiêu Đề"}\n`,
                   attachment: await streamURL(res.result.preview_audio, "mp3"),
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/mp3|zing/.test(url)) {
             const res = await axios.get(
-              `https://nguyenmanh.name.vn/api/zMp3DL?url=${url}&apikey=AVny3Riw`
+              `https://nguyenmanh.name.vn/api/zMp3DL?url=${url}&apikey=AVny3Riw`,
             );
             if (res.data.result) {
               await api.sendMessage(
@@ -310,13 +316,13 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n`,
                   attachment: await streamURL(res.data.result, "mp3"),
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/kuaishou/.test(url)) {
             const res = (
               await axios.get(
-                `https://nguyenmanh.name.vn/api/kuaishou?url=${url}&apikey=jddAywUs`
+                `https://nguyenmanh.name.vn/api/kuaishou?url=${url}&apikey=jddAywUs`,
               )
             ).data;
             if (res.result.videonowatermark) {
@@ -325,16 +331,16 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n${res.result.photo.caption || "Không Có Tiêu Đề"}\n`,
                   attachment: await streamURL(
                     res.result.videonowatermark,
-                    "mp4"
+                    "mp4",
                   ),
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/tiktok|douyin/.test(url)) {
             const res = (
               await axios.get(
-                `https://j2download.net/api/tiktok/media?url=${url}`
+                `https://j2download.net/api/tiktok/media?url=${url}`,
               )
             ).data;
             let attachment = [];
@@ -353,13 +359,13 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
-                event.threadID
+                event.threadID,
               );
             }
           } else if (/pin|pinterest/.test(url)) {
             const res = (
               await axios.get(
-                `https://j2download.net/api/pinterest/media?url=${url}`
+                `https://j2download.net/api/pinterest/media?url=${url}`,
               )
             ).data;
             let attachment = [];
@@ -385,7 +391,7 @@ export default class autodown {
                   body: `〈 Autodown Social Network 〉\n${res.message || "Không Có Tiêu Đề"}\n`,
                   attachment,
                 },
-                event.threadID
+                event.threadID,
               );
             }
           }

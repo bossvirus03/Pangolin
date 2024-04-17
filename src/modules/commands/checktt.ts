@@ -1,6 +1,10 @@
 import * as cache from "memory-cache";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 import { IUserInThreadData } from "src/types/type.userInThreadData";
 
 export default class CheckttCommand {
@@ -31,7 +35,14 @@ export default class CheckttCommand {
 
   constructor(private client) {}
 
-  async event({ api, event, client, UserData, ThreadData, UserInThreadData }) {
+  async event({
+    api,
+    event,
+    client,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+  }: IPangolinListenEvent) {
     if (event.type === "message_reaction") {
       const messageID = cache.get("message-id");
       if (messageID && event.reaction === "❤") {
@@ -52,7 +63,7 @@ export default class CheckttCommand {
               } catch (error) {
                 console.error("Error:", error);
               }
-            })
+            }),
           );
 
           smg.sort((a, b) => b.exp - a.exp);
@@ -80,7 +91,7 @@ export default class CheckttCommand {
 
           api.sendMessage(
             "[ KIỂM TRA TIN NHẮN TỔNG ]" + "\n" + smgSorted,
-            event.threadID
+            event.threadID,
           );
           cache.del("message-id");
         });
@@ -97,7 +108,7 @@ export default class CheckttCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     try {
       const user = event.senderID;
       const res = await UserInThreadData.get(user, event.threadID);
@@ -476,10 +487,10 @@ export default class CheckttCommand {
             {
               messageID: res.messageID,
             },
-            5 * 1000 * 60 //5 minutes
+            5 * 1000 * 60, //5 minutes
           );
         },
-        event.messageID
+        event.messageID,
       );
     } catch (error) {
       console.error("Error:", error);

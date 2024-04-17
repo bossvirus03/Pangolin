@@ -4,6 +4,7 @@ import { join } from "path";
 import fs from "fs";
 import axios from "axios";
 import request from "request";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class InfoboxCommand {
   static config = {
@@ -16,7 +17,7 @@ export default class InfoboxCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     try {
       const threadInfo: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
@@ -70,7 +71,7 @@ export default class InfoboxCommand {
           },
           event.threadID,
           () => fs.unlinkSync(`${path}/1.png`),
-          event.messageID
+          event.messageID,
         );
 
       request(encodeURI(`${threadInfo.imageSrc}`))

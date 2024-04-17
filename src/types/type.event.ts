@@ -22,6 +22,5 @@ export default interface IEvent {
   logMessageType?: string;
   logMessageData?: any;
   reaction?: string;
+  author?: string;
 }
-
-export interface ICommand {}

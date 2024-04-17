@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { join } from "path";
 import Ifca from "src/types/type.api";
+import { IPangolinEvent } from "src/types/type.pangolin-handle";
 
 export default class NotiCommand {
   static config = {
@@ -13,7 +14,7 @@ export default class NotiCommand {
 
   constructor(private client) {}
 
-  async run({ api, event }) {
+  async run({ api, event }: IPangolinEvent) {
     const GifPath = join(process.cwd(), "/src/db/data/leave/leave.gif");
     if (event.logMessageType === "log:unsubscribe") {
       // console.log(event);
@@ -21,7 +22,7 @@ export default class NotiCommand {
         event.logMessageData.leftParticipantFbId,
         (err, user) => {
           if (err) return console.log(err);
-        }
+        },
       );
 
       if (event.logMessageData.leftParticipantFbId == event.author) {
@@ -32,7 +33,7 @@ export default class NotiCommand {
               " đã tự rời khỏi nhóm",
             attachment: fs.createReadStream(GifPath),
           },
-          event.threadID
+          event.threadID,
         );
       } else {
         api.sendMessage(
@@ -42,7 +43,7 @@ export default class NotiCommand {
               " đã bị admin đá khỏi nhóm",
             attachment: fs.createReadStream(GifPath),
           },
-          event.threadID
+          event.threadID,
         );
       }
     }

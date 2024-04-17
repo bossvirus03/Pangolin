@@ -5,6 +5,10 @@ import { join } from "path";
 import * as ytdl from "@distube/ytdl-core";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class VideoCommand {
   static config = {
@@ -17,7 +21,7 @@ export default class VideoCommand {
   };
 
   constructor(private client) {}
-  async event({ api, event, client }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     if (event.type == "message_reply") {
       const listVideoYoutubeSearch = cache.get("list-video-youtube-search");
       if (
@@ -29,7 +33,7 @@ export default class VideoCommand {
             let video;
             const path = join(
               process.cwd(),
-              `/public/videos/${item.index}.mp4`
+              `/public/videos/${item.index}.mp4`,
             );
             ytdl
               .getInfo(item.id)
@@ -40,7 +44,7 @@ export default class VideoCommand {
                     "Xin lỗi video này quá dài bạn vui lòng tự nhấn xem tại: " +
                       "https://www.youtube.com/watch?v=" +
                       item.id,
-                    event.threadID
+                    event.threadID,
                   );
                   return;
                 }
@@ -48,7 +52,7 @@ export default class VideoCommand {
                   (item) =>
                     item.hasAudio == true &&
                     item.hasAudio == true &&
-                    item.quality == "medium"
+                    item.quality == "medium",
                 )[0].url;
                 // console.log(videoUrl);
                 axios
@@ -62,7 +66,7 @@ export default class VideoCommand {
                         attachment: video,
                         body: "Download success",
                       },
-                      event.threadID
+                      event.threadID,
                     );
                   });
               })
@@ -75,7 +79,7 @@ export default class VideoCommand {
     }
   }
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const search = (event.body as string).split(args[0])[1];
     var listVideoResult = [];
     let index = 1;
@@ -115,10 +119,10 @@ export default class VideoCommand {
             data: listVideoResult,
             messageID: res.messageID,
           },
-          5 * 1000 * 60
+          5 * 1000 * 60,
         );
       },
-      event.messageID
+      event.messageID,
     );
   }
 }

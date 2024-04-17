@@ -5,6 +5,10 @@ import * as fs from "fs";
 import { join } from "path";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 export default class MangaCommand {
   static config = {
     name: "manga",
@@ -16,7 +20,7 @@ export default class MangaCommand {
   };
 
   constructor(private client) {}
-  async event({ api, event, client }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     const listManga = cache.get("manga");
     if (event.type == "message_reply") {
       let numChose = 1;
@@ -41,10 +45,10 @@ export default class MangaCommand {
                       cache.put(
                         "manga-list-chapter",
                         { data: chapters, messageID: res.messageID },
-                        5 * 1000 * 60
+                        5 * 1000 * 60,
                       );
                     },
-                    event.messageID
+                    event.messageID,
                   );
                 });
               }
@@ -72,7 +76,7 @@ export default class MangaCommand {
                     var ext = link.substring(link.lastIndexOf(".") + 1);
                     const path = join(
                       process.cwd(),
-                      `/public/images/${numOfImgChapter}.${ext}`
+                      `/public/images/${numOfImgChapter}.${ext}`,
                     );
                     // Create a promise for each image download
                     const promise = axios
@@ -87,7 +91,7 @@ export default class MangaCommand {
                       });
                     promises.push(promise);
                     numOfImgChapter++;
-                  }
+                  },
                 );
 
                 // Wait for all promises to resolve
@@ -99,7 +103,7 @@ export default class MangaCommand {
                         attachment: imgChapters,
                         body: `Có ${imgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
                       },
-                      event.threadID
+                      event.threadID,
                     );
                   })
                   .catch((error) => {
@@ -113,7 +117,7 @@ export default class MangaCommand {
       }
     }
   }
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const search = (event.body as string).split(args[0])[1].trim();
     try {
       const response = await axios.get(
@@ -122,7 +126,7 @@ export default class MangaCommand {
           params: {
             q: search,
           },
-        }
+        },
       );
 
       const rawLinks = response.data.split("<a");
@@ -164,7 +168,7 @@ export default class MangaCommand {
           });
           cache.put("manga", MangaChose, 10000 * 60);
         },
-        event.messageID
+        event.messageID,
       );
     } catch (error) {
       console.log("Error fetching data:", error);

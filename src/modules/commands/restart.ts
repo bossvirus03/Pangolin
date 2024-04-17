@@ -3,6 +3,7 @@ import IEvent from "src/types/type.event";
 import * as fs from "fs";
 import { join } from "path";
 import { exec } from "child_process";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class RestartCommand {
   static config = {
@@ -16,7 +17,7 @@ export default class RestartCommand {
 
   constructor(private client) {}
   pathFile = join(process.cwd(), "/src/db/data/restart.txt");
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
     api.sendMessage(global.getLang("Restarting"), event.threadID);
     fs.writeFileSync(this.pathFile, `${Date.now()} ${event.threadID}`);
     try {

@@ -3,6 +3,7 @@ import * as fs from "fs";
 import { join } from "path";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class NhentaiCommand {
   static config = {
     name: "nhentai",
@@ -15,11 +16,11 @@ export default class NhentaiCommand {
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     try {
       const imgPath = join(
         process.cwd(),
-        `/public/images/${event.threadID}.png`
+        `/public/images/${event.threadID}.png`,
       );
       const response = await axios.get("https://wholesomelist.com/api/list");
       const table = response.data.table;
@@ -44,7 +45,7 @@ export default class NhentaiCommand {
       if (args[1] == "tag") {
         return api.sendMessage(
           Array.from(uniqueTags).join(" ,"),
-          event.threadID
+          event.threadID,
         );
       }
       const tag = args.join(" ").split(args[0])[1].trim();
@@ -55,7 +56,7 @@ export default class NhentaiCommand {
         if (!tagItems) {
           return api.sendMessage(
             "Không thấy hình ảnh nào, Vui lòng chọn tag khác!",
-            event.threadID
+            event.threadID,
           );
         }
         const randomIndex = Math.floor(Math.random() * tagItems.length);
@@ -71,7 +72,7 @@ export default class NhentaiCommand {
         .then((response) => {
           const imgPath = join(
             process.cwd(),
-            `/public/images/${event.messageID}.png`
+            `/public/images/${event.messageID}.png`,
           );
           const buffer = Buffer.from(response.data);
           fs.writeFileSync(imgPath, buffer);
@@ -85,7 +86,7 @@ export default class NhentaiCommand {
             (err) => {
               if (err) return console.log(err);
             },
-            event.messageID
+            event.messageID,
           );
         });
     } catch (error) {

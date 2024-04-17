@@ -4,6 +4,10 @@ import * as fs from "fs";
 import { join } from "path";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class ResendCommand {
   static config = {
@@ -17,12 +21,12 @@ export default class ResendCommand {
   };
 
   constructor(private client) {}
-  async event({ api, event, client }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     const preCommand = await cache.get("command-event-on");
     if (!preCommand) return;
     if (
       !preCommand.some(
-        (item) => item.threadID == event.threadID && item.command == "resend"
+        (item) => item.threadID == event.threadID && item.command == "resend",
       )
     )
       return;
@@ -50,7 +54,7 @@ export default class ResendCommand {
           {
             body: `${user[event.senderID].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
           },
-          event.threadID
+          event.threadID,
         );
       }
       const attachments = message.attachments;
@@ -72,7 +76,7 @@ export default class ResendCommand {
                 body: `${user[event.senderID].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
                 attachment: listAttachmentUnsend,
               },
-              event.threadID
+              event.threadID,
             );
           })
           .catch((error) => {
@@ -90,7 +94,7 @@ export default class ResendCommand {
       });
     }
   }
-  async run(api, event, client, args) {
+  async run({ api, event, client, args }: IPangolinRun) {
     function getPrevCommandEvent() {
       const cachedArray = cache.get("command-event-on");
       if (cachedArray) {
@@ -108,7 +112,7 @@ export default class ResendCommand {
         if (
           prevCommandEventOn.some(
             (item) =>
-              item.threadID == event.threadID && item.command == "resend"
+              item.threadID == event.threadID && item.command == "resend",
           )
         ) {
           api.sendMessage("resend vẫn đang hoạt động", event.threadID);
@@ -123,7 +127,7 @@ export default class ResendCommand {
       api.sendMessage("Resend on!", event.threadID);
     } else if (args[1] == "off") {
       const newPrevCommandEventOn = prevCommandEventOn.filter(
-        (item) => item.threadID != event.threadID
+        (item) => item.threadID != event.threadID,
       );
       cache.put("command-event-on", newPrevCommandEventOn, 6 * 10000 * 5); // Time in ms
       api.sendMessage("Resend is disabled!!", event.threadID);

@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 import { IUserInThreadData } from "src/types/type.userInThreadData";
 export default class LoadAllCommand {
   static config = {
@@ -13,7 +14,13 @@ export default class LoadAllCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, UserData, ThreadData, UserInThreadData }) {
+  async run({
+    api,
+    event,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+  }: IPangolinRun) {
     try {
       const threadsData = await ThreadData.getAll();
       const threads = threadsData.map((item) => {

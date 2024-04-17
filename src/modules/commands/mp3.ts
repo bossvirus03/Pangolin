@@ -3,6 +3,7 @@ import IEvent from "src/types/type.event";
 import axios from "axios";
 import fs from "fs-extra";
 import { join } from "path";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class Mp3Command {
   static config = {
@@ -14,12 +15,12 @@ export default class Mp3Command {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const text = (event.body as string).split(args[0])[1];
     const encodedText = encodeURIComponent(text);
     try {
       const response = await axios.get(
-        `http://ac.mp3.zing.vn/complete?type=artist,song,key,code&num=500&query=${encodedText}`
+        `http://ac.mp3.zing.vn/complete?type=artist,song,key,code&num=500&query=${encodedText}`,
       );
 
       if (
@@ -34,14 +35,14 @@ export default class Mp3Command {
           `http://api.mp3.zing.vn/api/streaming/audio/${songId}/320`,
           {
             responseType: "arraybuffer",
-          }
+          },
         );
         const path = join(process.cwd(), `/public/audios/${songId}.mp3`);
         fs.writeFileSync(path, Buffer.from(songResponse.data, "utf-8"));
 
         api.sendMessage(
           { body: `${name} - ${casi}`, attachment: fs.createReadStream(path) },
-          event.threadID
+          event.threadID,
         );
       } else {
         api.sendMessage("Không tìm thấy bài hát phù hợp.", event.threadID);

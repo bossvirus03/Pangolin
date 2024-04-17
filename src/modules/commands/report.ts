@@ -7,6 +7,10 @@ import * as fs from "fs";
 import { threadId } from "worker_threads";
 import axios from "axios";
 import { IUserInThreadData } from "src/types/type.userInThreadData";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 sqlite3.verbose();
 
 export default class ReportCommand {
@@ -50,7 +54,7 @@ export default class ReportCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     const attachments = event?.messageReply?.attachments;
     const listAds = JSON.parse(process.env.ADMINS);
     const listAttachment = [];
@@ -142,7 +146,7 @@ export default class ReportCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinListenEvent) {
     if (event.type === "message_reply") {
       const reportInfo = cache.get("report");
       if (reportInfo && event.messageReply.messageID == reportInfo.messageID) {

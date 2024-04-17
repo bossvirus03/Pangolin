@@ -5,6 +5,10 @@ import { join } from "path";
 import * as ytdl from "@distube/ytdl-core";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class YtCommand {
   static config = {
@@ -17,7 +21,7 @@ export default class YtCommand {
   };
 
   constructor(private client) {}
-  async event({ api, event, client }) {
+  async event({ api, event, client }: IPangolinListenEvent) {
     if (event.type == "message_reply") {
       const listVideoYoutubeSearch = cache.get("list-audio-youtube-search");
       if (
@@ -29,7 +33,7 @@ export default class YtCommand {
             let audio;
             const path = join(
               process.cwd(),
-              `/public/audios/${item.index}.mp3`
+              `/public/audios/${item.index}.mp3`,
             );
             ytdl
               .getInfo(item.id)
@@ -39,12 +43,12 @@ export default class YtCommand {
                     "Xin lỗi audio này quá dài bạn vui lòng tự nhấn xem tại: " +
                       "https://www.youtube.com/watch?v=" +
                       item.id,
-                    event.threadID
+                    event.threadID,
                   );
                   return;
                 }
                 const videoUrl = res.formats.filter(
-                  (item) => item.hasAudio == true && item.quality == "medium"
+                  (item) => item.hasAudio == true && item.quality == "medium",
                 )[0].url;
                 // console.log(videoUrl);
                 axios
@@ -58,7 +62,7 @@ export default class YtCommand {
                         attachment: audio,
                         body: "Download success",
                       },
-                      event.threadID
+                      event.threadID,
                     );
                   });
               })
@@ -71,7 +75,7 @@ export default class YtCommand {
     }
   }
 
-  async run(api, event, client, args) {
+  async run({ api, event, client, args }: IPangolinRun) {
     const search = (event.body as string).split(args[0])[1];
     var listVideoResult = [];
     let index = 1;
@@ -111,10 +115,10 @@ export default class YtCommand {
             data: listVideoResult,
             messageID: res.messageID,
           },
-          5 * 1000 * 60
+          5 * 1000 * 60,
         );
       },
-      event.messageID
+      event.messageID,
     );
   }
 }

@@ -1,5 +1,6 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class TimeTableCommand {
   static config = {
@@ -11,7 +12,7 @@ export default class TimeTableCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args }) {
+  async run({ api, event, client, args }: IPangolinRun) {
     //   api.sendMessage(args.join(" ").split(`${args[0]}`)[1], event.threadID);
   }
 }

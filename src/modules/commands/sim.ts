@@ -3,6 +3,7 @@ import { join } from "path";
 import * as sqlite3 from "sqlite3";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 sqlite3.verbose();
 import * as stringSimilarity from "string-similarity";
 
@@ -28,7 +29,14 @@ export default class SimCommand {
       api.sendMessage("Đã tắt simsimi", event.threadID);
     }
   }
-  async event({ api, event, client, args, UserData, ThreadData }) {
+  async event({
+    api,
+    event,
+    client,
+    args,
+    UserData,
+    ThreadData,
+  }: IPangolinRun) {
     const db = new sqlite3.Database(
       join(process.cwd(), "src/db/data/simsimi.sqlite"),
       sqlite3.OPEN_READWRITE,

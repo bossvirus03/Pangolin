@@ -1,6 +1,7 @@
 import * as cache from "memory-cache";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class CheckCMCommand {
   static config = {
@@ -36,11 +37,11 @@ export default class CheckCMCommand {
     ThreadData,
     UserInThreadData,
     getLang,
-  }) {
+  }: IPangolinRun) {
     const response = cache.get("command-event-on");
     let smg: string = "";
     if (!response) {
-      smg = getLang("check");
+      smg = await getLang("check");
     } else {
       response.forEach(
         (item) => (smg += `${item.command} - ${item.threadID}\n`),
