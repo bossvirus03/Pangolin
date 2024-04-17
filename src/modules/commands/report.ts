@@ -1,7 +1,6 @@
 import { join } from "path";
 import * as sqlite3 from "sqlite3";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import * as cache from "memory-cache";
 import * as fs from "fs";
 import { threadId } from "worker_threads";

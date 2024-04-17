@@ -1,7 +1,6 @@
 import { readdirSync } from "fs";
 import { join } from "path";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class HelpCommand {

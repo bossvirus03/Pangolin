@@ -1,5 +1,3 @@
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
 import * as os from "os";
 import moment from "moment-timezone";
 import fs from "fs";

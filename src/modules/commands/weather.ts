@@ -1,7 +1,6 @@
 import axios from "axios";
 import dayjs from "dayjs";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class WeatherCommand {
   static config = {

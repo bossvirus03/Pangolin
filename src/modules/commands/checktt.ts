@@ -1,6 +1,5 @@
 import * as cache from "memory-cache";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import {
   IPangolinListenEvent,
   IPangolinRun,

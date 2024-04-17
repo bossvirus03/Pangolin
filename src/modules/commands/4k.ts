@@ -1,5 +1,3 @@
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
 import axios from "axios";
 import fs from "fs-extra";
 import { join } from "path";

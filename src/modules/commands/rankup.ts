@@ -1,8 +1,8 @@
 // import { readdirSync } from "fs";
 // import * as fs from "fs";
 // import { join } from "path";
-// import Ifca from "src/types/type.api";
-// import IEvent from "src/types/type.event";
+//
+//
 // export default class RankUpCommand {
 //   static config = {
 //     name: "rankup",

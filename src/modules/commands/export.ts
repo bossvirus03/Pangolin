@@ -1,6 +1,5 @@
 import { join } from "path";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import * as fs from "fs";
 import * as cache from "memory-cache";
 import {

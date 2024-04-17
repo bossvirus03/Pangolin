@@ -1,7 +1,6 @@
 import axios from "axios";
 import * as cache from "memory-cache";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class AiCommand {
   static config = {

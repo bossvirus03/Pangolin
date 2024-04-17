@@ -1,7 +1,6 @@
 import { join } from "path";
 import * as fs from "fs";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class WarnCommand {

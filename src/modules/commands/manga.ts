@@ -3,8 +3,7 @@ import * as cache from "memory-cache";
 import * as cheerio from "cheerio";
 import * as fs from "fs";
 import { join } from "path";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
+
 import {
   IPangolinListenEvent,
   IPangolinRun,
