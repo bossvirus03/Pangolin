@@ -86,7 +86,6 @@ export default class AutokickCommand {
     }
   }
 
-
   async run(
     api: Ifca,
     event: IEvent,
@@ -112,8 +111,42 @@ export default class AutokickCommand {
         jsonData.Trangthai = "off";
         fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
         await api.sendMessage(`Đã tắt tính năng tự động kiểm tra từ cấm.`, threadID);
+      } else if (args[1] === "list") {
+        const bannedWords = jsonData.tukhoa || [];
+        const bannedWordsList = bannedWords.length > 0 ? bannedWords.map((word, index) => `${index + 1}. ${word}`).join('\n') : 'Danh sách từ cấm trống.';
+        await api.sendMessage(`Danh sách từ cấm:\n${bannedWordsList}`, threadID);
+      } else if (args[1] === "remove") {
+        const index = parseInt(args[2]);
+        if (!isNaN(index)) {
+          const bannedWords = jsonData.tukhoa || [];
+          if (index > 0 && index <= bannedWords.length) {
+            bannedWords.splice(index - 1, 1);
+            jsonData.tukhoa = bannedWords;
+            fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
+            await api.sendMessage(`Đã xóa từ cấm số ${index} thành công.`, threadID);
+          } else {
+            await api.sendMessage(`Số list không hợp lệ.`, threadID);
+          }
+        } else {
+          await api.sendMessage(`Vui lòng nhập một số nguyên là số thứ tự của từ cấm cần xóa.`, threadID);
+        }
+      } else if (args[1] === "removeall") {
+        jsonData.tukhoa = [];
+        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
+        await api.sendMessage(`Đã xóa tất cả từ cấm trong danh sách.`, threadID);
+      } else if (args[1] === "add") {
+        const newKeyword = args.slice(2).join(" ").toLowerCase();
+        if (newKeyword) {
+          const bannedWords = jsonData.tukhoa || [];
+          bannedWords.push(newKeyword);
+          jsonData.tukhoa = bannedWords;
+          fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
+          await api.sendMessage(`Đã thêm từ cấm "${newKeyword}" vào danh sách.`, threadID);
+        } else {
+          await api.sendMessage(`Vui lòng nhập từ khóa cấm cần thêm.`, threadID);
+        }
       } else {
-        await api.sendMessage("Lệnh không hợp lệ. Vui lòng sử dụng 'autokick on' hoặc 'autokick off'.", threadID);
+        await api.sendMessage("Lệnh không hợp lệ. Vui lòng sử dụng 'autokick on', 'autokick off', 'autokick list', 'autokick remove [số list cần xóa]', 'autokick removeall' hoặc 'autokick add [từ khóa cấm]'.", threadID);
       }
     } catch (error) {
       console.error(error);
