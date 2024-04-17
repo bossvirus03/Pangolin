@@ -12,7 +12,7 @@ export default class ContactCommand {
 
   constructor(private client) {}
 
-  run(api: Ifca, event: IEvent, args) {
+  run({ api, event, args }) {
     api.shareContact("", event.senderID, event.threadID);
   }
 }

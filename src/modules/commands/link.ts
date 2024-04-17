@@ -12,7 +12,7 @@ export default class LinkCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     if (!args[1]) return api.sendMessage(event.senderID, event.threadID);
     const propertyValues = Object.keys(event.mentions);
     propertyValues.forEach((item) => {

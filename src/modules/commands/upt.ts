@@ -15,7 +15,7 @@ export default class UptCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     const ping = Date.now();
     async function getDependencyCount() {
       try {

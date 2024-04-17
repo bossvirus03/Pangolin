@@ -29,29 +29,29 @@ export default class PingCommand {
   };
   constructor(private client) {}
 
-  run(
-    api: Ifca,
-    event: IEvent,
+  run({
+    api,
+    event,
     client,
     args,
     UserData,
     ThreadData,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     api.sendMessage(getLang("prefix"), event.threadID);
   }
 
-  noprefix(
-    api: Ifca,
-    event: IEvent,
+  noprefix({
+    api,
+    event,
     client,
     args,
     UserData,
     ThreadData,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     api.sendMessage(getLang("noPrefix"), event.threadID);
   }
 }

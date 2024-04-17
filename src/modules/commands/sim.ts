@@ -18,7 +18,7 @@ export default class SimCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async run({ api, event, client, args, DataUser, DataThread }) {
     if (args[1] == "on") {
       cache.put("simsimi", event.threadID, 15 * 1000 * 60);
       api.sendMessage("Đã bật simsimi", event.threadID);
@@ -28,7 +28,7 @@ export default class SimCommand {
       api.sendMessage("Đã tắt simsimi", event.threadID);
     }
   }
-  async event(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async event({ api, event, client, args, DataUser, DataThread }) {
     const db = new sqlite3.Database(
       join(process.cwd(), "src/db/data/simsimi.sqlite"),
       sqlite3.OPEN_READWRITE,

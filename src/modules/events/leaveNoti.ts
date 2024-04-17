@@ -13,7 +13,7 @@ export default class NotiCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event) {
+  async run({ api, event }) {
     const GifPath = join(process.cwd(), "/src/db/data/leave/leave.gif");
     if (event.logMessageType === "log:unsubscribe") {
       // console.log(event);

@@ -33,16 +33,16 @@ export default class HelpCommand {
 
   constructor(private client) {}
 
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     UserData,
     ThreadData,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     console.log(global.getLang("Restarting"));
     const CurrentLanguage = process.env.LANGUAGE_CODE || "en";
     const commandPath = join(process.cwd(), "src", "modules", "commands");

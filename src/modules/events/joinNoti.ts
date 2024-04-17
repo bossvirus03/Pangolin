@@ -27,15 +27,7 @@ export default class NotiCommand {
     },
   };
   constructor(private client) {}
-  run(
-    api: Ifca,
-    event: IEvent,
-    client,
-    UserData,
-    ThreadData,
-    UserInThreadData,
-    getLang
-  ) {
+  run({ api, event, client, UserData, ThreadData, UserInThreadData, getLang }) {
     const GifPath = join(process.cwd(), "/src/db/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
     api.getThreadInfo(event.threadID, async (err, info) => {

@@ -14,7 +14,7 @@ export default class WeatherCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, args) {
+  async run({ api, event, args }) {
     const toDay = dayjs().format("YYYY-MM-DD");
     const getIp = await axios.get(
       `https://ipinfo.io?token=${process.env.YOUR_IPINFO_API_KEY}`

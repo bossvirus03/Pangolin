@@ -113,7 +113,7 @@
 //     ctx.fillText(currentLevel, 485, 330.42);
 //     return fimg;
 //   }
-//   async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+//   async run(api, event, client, args, DataUser, DataThread) {
 //     const countExp = (level) => {
 //       return (3 * (-2 + Math.pow(level * 2, 2))) / 4;
 //     };

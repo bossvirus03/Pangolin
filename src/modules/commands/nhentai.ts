@@ -15,7 +15,7 @@ export default class NhentaiCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     try {
       const imgPath = join(
         process.cwd(),

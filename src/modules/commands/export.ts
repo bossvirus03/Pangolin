@@ -32,16 +32,16 @@ export default class ExportCommand {
   };
 
   constructor(private client) {}
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     const folderPath = join(process.cwd(), "/src/modules/commands");
     // Read directory
     const files: any = await new Promise((resolve, reject) => {
@@ -64,7 +64,7 @@ export default class ExportCommand {
       event.messageID
     );
   }
-  async event(api: Ifca, event: IEvent, client, DataUser, DataThread) {
+  async event({ api, event, client, DataUser, DataThread }) {
     const messageID = cache.get("messageID");
     if (event.type === "message_reply") {
       if (messageID && event.messageReply.messageID == messageID) {

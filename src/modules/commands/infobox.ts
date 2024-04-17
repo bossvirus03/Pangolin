@@ -2,8 +2,8 @@ import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import { join } from "path";
 import fs from "fs";
-import axios from 'axios';
-import request from 'request';
+import axios from "axios";
+import request from "request";
 
 export default class InfoboxCommand {
   static config = {
@@ -16,10 +16,7 @@ export default class InfoboxCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca,
-    event: IEvent,
-    client,
-    args) {
+  async run({ api, event, client, args }) {
     try {
       const threadInfo: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {

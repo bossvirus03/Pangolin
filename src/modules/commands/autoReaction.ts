@@ -42,7 +42,7 @@ export default class autoReaction {
 
   pathAutoReaction = join(process.cwd(), "/src/db/data/autoReaction.json");
 
-  async event(api: Ifca, event: IEvent, client, args) {
+  async event({ api, event, client, args }) {
     if (event.type == "message") {
       const dataAutoReaction = fs.readFileSync(this.pathAutoReaction, {
         encoding: "utf-8",
@@ -62,16 +62,16 @@ export default class autoReaction {
       }
     }
   }
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     if (!args[1] || !event.mentions)
       return api.sendMessage(
         getLang("tagOne"),

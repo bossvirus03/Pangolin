@@ -12,7 +12,7 @@ export default class SetNameCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     if (!args[1] || !event.mentions)
       return api.sendMessage("Vui lòng tag một người!", event.threadID);
     const nickName = (event.body as string).split(

@@ -11,7 +11,7 @@ export default class TimeTableCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     //   api.sendMessage(args.join(" ").split(`${args[0]}`)[1], event.threadID);
   }
 }

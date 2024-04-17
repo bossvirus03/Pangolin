@@ -419,17 +419,15 @@ class Listen {
           const message = configGuideLang.getLang(key, args);
           return message;
         }
-        this.client.events
-          .get(key)
-          .run(
-            this.api,
-            event,
-            this.client,
-            this.UserData,
-            this.ThreadData,
-            this.UserInThreadData,
-            getLang
-          );
+        this.client.events.get(key).run({
+          api: this.api,
+          event,
+          client: this.client,
+          UserData: this.UserData,
+          ThreadData: this.ThreadData,
+          UserInThreadData: this.UserInThreadData,
+          getLang,
+        });
       });
 
       //load all command event
@@ -439,22 +437,20 @@ class Listen {
           const message = configGuideLang.getLang(key, args);
           return message;
         }
-        this.client.event
-          .get(key)
-          .event(
-            this.api,
-            event,
-            this.client,
-            this.UserData,
-            this.ThreadData,
-            this.UserInThreadData,
-            getLang
-          );
+        this.client.event.get(key).event({
+          api: this.api,
+          event,
+          client: this.client,
+          UserData: this.UserData,
+          ThreadData: this.ThreadData,
+          UserInThreadData: this.UserInThreadData,
+          getLang,
+        });
       });
       if (event.body != undefined) {
         let args = event.body.trim().split(" ");
         let configGuideLang = new ConfigGuideLang(this.client, args[0]);
-        function getLangNoprefix(key, ...args) {
+        function getLang(key, ...args) {
           const message = configGuideLang.getLang(key, args);
           return message;
         }
@@ -464,18 +460,16 @@ class Listen {
         });
 
         if (listNoprefix.includes(args[0])) {
-          this.client.noprefix
-            .get(args[0])
-            .noprefix(
-              this.api,
-              event,
-              this.client,
-              args,
-              this.UserData,
-              this.ThreadData,
-              this.UserInThreadData,
-              getLangNoprefix
-            );
+          this.client.noprefix.get(args[0]).noprefix({
+            api: this.api,
+            event,
+            client: this.client,
+            args,
+            UserData: this.UserData,
+            ThreadData: this.ThreadData,
+            UserInThreadData: this.UserInThreadData,
+            getLang,
+          });
         }
 
         let listCommands = [];

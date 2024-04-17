@@ -99,7 +99,7 @@ export default class autodown {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     try {
       const duongdan = join(process.cwd(), `/src/db/data/autodown.json`);
       if (args[1] === "on") {
@@ -170,7 +170,7 @@ export default class autodown {
     }
   }
 
-  async event(api: Ifca, event: IEvent, client) {
+  async event({ api, event, client }) {
     try {
       const encoding = "utf8";
       const duongdan = join(process.cwd(), `/src/db/data/autodown.json`);
@@ -270,7 +270,7 @@ export default class autodown {
                 event.threadID
               );
             }
-            } else if (/twitter|tw|x/.test(url)) {
+          } else if (/twitter|tw|x/.test(url)) {
             const res = (
               await axios.get(
                 `https://nguyenmanh.name.vn/api/twitterDL?url=${url}&apikey=AVny3Riw`
@@ -307,7 +307,7 @@ export default class autodown {
             if (res.data.result) {
               await api.sendMessage(
                 {
-                body: `〈 Autodown Social Network 〉\n`,
+                  body: `〈 Autodown Social Network 〉\n`,
                   attachment: await streamURL(res.data.result, "mp3"),
                 },
                 event.threadID

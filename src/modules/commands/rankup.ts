@@ -14,7 +14,7 @@
 //   };
 
 //   constructor(private client) {}
-//   async event(api: Ifca, event: IEvent, client, DataUser, DataThread) {
+//   async event(api, event, client, DataUser, DataThread) {
 //     if (!event.senderID) return;
 //     const thread = (await DataThread.rankup.get(event.threadID)) || {};
 //     if (!thread) return;
@@ -49,7 +49,7 @@
 //     }
 //   }
 
-//   async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+//   async run(api, event, client, args, DataUser, DataThread) {
 //     console.log(args[1]);
 //     if (args[1] == "on") {
 //       await DataThread.rankup.set(event.threadID, true);

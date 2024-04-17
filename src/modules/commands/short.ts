@@ -108,7 +108,7 @@ export default class ShortCommand {
       }
     }
   }
-  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async run({ api, event, client, args, DataUser, DataThread }) {
     if (args[1]) {
       const short = (event.body as string).split(args[0])[1].trim().split("|");
       const shortName = short[0].trim();
@@ -166,7 +166,7 @@ export default class ShortCommand {
       cache.put("short", messageID);
     }
   }
-  async event(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async event({ api, event, client, args, DataUser, DataThread }) {
     const listShortFromThread = await fs.readFileSync(
       this.partDataShort,
       "utf-8"

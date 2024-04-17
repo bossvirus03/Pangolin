@@ -35,16 +35,16 @@ export default class SendAllCommand {
   };
 
   constructor(private client) {}
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     const sendAllPath = join(process.cwd(), "/src/db/data/sendAll.json");
     async function pushMessageID(ID) {
       let messageID = [ID];
@@ -134,15 +134,15 @@ export default class SendAllCommand {
       });
     }
   }
-  async event(
-    api: Ifca,
-    event: IEvent,
+  async event({
+    api,
+    event,
     client,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     const sendAllPath = join(process.cwd(), "/src/db/data/sendAll.json");
     const dataMessageID = fs.readFileSync(sendAllPath, "utf8");
     if (!dataMessageID) return;

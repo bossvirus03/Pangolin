@@ -29,32 +29,40 @@ export default class NameCommand {
   };
 
   constructor(private client) {}
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     // logic here
   }
-  async event(api: Ifca, event: IEvent, client, DataUser, DataThread) {
+  async event({
+    api,
+    event,
+    client,
+    DataUser,
+    DataThread,
+    UserInThreadData,
+    getLang,
+  }) {
     //no agrs
     // logic
   }
-  async noprefix(
-    api: Ifca,
-    event: IEvent,
+  async noprefix({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     // logic
   }
 }

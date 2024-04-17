@@ -16,7 +16,7 @@ export default class RuleCommand {
   constructor(private client) {}
   pathDataRule = join(process.cwd(), "/src/db/data/rule.json");
 
-  async handleRemoveRule(ruleIndex: number, event: IEvent, api) {
+  async handleRemoveRule(ruleIndex: number, event, api) {
     const previousRule = fs.readFileSync(this.pathDataRule, "utf8");
     const previousRuleArray = JSON.parse(previousRule);
     console.log(ruleIndex);
@@ -52,7 +52,7 @@ export default class RuleCommand {
     }
   }
 
-  async handleAddRule(rule, event: IEvent, api) {
+  async handleAddRule(rule, event, api) {
     let ruleThread = [
       {
         threadID: event.threadID,
@@ -92,7 +92,7 @@ export default class RuleCommand {
     }
     api.sendMessage(`Đã thêm thành công rule: ${rule}`, event.threadID);
   }
-  async event(api: Ifca, event: IEvent, client) {
+  async event({ api, event, client }) {
     if (event.type === "message_reply") {
       if (event.messageReply.messageID == cache.get("tmp-rule-message")) {
         if ((event.body as string).startsWith("remove")) {
@@ -109,7 +109,7 @@ export default class RuleCommand {
       }
     }
   }
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     if (args[1] === "add") {
       const rule = (event.body as string).split(args[1])[1].trim();
       if (!rule) return api.sendMessage("Vui lòng viết rule!", event.threadID);

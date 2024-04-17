@@ -14,7 +14,7 @@ export default class SimCommand {
       "Cách dùng: [prefix]Sim on/off\nChức năng: Trò chuyện cùng với simsimi",
   };
 
-  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async run({ api, event, client, args, DataUser, DataThread }) {
     const body = (event.body as string).split(args[0])[1].split("|");
     if (!body[0] || !body[1]) {
       return api.sendMessage(

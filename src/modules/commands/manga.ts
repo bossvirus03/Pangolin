@@ -16,7 +16,7 @@ export default class MangaCommand {
   };
 
   constructor(private client) {}
-  async event(api: Ifca, event: IEvent, client) {
+  async event({ api, event, client }) {
     const listManga = cache.get("manga");
     if (event.type == "message_reply") {
       let numChose = 1;
@@ -113,7 +113,7 @@ export default class MangaCommand {
       }
     }
   }
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     const search = (event.body as string).split(args[0])[1].trim();
     try {
       const response = await axios.get(

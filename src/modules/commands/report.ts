@@ -41,16 +41,16 @@ export default class ReportCommand {
 
   constructor(private client) {}
 
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     UserData,
     ThreadData,
-    UserInThreadData: IUserInThreadData,
-    getLang
-  ) {
+    UserInThreadData,
+    getLang,
+  }) {
     const attachments = event?.messageReply?.attachments;
     const listAds = JSON.parse(process.env.ADMINS);
     const listAttachment = [];
@@ -134,15 +134,15 @@ export default class ReportCommand {
       });
     }
   }
-  async event(
-    api: Ifca,
-    event: IEvent,
+  async event({
+    api,
+    event,
     client,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     if (event.type === "message_reply") {
       const reportInfo = cache.get("report");
       if (reportInfo && event.messageReply.messageID == reportInfo.messageID) {

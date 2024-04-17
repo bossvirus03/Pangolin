@@ -12,7 +12,7 @@ export default class WikiCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     let content = args.join(" ");
     let url = `https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&format=json& =&titles=${event.body}`;
     // if (args[0] == "en") {

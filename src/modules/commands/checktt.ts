@@ -31,14 +31,7 @@ export default class CheckttCommand {
 
   constructor(private client) {}
 
-  async event(
-    api: Ifca,
-    event: IEvent,
-    client,
-    UserData,
-    ThreadData,
-    UserInThreadData: IUserInThreadData
-  ) {
+  async event({ api, event, client, UserData, ThreadData, UserInThreadData }) {
     if (event.type === "message_reaction") {
       const messageID = cache.get("message-id");
       if (messageID && event.reaction === "❤") {
@@ -85,23 +78,26 @@ export default class CheckttCommand {
             }
           });
 
-          api.sendMessage('[ KIỂM TRA TIN NHẮN TỔNG ]' + '\n' + smgSorted, event.threadID);
+          api.sendMessage(
+            "[ KIỂM TRA TIN NHẮN TỔNG ]" + "\n" + smgSorted,
+            event.threadID
+          );
           cache.del("message-id");
         });
       }
     }
   }
 
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     UserData,
     ThreadData,
-    UserInThreadData: IUserInThreadData,
-    getLang
-  ) {
+    UserInThreadData,
+    getLang,
+  }) {
     try {
       const user = event.senderID;
       const res = await UserInThreadData.get(user, event.threadID);

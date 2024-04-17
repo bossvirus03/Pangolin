@@ -31,16 +31,16 @@ export default class AiCommand {
 
   constructor(private client) {}
 
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     // handle pre command event
     function getPrevCommandEvent() {
       const cachedArray = cache.get("command-event-on");

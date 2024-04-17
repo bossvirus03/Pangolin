@@ -17,7 +17,7 @@ export default class ResendCommand {
   };
 
   constructor(private client) {}
-  async event(api: Ifca, event: IEvent, client) {
+  async event({ api, event, client }) {
     const preCommand = await cache.get("command-event-on");
     if (!preCommand) return;
     if (
@@ -90,7 +90,7 @@ export default class ResendCommand {
       });
     }
   }
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run(api, event, client, args) {
     function getPrevCommandEvent() {
       const cachedArray = cache.get("command-event-on");
       if (cachedArray) {

@@ -27,16 +27,16 @@ export default class CheckCMCommand {
     },
   };
   constructor(private client) {}
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     const response = cache.get("command-event-on");
     let smg: string = "";
     if (!response) {

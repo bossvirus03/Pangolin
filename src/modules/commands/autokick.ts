@@ -1,7 +1,7 @@
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
-import fs from 'fs';
-import { join } from 'path';
+import fs from "fs";
+import { join } from "path";
 
 export default class AutokickCommand {
   static config = {
@@ -9,23 +9,23 @@ export default class AutokickCommand {
     version: "1.0.0",
     author: "Nguyên Blue",
     createdAt: "",
-    description: "Khi thành viên trong nhóm bất kỳ gõ từ cấm quá 3 lần sẽ bị xóa ra khỏi nhóm."
+    description:
+      "Khi thành viên trong nhóm bất kỳ gõ từ cấm quá 3 lần sẽ bị xóa ra khỏi nhóm.",
   };
 
   constructor(private client) {}
 
-  async event(
-    api: Ifca,
-    event: IEvent,
-    client,
-    args
-  ) {
+  async event({ api, event, client, args }) {
     try {
       const filePath = join(process.cwd(), `/src/db/data/autokick.json`);
-      const encoding = 'utf8';
+      const encoding = "utf8";
 
       if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, '{"Trangthai": "on", "tukhoa": [], "userId": {}}', 'utf-8');
+        fs.writeFileSync(
+          filePath,
+          '{"Trangthai": "on", "tukhoa": [], "userId": {}}',
+          "utf-8"
+        );
       }
 
       const fileData = fs.readFileSync(filePath, encoding);
@@ -44,10 +44,10 @@ export default class AutokickCommand {
 
       if (event && event.body) {
         const { senderID, threadID } = event;
-        const messageContent = event.body.toLowerCase();
+        const messageContent = (event.body as string).toLowerCase();
 
         for (const keyword of inappropriateKeywords) {
-          if (typeof keyword === 'string' && messageContent.includes(keyword)) {
+          if (typeof keyword === "string" && messageContent.includes(keyword)) {
             try {
               const userId = senderID.toString();
               const kickCount = jsonData.userId[userId] || 0;
@@ -59,25 +59,41 @@ export default class AutokickCommand {
               });
               const senderInfo = (
                 await threadInfo.userInfo.find((info) => info.id === userId)
-              ).name; 
+              ).name;
               if (kickCount >= 3) {
                 const result = await api.removeUserFromGroup(userId, threadID);
                 if (result.success) {
-                  await api.sendMessage(`✅ ${senderInfo} đã bị xóa khỏi nhóm do vi phạm quá nhiều lần.`, threadID);
+                  await api.sendMessage(
+                    `✅ ${senderInfo} đã bị xóa khỏi nhóm do vi phạm quá nhiều lần.`,
+                    threadID
+                  );
                   delete jsonData.userId[userId];
-                  fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
+                  fs.writeFileSync(
+                    filePath,
+                    JSON.stringify(jsonData, null, 2),
+                    "utf-8"
+                  );
                 } else {
-                  console.error(`Failed to remove user ${senderInfo} from group ${threadID}`);
+                  console.error(
+                    `Failed to remove user ${senderInfo} from group ${threadID}`
+                  );
                 }
               } else {
                 jsonData.userId[userId] = kickCount + 1;
-                fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
-                await api.sendMessage(`✅ Ghi nhận lỗi vi phạm từ người dùng ${senderInfo}. Số lần vi phạm: ${kickCount + 1}/3`, threadID);
+                fs.writeFileSync(
+                  filePath,
+                  JSON.stringify(jsonData, null, 2),
+                  "utf-8"
+                );
+                await api.sendMessage(
+                  `✅ Ghi nhận lỗi vi phạm từ người dùng ${senderInfo}. Số lần vi phạm: ${kickCount + 1}/3`,
+                  threadID
+                );
               }
             } catch (error) {
               console.error(error);
             }
-            break; 
+            break;
           }
         }
       }
@@ -86,35 +102,48 @@ export default class AutokickCommand {
     }
   }
 
-  async run(
-    api: Ifca,
-    event: IEvent,
-    client,
-    args
-  ) {
+  async run({ api, event, client, args }) {
     const { threadID } = event;
     const filePath = join(process.cwd(), `/src/db/data/autokick.json`);
 
     try {
       if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, '{"Trangthai": "on", "tukhoa": [], "userId": {}}', 'utf-8');
+        fs.writeFileSync(
+          filePath,
+          '{"Trangthai": "on", "tukhoa": [], "userId": {}}',
+          "utf-8"
+        );
       }
 
-      const fileData = fs.readFileSync(filePath, 'utf-8');
+      const fileData = fs.readFileSync(filePath, "utf-8");
       const jsonData = JSON.parse(fileData);
 
       if (args[1] === "on") {
         jsonData.Trangthai = "on";
-        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
-        await api.sendMessage(`Đã bật tính năng tự động kiểm tra từ cấm.`, threadID);
+        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), "utf-8");
+        await api.sendMessage(
+          `Đã bật tính năng tự động kiểm tra từ cấm.`,
+          threadID
+        );
       } else if (args[1] === "off") {
         jsonData.Trangthai = "off";
-        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
-        await api.sendMessage(`Đã tắt tính năng tự động kiểm tra từ cấm.`, threadID);
+        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), "utf-8");
+        await api.sendMessage(
+          `Đã tắt tính năng tự động kiểm tra từ cấm.`,
+          threadID
+        );
       } else if (args[1] === "list") {
         const bannedWords = jsonData.tukhoa || [];
-        const bannedWordsList = bannedWords.length > 0 ? bannedWords.map((word, index) => `${index + 1}. ${word}`).join('\n') : 'Danh sách từ cấm trống.';
-        await api.sendMessage(`Danh sách từ cấm:\n${bannedWordsList}`, threadID);
+        const bannedWordsList =
+          bannedWords.length > 0
+            ? bannedWords
+                .map((word, index) => `${index + 1}. ${word}`)
+                .join("\n")
+            : "Danh sách từ cấm trống.";
+        await api.sendMessage(
+          `Danh sách từ cấm:\n${bannedWordsList}`,
+          threadID
+        );
       } else if (args[1] === "remove") {
         const index = parseInt(args[2]);
         if (!isNaN(index)) {
@@ -122,31 +151,57 @@ export default class AutokickCommand {
           if (index > 0 && index <= bannedWords.length) {
             bannedWords.splice(index - 1, 1);
             jsonData.tukhoa = bannedWords;
-            fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
-            await api.sendMessage(`Đã xóa từ cấm số ${index} thành công.`, threadID);
+            fs.writeFileSync(
+              filePath,
+              JSON.stringify(jsonData, null, 2),
+              "utf-8"
+            );
+            await api.sendMessage(
+              `Đã xóa từ cấm số ${index} thành công.`,
+              threadID
+            );
           } else {
             await api.sendMessage(`Số list không hợp lệ.`, threadID);
           }
         } else {
-          await api.sendMessage(`Vui lòng nhập một số nguyên là số thứ tự của từ cấm cần xóa.`, threadID);
+          await api.sendMessage(
+            `Vui lòng nhập một số nguyên là số thứ tự của từ cấm cần xóa.`,
+            threadID
+          );
         }
       } else if (args[1] === "removeall") {
         jsonData.tukhoa = [];
-        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
-        await api.sendMessage(`Đã xóa tất cả từ cấm trong danh sách.`, threadID);
+        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), "utf-8");
+        await api.sendMessage(
+          `Đã xóa tất cả từ cấm trong danh sách.`,
+          threadID
+        );
       } else if (args[1] === "add") {
         const newKeyword = args.slice(2).join(" ").toLowerCase();
         if (newKeyword) {
           const bannedWords = jsonData.tukhoa || [];
           bannedWords.push(newKeyword);
           jsonData.tukhoa = bannedWords;
-          fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
-          await api.sendMessage(`Đã thêm từ cấm "${newKeyword}" vào danh sách.`, threadID);
+          fs.writeFileSync(
+            filePath,
+            JSON.stringify(jsonData, null, 2),
+            "utf-8"
+          );
+          await api.sendMessage(
+            `Đã thêm từ cấm "${newKeyword}" vào danh sách.`,
+            threadID
+          );
         } else {
-          await api.sendMessage(`Vui lòng nhập từ khóa cấm cần thêm.`, threadID);
+          await api.sendMessage(
+            `Vui lòng nhập từ khóa cấm cần thêm.`,
+            threadID
+          );
         }
       } else {
-        await api.sendMessage("Lệnh không hợp lệ. Vui lòng sử dụng 'autokick on', 'autokick off', 'autokick list', 'autokick remove [số list cần xóa]', 'autokick removeall' hoặc 'autokick add [từ khóa cấm]'.", threadID);
+        await api.sendMessage(
+          "Lệnh không hợp lệ. Vui lòng sử dụng 'autokick on', 'autokick off', 'autokick list', 'autokick remove [số list cần xóa]', 'autokick removeall' hoặc 'autokick add [từ khóa cấm]'.",
+          threadID
+        );
       }
     } catch (error) {
       console.error(error);

@@ -12,7 +12,7 @@ export default class RunCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async run({ api, event, client, args, DataUser, DataThread }) {
     // const script = (event.body as string).split(args[0])[1].trim();
     const script = `(api, event, client, args, DataUser, DataThread) => {
       ${(event.body as string).split(args[0])[1].trim()}

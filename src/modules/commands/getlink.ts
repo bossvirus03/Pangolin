@@ -12,7 +12,7 @@ export default class GetLinkCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async run({ api, event, client, args, DataUser, DataThread }) {
     if (event.type == "message_reply") {
       if (event.messageReply.attachments) {
         event.messageReply.attachments.forEach((item, index) => {

@@ -13,15 +13,15 @@ export default class LoadAllCommand {
   };
 
   constructor(private client) {}
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
-    UserInThreadData: IUserInThreadData
-  ) {
+    UserInThreadData,
+  }) {
     try {
       const threadsData = await DataThread.getAll();
       const threads = threadsData.map((item) => {

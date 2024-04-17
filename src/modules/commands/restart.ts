@@ -16,7 +16,7 @@ export default class RestartCommand {
 
   constructor(private client) {}
   pathFile = join(process.cwd(), "/src/db/data/restart.txt");
-  async run(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async run({ api, event, client, args, DataUser, DataThread }) {
     api.sendMessage(global.getLang("Restarting"), event.threadID);
     fs.writeFileSync(this.pathFile, `${Date.now()} ${event.threadID}`);
     try {
@@ -27,7 +27,7 @@ export default class RestartCommand {
       console.error("Error executing command:", error);
     }
   }
-  async onload(api: Ifca, event: IEvent, client, args, DataUser, DataThread) {
+  async onload(api, event, client, args, DataUser, DataThread) {
     if (fs.existsSync(this.pathFile)) {
       const [time, threadID]: [number, string] = await new Promise(
         async (rs, rj) => {

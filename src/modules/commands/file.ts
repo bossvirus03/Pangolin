@@ -32,16 +32,16 @@ export default class FileCommand {
 
   constructor(private client) {}
 
-  async run(
-    api: Ifca,
-    event: IEvent,
+  async run({
+    api,
+    event,
     client,
     args,
     DataUser,
     DataThread,
     UserInThreadData,
-    getLang
-  ) {
+    getLang,
+  }) {
     function getFolderSize(folderPath) {
       let totalSize = 0;
       const items = fs.readdirSync(folderPath);

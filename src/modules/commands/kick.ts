@@ -13,7 +13,7 @@ export default class SetNameCommand {
   };
 
   constructor(private client) {}
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     try {
       const info: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {

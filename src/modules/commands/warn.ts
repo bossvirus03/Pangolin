@@ -16,7 +16,7 @@ export default class WarnCommand {
 
   constructor(private client) {}
 
-  async run(api: Ifca, event: IEvent, client, args) {
+  async run({ api, event, client, args }) {
     if (event.type === "message_reply" && event.mentions) {
       return api.sendMessage(
         "Chỉ reply hoặc chỉ tag user cần warn!",
