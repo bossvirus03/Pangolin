@@ -73,7 +73,6 @@
     "rxjs": "^7.8.1",
     "sequelize": "^6.37.1",
     "sequelize-typescript": "^2.1.6",
-    "sharp": "^0.33.3",
     "soft-delete-plugin-mongoose": "^1.0.17",
     "sqlite3": "^5.1.7",
     "string-similarity": "^4.0.4",

@@ -567,18 +567,19 @@ class Listen {
             const message = configGuideLang.getLang(key, args);
             return message;
           }
+          // load all command
           this.client.commands
             .get(args[0])
-            .run(
-              this.api,
+            .run({
+              api: this.api,
               event,
-              this.client,
+              client: this.client,
               args,
-              this.UserData,
-              this.ThreadData,
-              this.UserInThreadData,
-              getLang
-            );
+              UserData: this.UserData,
+              ThreadData: this.ThreadData,
+              UserInThreadData: this.UserInThreadData,
+              getLang,
+            });
         }
       }
     });
