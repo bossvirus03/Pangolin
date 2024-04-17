@@ -34,8 +34,8 @@ export default class NameCommand {
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -45,8 +45,8 @@ export default class NameCommand {
     api,
     event,
     client,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -58,8 +58,8 @@ export default class NameCommand {
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {

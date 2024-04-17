@@ -14,12 +14,12 @@ export default class SimCommand {
       "Cách dùng: [prefix]Sim on/off\nChức năng: Trò chuyện cùng với simsimi",
   };
 
-  async run({ api, event, client, args, DataUser, DataThread }) {
+  async run({ api, event, client, args, UserData, ThreadData }) {
     const body = (event.body as string).split(args[0])[1].split("|");
     if (!body[0] || !body[1]) {
       return api.sendMessage(
         "Vui lòng nhập câu hỏi và câu trả lời theo định dạng: câu hỏi | câu trả lời",
-        event.threadID
+        event.threadID,
       );
     }
     const [question, reply] = [body[0].trim(), body[1].trim()];
@@ -30,7 +30,7 @@ export default class SimCommand {
         if (err) {
           console.error(err.message);
         }
-      }
+      },
     );
     let sql = `INSERT INTO Sim (CauHoi, TraLoi, TheLoai, ThoiGian) 
     VALUES (\'${question}\', \'${reply}\', '', '');`;

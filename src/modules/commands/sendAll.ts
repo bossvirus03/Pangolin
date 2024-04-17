@@ -40,8 +40,8 @@ export default class SendAllCommand {
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -80,7 +80,7 @@ export default class SendAllCommand {
       }
     }
     const msg = (event.body as string).split(args[0])[1].trim();
-    const threadsData = await DataThread.getAll();
+    const threadsData = await ThreadData.getAll();
     const threads = threadsData.map((item) => {
       return item.dataValues.tid;
     });
@@ -90,7 +90,7 @@ export default class SendAllCommand {
       const promises = attachments.map(async (item, index) => {
         const path = join(
           process.cwd(),
-          `/public/images/${index}_sendAd_${event.senderID}.jpg`
+          `/public/images/${index}_sendAd_${event.senderID}.jpg`,
         );
         try {
           const response = await axios.get(item.url, {
@@ -115,7 +115,7 @@ export default class SendAllCommand {
             (err, info) => {
               if (err) console.log(err);
               else pushMessageID(info.messageID);
-            }
+            },
           );
         });
       });
@@ -129,7 +129,7 @@ export default class SendAllCommand {
           (err, info) => {
             if (err) console.log(err);
             else pushMessageID(info.messageID);
-          }
+          },
         );
       });
     }
@@ -138,8 +138,8 @@ export default class SendAllCommand {
     api,
     event,
     client,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -164,9 +164,9 @@ export default class SendAllCommand {
                 "threadResponse",
                 Tinfo.threadName,
                 Tinfo.threadID,
-                event.body
+                event.body,
               ),
-              admin
+              admin,
             );
           });
         }

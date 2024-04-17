@@ -12,14 +12,14 @@ export default class RunCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, DataUser, DataThread }) {
+  async run({ api, event, client, args, UserData, ThreadData }) {
     // const script = (event.body as string).split(args[0])[1].trim();
-    const script = `(api, event, client, args, DataUser, DataThread) => {
+    const script = `(api, event, client, args, UserData, ThreadData) => {
       ${(event.body as string).split(args[0])[1].trim()}
   }`;
     try {
       const scriptFunction = eval(script);
-      scriptFunction(api, event, client, args, DataUser, DataThread);
+      scriptFunction(api, event, client, args, UserData, ThreadData);
     } catch (error) {
       api.sendMessage("Lỗi khi thực thi mã: " + error, event.threadID);
     }

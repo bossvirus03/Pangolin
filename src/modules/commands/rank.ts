@@ -113,7 +113,7 @@
 //     ctx.fillText(currentLevel, 485, 330.42);
 //     return fimg;
 //   }
-//   async run(api, event, client, args, DataUser, DataThread) {
+//   async run(api, event, client, args, UserData, ThreadData) {
 //     const countExp = (level) => {
 //       return (3 * (-2 + Math.pow(level * 2, 2))) / 4;
 //     };
@@ -133,7 +133,7 @@
 //     });
 //     // let avt = await api.getUserInfo(event.senderID, (err, ret) => {});
 //     // avt = avt[event.senderID].thumbSrc;
-//     const user = await DataUser.get(event.senderID);
+//     const user = await UserData.get(event.senderID);
 //     const currentLevel = Math.floor(Math.sqrt(1 + (4 * user.exp) / 3 + 1) / 2);
 //     const futureExp = Math.floor(countExp(currentLevel + 1));
 //     const nowExp = Math.floor(countExp(currentLevel));

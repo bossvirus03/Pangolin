@@ -12,7 +12,7 @@ export default class GetLinkCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, DataUser, DataThread }) {
+  async run({ api, event, client, args, UserData, ThreadData }) {
     if (event.type == "message_reply") {
       if (event.messageReply.attachments) {
         event.messageReply.attachments.forEach((item, index) => {
@@ -22,7 +22,7 @@ export default class GetLinkCommand {
             (err) => {
               if (err) console.log(err);
             },
-            event.messageID
+            event.messageID,
           );
         });
       }

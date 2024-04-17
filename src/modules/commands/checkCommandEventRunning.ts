@@ -32,8 +32,8 @@ export default class CheckCMCommand {
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -43,7 +43,7 @@ export default class CheckCMCommand {
       smg = getLang("check");
     } else {
       response.forEach(
-        (item) => (smg += `${item.command} - ${item.threadID}\n`)
+        (item) => (smg += `${item.command} - ${item.threadID}\n`),
       );
     }
     console.log(smg);

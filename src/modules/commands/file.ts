@@ -1,11 +1,9 @@
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
 import * as fs from "fs";
 import { join } from "path";
 
 export default class FileCommand {
   static config = {
-    name: "file", //your command name
+    name: "file",
     version: "",
     author: "",
     createdAt: "",
@@ -32,52 +30,55 @@ export default class FileCommand {
 
   constructor(private client) {}
 
+  async getFolderSize(folderPath) {
+    let totalSize = 0;
+    const items = await fs.promises.readdir(folderPath);
+    for (const item of items) {
+      const itemPath = join(folderPath, item);
+      const stats = await fs.promises.stat(itemPath);
+      if (stats.isDirectory()) {
+        totalSize += await this.getFolderSize(itemPath);
+      } else {
+        totalSize += stats.size;
+      }
+    }
+    return totalSize;
+  }
+
+  formatBytes(bytes) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+
   async run({
     api,
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
-    function getFolderSize(folderPath) {
-      let totalSize = 0;
-      const items = fs.readdirSync(folderPath);
-      items.forEach((item) => {
-        const itemPath = join(folderPath, item);
-        const stats = fs.statSync(itemPath);
+    try {
+      const rootDirectory = process.cwd();
+      let msg = "";
+      const items = await fs.promises.readdir(rootDirectory);
+      for (const item of items) {
+        const itemPath = join(rootDirectory, item);
+        const stats = await fs.promises.stat(itemPath);
         if (stats.isDirectory()) {
-          totalSize += getFolderSize(itemPath);
+          msg += `📁 ${item} - ${this.formatBytes(await this.getFolderSize(itemPath))}\n`;
         } else {
-          totalSize += stats.size;
+          msg += `📄 ${item} - ${this.formatBytes(stats.size)}\n`;
         }
-      });
-
-      return totalSize;
-    }
-
-    function formatBytes(bytes) {
-      if (bytes === 0) return "0 Bytes";
-      const k = 1024;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-    }
-
-    const rootDirectory = process.cwd();
-    let msg = "";
-    const items = fs.readdirSync(rootDirectory);
-    items.forEach((item) => {
-      const itemPath = join(rootDirectory, item);
-      const stats = fs.statSync(itemPath);
-      if (stats.isDirectory()) {
-        msg += `📁 ${item} - ${formatBytes(getFolderSize(itemPath))}\n`;
-      } else {
-        msg += `📄 ${item} - ${formatBytes(stats.size)}\n`;
       }
-    });
-    api.sendMessage(msg, event.threadID);
+      await api.sendMessage(msg, event.threadID);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
 }

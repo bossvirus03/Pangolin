@@ -14,11 +14,11 @@
 //   };
 
 //   constructor(private client) {}
-//   async event(api, event, client, DataUser, DataThread) {
+//   async event(api, event, client, UserData, ThreadData) {
 //     if (!event.senderID) return;
-//     const thread = (await DataThread.rankup.get(event.threadID)) || {};
+//     const thread = (await ThreadData.rankup.get(event.threadID)) || {};
 //     if (!thread) return;
-//     const user = await DataUser.get(event.senderID);
+//     const user = await UserData.get(event.senderID);
 //     const currentLevel = Math.floor(Math.sqrt(1 + (4 * user.exp) / 3 + 1) / 2);
 //     const level = Math.floor(Math.sqrt(1 + (4 * (user.exp + 1)) / 3 + 1) / 2);
 //     function getRandomGif(arr) {
@@ -49,17 +49,17 @@
 //     }
 //   }
 
-//   async run(api, event, client, args, DataUser, DataThread) {
+//   async run(api, event, client, args, UserData, ThreadData) {
 //     console.log(args[1]);
 //     if (args[1] == "on") {
-//       await DataThread.rankup.set(event.threadID, true);
+//       await ThreadData.rankup.set(event.threadID, true);
 //       api.sendMessage(
 //         "Đã bật thông báo khi tăng cấp độ tương tác",
 //         event.threadID
 //       );
 //     }
 //     if (args[1] == "off") {
-//       await DataThread.rankup.set(event.threadID, false);
+//       await ThreadData.rankup.set(event.threadID, false);
 //       api.sendMessage(
 //         "Đã tắt thông báo khi tăng cấp độ tương tác",
 //         event.threadID

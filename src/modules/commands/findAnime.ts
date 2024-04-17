@@ -14,11 +14,11 @@ export default class RankCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, DataUser, DataThread }) {
+  async run({ api, event, client, args, UserData, ThreadData }) {
     if (event.type === "message_reply") {
       const imgPath = join(
         process.cwd(),
-        `public/images/${event.messageID}.jpg`
+        `public/images/${event.messageID}.jpg`,
       );
       const imageLink = event.messageReply.attachments[0].url;
       axios.get(imageLink).then(async (response) => {

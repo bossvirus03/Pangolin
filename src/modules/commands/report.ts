@@ -66,7 +66,7 @@ export default class ReportCommand {
       const promises = attachments.map(async (item, index) => {
         const path = join(
           process.cwd(),
-          `/public/images/${index}_sendAd_${event.senderID}.jpg`
+          `/public/images/${index}_sendAd_${event.senderID}.jpg`,
         );
         try {
           const response = await axios.get(item.url, {
@@ -89,7 +89,7 @@ export default class ReportCommand {
                 "reportFromUser",
                 info.name,
                 info.profileUrl,
-                (event.body as string).split(args[0])[1].trim()
+                (event.body as string).split(args[0])[1].trim(),
               ),
               attachment: listAttachment,
             },
@@ -101,7 +101,7 @@ export default class ReportCommand {
                 threadID: event.threadID,
                 messageID: info.messageID,
               });
-            }
+            },
           );
         });
       });
@@ -113,7 +113,7 @@ export default class ReportCommand {
               "reportFromUser",
               info.name,
               info.profileUrl,
-              (event.body as string).split(args[0])[1].trim()
+              (event.body as string).split(args[0])[1].trim(),
             ),
           },
           id,
@@ -127,9 +127,9 @@ export default class ReportCommand {
                 threadID: event.threadID,
                 messageID: info.messageID,
               },
-              5 * 60 * 1000
+              5 * 60 * 1000,
             );
-          }
+          },
         );
       });
     }
@@ -138,8 +138,8 @@ export default class ReportCommand {
     api,
     event,
     client,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -150,7 +150,7 @@ export default class ReportCommand {
         api.sendMessage(
           getLang("adminResponse", event.body),
           reportInfo.threadID,
-          () => {}
+          () => {},
         );
       }
     }

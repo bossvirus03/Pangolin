@@ -67,8 +67,8 @@ export default class autoReaction {
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -77,7 +77,7 @@ export default class autoReaction {
         getLang("tagOne"),
         event.threadID,
         () => {},
-        event.messageID
+        event.messageID,
       );
     const e = (event.body as string)
       .split(Object.values(event.mentions)[0] as string)[1]
@@ -96,14 +96,14 @@ export default class autoReaction {
         const newdataAutoReactionArray = dataAutoReactionArray.filter(
           (item) => {
             return item.threadID == event.threadID && item.userID != mention;
-          }
+          },
         );
         fs.writeFileSync(
           this.pathAutoReaction,
           JSON.stringify(newdataAutoReactionArray),
           {
             encoding: "utf-8",
-          }
+          },
         );
       }
       return api.sendMessage(
@@ -117,7 +117,7 @@ export default class autoReaction {
             },
           ],
         },
-        event.threadID
+        event.threadID,
       );
     }
 
@@ -128,7 +128,7 @@ export default class autoReaction {
     if (!listEmojiSupport.includes(e))
       return api.sendMessage(
         getLang("listEmojiSupport", listEmojiSupport.join(", ")),
-        event.threadID
+        event.threadID,
       );
     let autoReactionUser = [
       {
@@ -142,7 +142,7 @@ export default class autoReaction {
     });
     if (previousAutoReactionUser) {
       const previousAutoReactionUserArray = JSON.parse(
-        previousAutoReactionUser
+        previousAutoReactionUser,
       );
 
       // if duplicate data
@@ -156,14 +156,14 @@ export default class autoReaction {
 
       if (!isDuplicate) {
         autoReactionUser = autoReactionUser.concat(
-          previousAutoReactionUserArray
+          previousAutoReactionUserArray,
         );
         fs.writeFileSync(
           this.pathAutoReaction,
           JSON.stringify(autoReactionUser),
           {
             encoding: "utf-8",
-          }
+          },
         );
       }
       // if change emoji
@@ -185,14 +185,14 @@ export default class autoReaction {
               item.emoji = e;
             }
             return item;
-          }
+          },
         );
         fs.writeFileSync(
           this.pathAutoReaction,
           JSON.stringify(newAutoReactionUserArray),
           {
             encoding: "utf-8",
-          }
+          },
         );
       }
     }
@@ -207,7 +207,7 @@ export default class autoReaction {
           },
         ],
       },
-      event.threadID
+      event.threadID,
     );
   }
 }

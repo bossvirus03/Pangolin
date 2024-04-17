@@ -13,8 +13,8 @@ export default class SetPrefixCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, DataUser, DataThread }) {
-    await DataThread.setPrefix(event.threadID, args[1]);
+  async run({ api, event, client, args, UserData, ThreadData }) {
+    await ThreadData.setPrefix(event.threadID, args[1]);
     api.sendMessage("Đã đổi prefix thành " + args[1], event.threadID);
   }
 }

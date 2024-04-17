@@ -37,8 +37,8 @@ export default class ExportCommand {
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -61,10 +61,10 @@ export default class ExportCommand {
         if (err) console.log(err);
         else cache.put("messageID", info.messageID);
       },
-      event.messageID
+      event.messageID,
     );
   }
-  async event({ api, event, client, DataUser, DataThread }) {
+  async event({ api, event, client, UserData, ThreadData }) {
     const messageID = cache.get("messageID");
     if (event.type === "message_reply") {
       if (messageID && event.messageReply.messageID == messageID) {
@@ -80,12 +80,12 @@ export default class ExportCommand {
           if (++index == event.body) {
             const filePath = join(
               process.cwd(),
-              "/src/modules/commands/" + file
+              "/src/modules/commands/" + file,
             );
             const fileContent = fs.readFileSync(filePath, "utf8");
             const pathOutput = join(
               process.cwd(),
-              `/public/files/${file.split(".")[0]}.txt`
+              `/public/files/${file.split(".")[0]}.txt`,
             );
             fs.writeFileSync(pathOutput, fileContent),
               api.sendMessage(
@@ -98,7 +98,7 @@ export default class ExportCommand {
                   if (err) console.log(err);
                   else cache.put("messageID", info.messageID);
                 },
-                event.messageID
+                event.messageID,
               );
           }
         });

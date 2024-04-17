@@ -16,11 +16,11 @@ export default class ImgBoxCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, DataUser, DataThread }) {
+  async run({ api, event, client, args, UserData, ThreadData }) {
     if (event.type == "message_reply") {
       const imgPath = join(
         process.cwd(),
-        `/public/images/${event.threadID}.png`
+        `/public/images/${event.threadID}.png`,
       );
       if (event.messageReply.attachments[0].type == "photo") {
         await axios
@@ -41,7 +41,7 @@ export default class ImgBoxCommand {
           .catch((error) => {
             api.sendMessage(
               "Đã xảy ra lỗi khi đổi ảnh vui lòng thử ảnh khác",
-              event.threadID
+              event.threadID,
             );
             console.error("Error downloading image:", error);
           });

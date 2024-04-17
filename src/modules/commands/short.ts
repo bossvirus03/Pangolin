@@ -108,7 +108,7 @@ export default class ShortCommand {
       }
     }
   }
-  async run({ api, event, client, args, DataUser, DataThread }) {
+  async run({ api, event, client, args, UserData, ThreadData }) {
     if (args[1]) {
       const short = (event.body as string).split(args[0])[1].trim().split("|");
       const shortName = short[0].trim();
@@ -116,32 +116,32 @@ export default class ShortCommand {
       if (!shortContent || !shortName) {
         api.sendMessage(
           "Thêm short message với nội dung: [short name] | [content] để thêm shortcut",
-          event.threadID
+          event.threadID,
         );
       }
       this.handleAddShort(event.threadID, shortName, shortContent);
       api.sendMessage(
         `Đã thêm short message với nội dung: ${shortName} - ${shortContent}`,
-        event.threadID
+        event.threadID,
       );
     } else {
       const listShortFromThread = await fs.readFileSync(
         this.partDataShort,
-        "utf-8"
+        "utf-8",
       );
       if (!listShortFromThread)
         return api.sendMessage(
           "Nhóm hiện chưa có short message nào",
-          event.threadID
+          event.threadID,
         );
       const listShortFromThreadArr = JSON.parse(listShortFromThread);
       const DataShort = listShortFromThreadArr.filter(
-        (item) => item.threadID == event.threadID
+        (item) => item.threadID == event.threadID,
       );
       if (DataShort[0].shorts.length == 0) {
         return api.sendMessage(
           "Nhóm hiện chưa có short message nào",
-          event.threadID
+          event.threadID,
         );
       }
       let smg = "Danh sách tin nhắn nhanh của nhóm: \n";
@@ -160,16 +160,16 @@ export default class ShortCommand {
             if (err) reject(err);
             else resolve(info.messageID);
           },
-          event.messageID
+          event.messageID,
         );
       });
       cache.put("short", messageID);
     }
   }
-  async event({ api, event, client, args, DataUser, DataThread }) {
+  async event({ api, event, client, args, UserData, ThreadData }) {
     const listShortFromThread = await fs.readFileSync(
       this.partDataShort,
-      "utf-8"
+      "utf-8",
     );
     if (!listShortFromThread) return;
     const listShortFromThreadArr = JSON.parse(listShortFromThread);

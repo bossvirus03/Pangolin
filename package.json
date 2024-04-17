@@ -36,6 +36,7 @@
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "bluebird": "^3.0.0",
+    "canvas": "2.11.2",
     "cheerio": "^1.0.0-rc.12",
     "child_process": "^1.0.2",
     "class-transformer": "^0.5.1",

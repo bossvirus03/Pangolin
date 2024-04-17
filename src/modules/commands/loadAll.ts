@@ -13,21 +13,13 @@ export default class LoadAllCommand {
   };
 
   constructor(private client) {}
-  async run({
-    api,
-    event,
-    client,
-    args,
-    DataUser,
-    DataThread,
-    UserInThreadData,
-  }) {
+  async run({ api, event, UserData, ThreadData, UserInThreadData }) {
     try {
-      const threadsData = await DataThread.getAll();
+      const threadsData = await ThreadData.getAll();
       const threads = threadsData.map((item) => {
         return item.dataValues.tid;
       });
-      let usersData = await DataUser.getAll();
+      let usersData = await UserData.getAll();
       let users = usersData.map((item) => {
         return item.dataValues.uid;
       });
@@ -51,7 +43,7 @@ export default class LoadAllCommand {
                   const usersFromListBox = box.participants;
                   usersFromListBox.forEach(async (item) => {
                     // Thêm mỗi tác vụ vào hàng đợi
-                    usersData = await DataUser.getAll();
+                    usersData = await UserData.getAll();
                     users = usersData.map((item) => {
                       return item.dataValues.uid;
                     });
@@ -59,12 +51,12 @@ export default class LoadAllCommand {
                       const createUser = new Promise<void>(
                         async (resolve, reject) => {
                           try {
-                            await DataUser.set(item.userID, item.name); // Assuming DataUser.set() returns a promise
+                            await UserData.set(item.userID, item.name); // Assuming UserData.set() returns a promise
                             resolve(); // Resolve the promise when the user creation is successful
                           } catch (error) {
                             reject(error); // Reject the promise if there's an error during user creation
                           }
-                        }
+                        },
                       );
 
                       Promise.all([createUser])
@@ -79,7 +71,7 @@ export default class LoadAllCommand {
                       await UserInThreadData.set(
                         item.userID,
                         item.name,
-                        box.threadID
+                        box.threadID,
                       );
                     }
                   });
@@ -89,13 +81,13 @@ export default class LoadAllCommand {
               // get list box form chat
               await listBox.forEach(async (item) => {
                 if (!threads.includes(item.threadID)) {
-                  await DataThread.set(item.threadID, item.name);
+                  await ThreadData.set(item.threadID, item.name);
                 }
               });
 
               const listUser = list.filter((item) => item.isGroup == false);
               await listUser.forEach(async (item) => {
-                usersData = await DataUser.getAll();
+                usersData = await UserData.getAll();
                 users = usersData.map((item) => {
                   return item.dataValues.uid;
                 });
@@ -103,12 +95,12 @@ export default class LoadAllCommand {
                   const createUser = new Promise<void>(
                     async (resolve, reject) => {
                       try {
-                        await DataUser.set(item.userID, item.name); // Assuming DataUser.set() returns a promise
+                        await UserData.set(item.userID, item.name); // Assuming UserData.set() returns a promise
                         resolve(); // Resolve the promise when the user creation is successful
                       } catch (error) {
                         reject(error); // Reject the promise if there's an error during user creation
                       }
-                    }
+                    },
                   );
 
                   Promise.all([createUser])
@@ -127,7 +119,7 @@ export default class LoadAllCommand {
       });
       api.sendMessage(
         "[DONE] All groups and users have been loaded!",
-        event.threadID
+        event.threadID,
       );
     } catch (error) {
       api.sendMessage("Lỗi khi thực thi mã:" + error, event.threadID);

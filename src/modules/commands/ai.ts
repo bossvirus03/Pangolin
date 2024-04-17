@@ -36,8 +36,8 @@ export default class AiCommand {
     event,
     client,
     args,
-    DataUser,
-    DataThread,
+    UserData,
+    ThreadData,
     UserInThreadData,
     getLang,
   }) {
@@ -64,7 +64,7 @@ export default class AiCommand {
     }
     if (args[1] == "off") {
       const newPrevCommandEventOn = prevCommandEventOn.filter(
-        (item) => item.command != "ai" && item.threadID != event.threadID
+        (item) => item.command != "ai" && item.threadID != event.threadID,
       );
       cache.put("command-event-on", newPrevCommandEventOn, 60 * 1000 * 5); // Time in ms
       api.sendMessage(getLang("disabled"), event.threadID);
@@ -116,7 +116,7 @@ export default class AiCommand {
         .get("command-event-on")
         .some(
           async (item) =>
-            item.threadID == event.threadID && item.command == "ai"
+            item.threadID == event.threadID && item.command == "ai",
         );
       if (check) {
         const response = await handleCallGpt(event.threadID, event);

@@ -11,7 +11,7 @@ export default class UnsendCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, DataUser, DataThread }) {
+  async run({ api, event, client, args, UserData, ThreadData }) {
     if (event.type === "message_reply") {
       api.unsendMessage(event.messageReply.messageID, (err) => {
         api.sendMessage("Chỉ thu hồi được tin nhắn của bot!", event.threadID);

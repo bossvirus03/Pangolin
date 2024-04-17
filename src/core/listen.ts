@@ -12,7 +12,7 @@ import * as fs from "fs";
 class Listen {
   constructor(
     private api: Ifca,
-    private client: any
+    private client: any,
   ) {}
 
   async createUserIfNotExists(api: Ifca, event: IEvent) {
@@ -32,7 +32,7 @@ class Listen {
           // Thêm user vào cơ sở dữ liệu nếu không tồn tại
           const nameUser = await api.getUserInfo(
             event.senderID,
-            (err, ret) => {}
+            (err, ret) => {},
           );
           const newUser = await User.create({
             uid: event.senderID,
@@ -45,7 +45,7 @@ class Listen {
         } else {
           await User.update(
             { exp: user.exp + 1 },
-            { where: { uid: event.senderID } }
+            { where: { uid: event.senderID } },
           );
         }
       } catch (error) {
@@ -140,7 +140,7 @@ class Listen {
           // Thêm user vào cơ sở dữ liệu nếu không tồn tại
           const nameUser = await api.getUserInfo(
             event.senderID,
-            (err, ret) => {}
+            (err, ret) => {},
           );
           await UserInThread.create({
             uid: event.senderID,
@@ -152,7 +152,7 @@ class Listen {
         } else {
           await UserInThread.update(
             { exp: user.exp + 1 },
-            { where: { uniqueId: `${event.senderID}${event.threadID}` } }
+            { where: { uniqueId: `${event.senderID}${event.threadID}` } },
           );
         }
       } catch (error) {
@@ -174,6 +174,17 @@ class Listen {
             prefix: null,
           });
           console.log(global.getLang("UserCreated", newUser.toJSON()));
+        } catch (error) {
+          console.error("Error creating new user:", error);
+          throw error;
+        }
+      }
+    },
+    setMoney: async (uid, money) => {
+      if (uid && money) {
+        try {
+          const res = await User.update({ money }, { where: { uid } });
+          return res;
         } catch (error) {
           console.error("Error creating new user:", error);
           throw error;
@@ -342,7 +353,7 @@ class Listen {
     await sequelize.sync();
     const commandPath = join(process.cwd(), "src", "modules", "commands");
     const commandFiles = readdirSync(commandPath).filter((file: string) =>
-      file.endsWith(".ts")
+      file.endsWith(".ts"),
     );
     let listCommands = [];
     for (const file of commandFiles) {
@@ -486,7 +497,7 @@ class Listen {
           const ADMINS = config.admins;
           const commandPath = join(process.cwd(), "src", "modules", "commands");
           const commandFiles = readdirSync(commandPath).filter((file: string) =>
-            file.endsWith(".ts")
+            file.endsWith(".ts"),
           );
           for (const file of commandFiles) {
             const filePath = join(commandPath, file);
@@ -507,14 +518,14 @@ class Listen {
                         });
                       });
                     const checkIsPermission = info.adminIDs.some(
-                      (item) => item.id == event.senderID
+                      (item) => item.id == event.senderID,
                     );
                     if (checkIsPermission) {
                       return true;
                     } else {
                       await api.sendMessage(
                         global.getLang("Unauthorized", PREFIX, config.name),
-                        event.threadID
+                        event.threadID,
                       );
                       return false;
                     }
@@ -536,7 +547,7 @@ class Listen {
                   if (isAdmin == ADMINS.length) {
                     api.sendMessage(
                       global.getLang("Unauthorized", PREFIX, config.name),
-                      event.threadID
+                      event.threadID,
                     );
                     isPermission = false;
                   }
@@ -556,9 +567,9 @@ class Listen {
           return this.api.sendMessage(
             global.getLang(
               "InvalidCommand",
-              listCommands[matches.bestMatchIndex]
+              listCommands[matches.bestMatchIndex],
             ),
-            event.threadID
+            event.threadID,
           );
         }
         if (isPermission) {
@@ -568,18 +579,16 @@ class Listen {
             return message;
           }
           // load all command
-          this.client.commands
-            .get(args[0])
-            .run({
-              api: this.api,
-              event,
-              client: this.client,
-              args,
-              UserData: this.UserData,
-              ThreadData: this.ThreadData,
-              UserInThreadData: this.UserInThreadData,
-              getLang,
-            });
+          this.client.commands.get(args[0]).run({
+            api: this.api,
+            event,
+            client: this.client,
+            args,
+            UserData: this.UserData,
+            ThreadData: this.ThreadData,
+            UserInThreadData: this.UserInThreadData,
+            getLang,
+          });
         }
       }
     });
