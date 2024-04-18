@@ -99,7 +99,7 @@ export default class FileCommand {
         event.messageReply.messageID == file.messageID
       ) {
         const fileNeedGet = event.body as string;
-        if (fileNeedGet === "appstate.json" || ".env")
+        if (fileNeedGet === "appstate.json" || fileNeedGet === ".env")
           return api.sendMessage(
             "Không cho đâuuu",
             event.threadID,
