@@ -41,7 +41,9 @@ class Listen {
             money: 0,
             prefix: null,
           });
-          console.log("New user created:", newUser.toJSON());
+          console.log(
+            global.getLang("UserCreated", `${newUser.name} | ${newUser.uid}`),
+          );
         } else {
           await User.update(
             { exp: user.exp + 1 },
@@ -173,7 +175,9 @@ class Listen {
             name: name,
             prefix: null,
           });
-          console.log(global.getLang("UserCreated", newUser.toJSON()));
+          console.log(
+            global.getLang("UserCreated", `${newUser.name} | ${newUser.uid}`),
+          );
         } catch (error) {
           console.error("Error creating new user:", error);
           throw error;
@@ -214,7 +218,8 @@ class Listen {
 
     del: async (uid) => {
       try {
-        return await User.destroy({ where: { uid } });
+        await User.destroy({ where: { uid } });
+        return;
       } catch (error) {
         console.error("Error deleting user:", error);
         throw error;
@@ -242,7 +247,7 @@ class Listen {
     setPrefix: async (tid, prefix) => {
       try {
         const res = await Thread.update({ prefix }, { where: { tid } });
-        return res;
+        return;
       } catch (error) {
         console.error("Error updating prefix:", error);
         throw error;
@@ -293,7 +298,7 @@ class Listen {
       set: async (tid, bool) => {
         try {
           const res = await Thread.update({ rankup: bool }, { where: { tid } });
-          return res;
+          return;
         } catch (error) {
           console.error("Error setting rankup status:", error);
           throw error;
@@ -520,6 +525,8 @@ class Listen {
                     const checkIsPermission = info.adminIDs.some(
                       (item) => item.id == event.senderID,
                     );
+                    const isAdminBot = ADMINS.includes(event.senderID);
+                    if (isAdminBot) return true;
                     if (checkIsPermission) {
                       return true;
                     } else {

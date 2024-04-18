@@ -23,14 +23,14 @@ export default interface Ifca {
   changeGroupImage(
     img: any,
     threadID: string,
-    callback?: (err) => void
+    callback?: (err) => void,
   ): Promise<undefined>;
 
   changeNickname(
     newName: string,
     ThreadID: string,
     UserID: string,
-    callback?: (err) => void
+    callback?: (err) => void,
   ): Promise<undefined>;
 
   changeThreadColor(): Promise<any>;
@@ -46,14 +46,14 @@ export default interface Ifca {
 
   getThreadInfo(
     threadID: string,
-    callback: (err: Error, info: any) => void
+    callback: (err: Error, info: any) => void,
   ): Promise<undefined>;
 
   getThreadList(
     limit: number,
     timestamp: string,
     tags: any,
-    callback: (err, list) => void
+    callback: (err, list) => void,
   ): Promise<undefined>;
 
   getThreadPictures(): Promise<any>;
@@ -61,7 +61,7 @@ export default interface Ifca {
 
   getUserInfo(
     UserID: string | string[],
-    callback: (err, info) => void
+    callback: (err, info) => void,
   ): Promise<any>;
 
   handleMessageRequest(): Promise<any>;
@@ -77,7 +77,7 @@ export default interface Ifca {
   removeUserFromGroup(
     UserID: string | string[],
     ThreadID: string,
-    callback?: (err) => void
+    callback?: (err) => void,
   ): Promise<any>;
 
   resolvePhotoUrl(): Promise<any>;
@@ -87,13 +87,13 @@ export default interface Ifca {
     options: any, //TODO: add sendMessage Option
     ThreadID: string,
     callback?: (err: Error, info: any) => void,
-    MessageID?: any
+    MessageID?: any,
   ): Promise<undefined>;
 
   setMessageReaction(
     emoji: string,
     messageID: string,
-    callback?: (err) => void
+    callback?: (err) => void,
   ): Promise<undefined>;
 
   setTitle(): Promise<any>;
@@ -101,7 +101,7 @@ export default interface Ifca {
 
   unsendMessage(
     messageID: string,
-    callback?: (err) => void
+    callback?: (err) => void,
   ): Promise<undefined>;
 
   getThreadHistoryDeprecated(): Promise<any>;

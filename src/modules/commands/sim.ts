@@ -63,6 +63,7 @@ export default class SimCommand {
         let maxSimilarity = -1;
         let mostSimilarDocument = null;
         let mostSimiResult = null;
+        let response = true;
         rows.forEach((row: any) => {
           const similarity = stringSimilarity.compareTwoStrings(
             query,
@@ -72,8 +73,19 @@ export default class SimCommand {
             maxSimilarity = similarity;
             mostSimilarDocument = row.id;
             mostSimiResult = row.TraLoi;
+            if (similarity == 0) {
+              response = false;
+            }
           }
         });
+        if (!response) {
+          return api.sendMessage(
+            "Hông hiểu gì hết trơn á",
+            event.threadID,
+            () => {},
+            event.messageID,
+          );
+        }
         api.sendMessage(mostSimiResult, event.threadID);
       });
     }

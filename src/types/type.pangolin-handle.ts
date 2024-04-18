@@ -1,5 +1,7 @@
 import Ifca from "./type.api";
 import IEvent from "./type.event";
+import { IThreadData } from "./type.threadData";
+import { IUserData } from "./type.userData";
 import { IUserInThreadData } from "./type.userInThreadData";
 
 export interface IPangolinRun {
@@ -7,8 +9,8 @@ export interface IPangolinRun {
   event?: IEvent;
   client?: any;
   args?: any;
-  UserData?: any;
-  ThreadData?: any;
+  UserData?: IUserData;
+  ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
 }
@@ -17,8 +19,8 @@ export interface IPangolinEvent {
   api?: Ifca;
   event?: IEvent;
   client?: any;
-  UserData?: any;
-  ThreadData?: any;
+  UserData?: IUserData;
+  ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
 }
@@ -26,8 +28,8 @@ export interface IPangolinListenEvent {
   api?: Ifca;
   event?: IEvent;
   client?: any;
-  UserData?: any;
-  ThreadData?: any;
+  UserData?: IUserData;
+  ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
 }
