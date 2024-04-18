@@ -44,18 +44,9 @@ export default class ReportCommand {
 
   constructor(private client) {}
 
-  async run({
-    api,
-    event,
-    client,
-    args,
-    UserData,
-    ThreadData,
-    UserInThreadData,
-    getLang,
-  }: IPangolinRun) {
+  async run({ api, event, client, args, pangolin, getLang }: IPangolinRun) {
     const attachments = event?.messageReply?.attachments;
-    const listAds = JSON.parse(process.env.ADMINS);
+    const listAds = pangolin.admins;
     const listAttachment = [];
     const info: any = await new Promise((resolve, reject) => {
       api.getUserInfo(event.senderID, (err, info) => {
@@ -122,7 +113,6 @@ export default class ReportCommand {
           id,
           (err, info) => {
             if (err) console.log(err);
-            console.log("check info >>>>", info);
             cache.put(
               "report",
               {

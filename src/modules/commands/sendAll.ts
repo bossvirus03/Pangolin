@@ -137,15 +137,7 @@ export default class SendAllCommand {
       });
     }
   }
-  async event({
-    api,
-    event,
-    client,
-    UserData,
-    ThreadData,
-    UserInThreadData,
-    getLang,
-  }: IPangolinListenEvent) {
+  async event({ api, event, pangolin, getLang }: IPangolinListenEvent) {
     const sendAllPath = join(process.cwd(), "/src/db/data/sendAll.json");
     const dataMessageID = fs.readFileSync(sendAllPath, "utf8");
     if (!dataMessageID) return;
@@ -159,7 +151,7 @@ export default class SendAllCommand {
       const messageIDs = JSON.parse(dataMessageID);
       messageIDs.forEach((messageID) => {
         if (event.messageReply.messageID === messageID) {
-          const adminsData = process.env.ADMINS;
+          const adminsData = pangolin.admins;
           const admins = JSON.parse(adminsData);
           admins.forEach((admin) => {
             api.sendMessage(

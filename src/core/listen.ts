@@ -351,6 +351,7 @@ class Listen {
   };
 
   async listen() {
+    const UID_BOT = this.api.getCurrentUserID();
     const configPath = join(process.cwd(), "pangolin.config.json");
     const dataConfig = fs.readFileSync(configPath, "utf8");
     const config = JSON.parse(dataConfig);
@@ -393,8 +394,7 @@ class Listen {
       if (
         event.type == "event" &&
         event.logMessageType == "log:subscribe" &&
-        event.logMessageData.addedParticipants[0].userFbId ==
-          process.env.UID_BOT
+        event.logMessageData.addedParticipants[0].userFbId == UID_BOT
       ) {
         try {
           await sequelize.sync(); // Tạo bảng nếu chưa tồn tại
@@ -408,7 +408,7 @@ class Listen {
       if (
         event.type == "event" &&
         event.logMessageType == "log:unsubscribe" &&
-        event.logMessageData.leftParticipantFbId == process.env.UID_BOT
+        event.logMessageData.leftParticipantFbId == UID_BOT
       ) {
         try {
           await sequelize.sync();
@@ -443,6 +443,7 @@ class Listen {
           ThreadData: this.ThreadData,
           UserInThreadData: this.UserInThreadData,
           getLang,
+          pangolin: config,
         });
       });
 
@@ -461,6 +462,7 @@ class Listen {
           ThreadData: this.ThreadData,
           UserInThreadData: this.UserInThreadData,
           getLang,
+          pangolin: config,
         });
       });
       if (event.body != undefined) {
@@ -485,13 +487,14 @@ class Listen {
             ThreadData: this.ThreadData,
             UserInThreadData: this.UserInThreadData,
             getLang,
+            pangolin: config,
           });
         }
 
         let listCommands = [];
         const PREFIX =
           (await this.ThreadData.prefix(event.threadID)) ||
-          this.client.config.PREFIX ||
+          config.prefix ||
           ";";
         args = event.body.slice(PREFIX.length).trim().split(" ");
 
@@ -595,6 +598,7 @@ class Listen {
             ThreadData: this.ThreadData,
             UserInThreadData: this.UserInThreadData,
             getLang,
+            pangolin: config,
           });
         }
       }

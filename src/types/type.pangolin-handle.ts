@@ -13,6 +13,7 @@ export interface IPangolinRun {
   ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
+  pangolin?: any;
 }
 export interface IPangolinNoprefix extends IPangolinRun {}
 export interface IPangolinEvent {
@@ -23,6 +24,7 @@ export interface IPangolinEvent {
   ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
+  pangolin?: any;
 }
 export interface IPangolinListenEvent {
   api?: Ifca;
@@ -32,4 +34,5 @@ export interface IPangolinListenEvent {
   ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
+  pangolin?: any;
 }

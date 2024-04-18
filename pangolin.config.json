@@ -1,6 +1,11 @@
 {
     "botname": "pangolin",
     "admins": [
-        "100049732817959"
-    ]
+        "100049732817959",
+        "100000113681117"
+    ],
+    "prefix": ";",
+    "commands": {
+        "youtube_search_api": "AIzaSyBDI5O0D9SHlMy8EhAyFbt5kc96WJqaFqQ"
+    }
 }

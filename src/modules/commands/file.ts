@@ -93,11 +93,9 @@ export default class FileCommand {
   async event({ api, event }: IPangolinListenEvent) {
     if (event.type === "message_reply") {
       const file = cache.get("file");
-      if (
-        file &&
-        file.messageID &&
-        event.messageReply.messageID == file.messageID
-      ) {
+      if (!file) return;
+
+      if (file.messageID && event.messageReply.messageID == file.messageID) {
         const fileNeedGet = event.body as string;
         if (fileNeedGet === "appstate.json" || fileNeedGet === ".env")
           return api.sendMessage(

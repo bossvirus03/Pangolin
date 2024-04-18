@@ -13,6 +13,9 @@ export default class SetPrefixCommand {
 
   constructor(private client) {}
   async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
+    if (!event.isGroup) {
+      return api.sendMessage("Chỉ có thể sử dụng trong nhóm!", event.threadID);
+    }
     await ThreadData.setPrefix(event.threadID, args[1]);
     api.sendMessage("Đã đổi prefix thành " + args[1], event.threadID);
   }

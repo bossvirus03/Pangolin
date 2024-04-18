@@ -1,7 +1,5 @@
 import * as fs from "fs";
 import { join } from "path";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
 import { IPangolinEvent } from "src/types/type.pangolin-handle";
 
 export default class NotiCommand {
@@ -28,15 +26,8 @@ export default class NotiCommand {
     },
   };
   constructor(private client) {}
-  run({
-    api,
-    event,
-    client,
-    UserData,
-    ThreadData,
-    UserInThreadData,
-    getLang,
-  }: IPangolinEvent) {
+  run({ api, event, pangolin, getLang }: IPangolinEvent) {
+    const UID_BOT = api.getCurrentUserID();
     const GifPath = join(process.cwd(), "/src/db/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
     api.getThreadInfo(event.threadID, async (err, info) => {
@@ -52,9 +43,9 @@ export default class NotiCommand {
           };
         },
       );
-      if (arrPersonJoin.some((item) => item.id == process.env.UID_BOT)) {
+      if (arrPersonJoin.some((item) => item.id == UID_BOT)) {
         return api.sendMessage(
-          getLang("addBot", process.env.PREFIX),
+          getLang("addBot", pangolin.prefix),
           event.threadID,
         );
       } else {

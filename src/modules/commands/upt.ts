@@ -14,7 +14,7 @@ export default class UptCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, pangolin }: IPangolinRun) {
     const ping = Date.now();
     async function getDependencyCount() {
       try {
@@ -92,7 +92,7 @@ export default class UptCommand {
       const replyMsg =
         `⏰ Bây giờ là: ${moment().tz("Asia/Ho_Chi_Minh").format("HH:mm:ss")} | ${moment().tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY")}
 ⏱️ Thời gian đã hoạt động: ${uptimeHours.toString().padStart(2, "0")}:${uptimeMinutes.toString().padStart(2, "0")}:${uptimeSeconds.toString().padStart(2, "0")}
-📝 Dấu lệnh mặc định: ${process.env.PREFIX}
+📝 Dấu lệnh: ${pangolin.prefix}
 🗂️ Số lượng package: ${depCount >= 0 ? depCount : "Không xác định"}
 🔣 Tình trạng bot: ${botStatus}
 📋 Hệ điều hành: ${os.type()} ${os.release()} (${os.arch()})

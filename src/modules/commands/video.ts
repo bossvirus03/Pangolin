@@ -78,7 +78,7 @@ export default class VideoCommand {
     }
   }
 
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, pangolin, args }: IPangolinRun) {
     const search = (event.body as string).split(args[0])[1];
     var listVideoResult = [];
     let index = 1;
@@ -88,7 +88,7 @@ export default class VideoCommand {
           q: search,
           regionCode: "vi",
           type: "video",
-          key: process.env.YOUTUBE_API_KEY,
+          key: pangolin.commands.youtube_search_api,
           part: "snippet",
           maxResults: 5,
         },

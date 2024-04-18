@@ -13,6 +13,7 @@ export default class SetNameCommand {
 
   constructor(private client) {}
   async run({ api, event, client, args }: IPangolinRun) {
+    const UID_BOT = api.getCurrentUserID();
     try {
       const info: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
@@ -26,7 +27,7 @@ export default class SetNameCommand {
           .map((item) => {
             return item.id;
           })
-          .includes(process.env.UID_BOT)
+          .includes(UID_BOT)
       ) {
         return api.sendMessage(
           "Bạn cần set cho bot làm admin để sử dụng lệnh này",
