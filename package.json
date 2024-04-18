@@ -77,6 +77,7 @@
     "soft-delete-plugin-mongoose": "^1.0.17",
     "sqlite3": "^5.1.7",
     "string-similarity": "^4.0.4",
+    "tinyurl": "^1.1.7",
     "websocket-stream": "^5.5.0",
     "ytdl-core": "^4.11.5"
   },
