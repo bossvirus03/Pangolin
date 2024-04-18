@@ -7,12 +7,28 @@ export default class GetLinkCommand {
     version: "1.0.0",
     author: "Lợi NDK-[FIX]",
     createdAt: "",
-    description:
-      "Cách dùng: [prefix]getLink(Reply 1 bức ảnh)\nChức năng: lấy url",
+    description: {
+      vi: "Lấy url [ảnh/video]",
+      en: "Get url [photo/video]",
+    },
+    guide: {
+      vi: "[prefix]getLink (reply: [ảnh/video])",
+      en: "[prefix]getLink (reply: [photo/video])",
+    },
+  };
+  static message = {
+    vi: {
+      syntaxError: "Vui lòng reply ít nhất 1 ảnh/video!",
+      error: "Đã xảy ra lỗi không xác định.",
+    },
+    en: {
+      syntaxError: "Please reply with at least 1 photo/video!",
+      error: "An unknown error has occurred.",
+    },
   };
 
   constructor() {}
-  async run({ api, event }: IPangolinRun) {
+  async run({ api, event, getLang }: IPangolinRun) {
     try {
       if (event.type == "message_reply") {
         if (event.messageReply.attachments) {
@@ -34,12 +50,9 @@ export default class GetLinkCommand {
           );
         }
       }
-      return api.sendMessage(
-        "Vui lòng reply ít nhất 1 hình ảnh!",
-        event.threadID,
-      );
+      return api.sendMessage(getLang("syntaxError"), event.threadID);
     } catch (error) {
-      let message = "Đã xảy ra lỗi không xác định.";
+      let message = await getLang("error");
       if (error instanceof Error) message = error.message;
       console.log(error);
       return api.sendMessage(message, event.threadID);
