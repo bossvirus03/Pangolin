@@ -13,6 +13,7 @@ import { JwtAuthGuard } from "./app/auth/guards/jwt-auth.guard";
 import cookieParser from "cookie-parser";
 import { TransformInterceptor } from "./app/core/transform.interceptor";
 import OnTime from "./modules/ontime";
+import * as colors from "colors";
 
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
@@ -47,8 +48,8 @@ async function bootstrap() {
       appState: JSON.parse(
         readFileSync(
           join(process.cwd(), configService.get("FILE_STATE")),
-          "utf-8"
-        )
+          "utf-8",
+        ),
       ),
     };
 
@@ -66,9 +67,9 @@ async function bootstrap() {
       await readFileSync(
         join(
           process.cwd(),
-          `/src/lang/${client.config.LANGUAGE_CODE || "en"}.lang`
+          `/src/lang/${client.config.LANGUAGE_CODE || "en"}.lang`,
         ),
-        "utf-8"
+        "utf-8",
       ).split(/\r?\n|\r/)
     ).filter((item) => item && item.charAt(0) != "#");
 
@@ -93,6 +94,15 @@ async function bootstrap() {
     loadCommands.load();
 
     // Logging in to Facebook Chat API
+    console.log(
+      colors.rainbow(`
+    ██████╗░░█████╗░███╗░░██╗░██████╗░░█████╗░██╗░░░░░██╗███╗░░██╗
+    ██╔══██╗██╔══██╗████╗░██║██╔════╝░██╔══██╗██║░░░░░██║████╗░██║
+    ██████╔╝███████║██╔██╗██║██║░░██╗░██║░░██║██║░░░░░██║██╔██╗██║
+    ██╔═══╝░██╔══██║██║╚████║██║░░╚██╗██║░░██║██║░░░░░██║██║╚████║
+    ██║░░░░░██║░░██║██║░╚███║╚██████╔╝╚█████╔╝███████╗██║██║░╚███║
+    ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚══╝░╚═════╝░░╚════╝░╚══════╝╚═╝╚═╝░░╚══╝`),
+    );
     await loginAsync(loginPath, (err, api) => {
       if (err) return console.error(err);
 

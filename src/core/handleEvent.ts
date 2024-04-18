@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import { readdirSync } from "fs";
 import { join } from "path";
 import * as tsNode from "ts-node";
+import * as colors from "colors";
 
 class HandleEvent {
   constructor(private client: any) {}
@@ -15,12 +16,8 @@ class HandleEvent {
     });
 
     const eventFiles = readdirSync(eventPath).filter((file: string) =>
-      file.endsWith(".ts")
+      file.endsWith(".ts"),
     );
-    eventFiles.forEach((file) => {
-      const logger = new Logger(); // Create an instance of the Logger
-      logger.log(`Loaded event file: {${file}}`);
-    });
 
     let eventCount = 0;
     for (const file of eventFiles) {
@@ -30,7 +27,7 @@ class HandleEvent {
 
         if (!eventClass || !eventClass.config) {
           console.error(
-            `Error loading event from file ${file}: Invalid event structure`
+            `Error loading event from file ${file}: Invalid event structure`,
           );
           continue;
         }
@@ -39,7 +36,7 @@ class HandleEvent {
 
         if (!config || !config.name) {
           console.error(
-            `Error loading event from file ${file}: event name is undefined`
+            `Error loading event from file ${file}: event name is undefined`,
           );
           continue;
         }
@@ -54,11 +51,13 @@ class HandleEvent {
           this.client.onload.push(eventInstance);
         }
       } catch (error) {
-        console.error(`Error loading event from file ${file}:`, error);
+        console.log(
+          colors.yellow(`Error loading event from file ${file}: ${error}`),
+        );
       }
     }
 
-    console.log(global.getLang("LoadEventCount", eventCount));
+    console.log(global.getLang("LoadEventCount", eventCount).rainbow);
   }
 }
 

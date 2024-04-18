@@ -15,13 +15,8 @@ class HandleCommand {
     });
 
     const commandFiles = readdirSync(commandPath).filter((file: string) =>
-      file.endsWith(".ts")
+      file.endsWith(".ts"),
     );
-
-    commandFiles.forEach((file) => {
-      const logger = new Logger(); // Create an instance of the Logger
-      logger.log(`Loaded event file: {${file}}`);
-    });
     let commandCount = 0;
     let noprefixCount = 0;
     for (const file of commandFiles) {
@@ -30,8 +25,9 @@ class HandleCommand {
         const CommandClass = require(filePath).default;
 
         if (!CommandClass || !CommandClass.config) {
-          console.error(
+          console.log(
             `Error loading command from file ${file}: Invalid command structure`
+              .yellow,
           );
           continue;
         }
@@ -40,7 +36,7 @@ class HandleCommand {
 
         if (!config || !config.name) {
           console.error(
-            `Error loading command from file ${file}: Command name is undefined`
+            `Error loading command from file ${file}: Command name is undefined`,
           );
           continue;
         }
@@ -69,7 +65,7 @@ class HandleCommand {
     }
 
     console.log(
-      global.getLang("LoadCommandCount", commandCount, noprefixCount)
+      global.getLang("LoadCommandCount", commandCount, noprefixCount).rainbow,
     );
   }
 }
