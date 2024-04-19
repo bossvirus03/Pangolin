@@ -13,46 +13,46 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
 import OnTime from "src/modules/ontime";
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>("MONGODB_URI"),
-        connectionFactory: (connection) => {
-          connection.plugin(softDeletePlugin);
-          return connection;
-        },
-      }),
-      inject: [ConfigService],
-    }),
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     uri: configService.get<string>("MONGODB_URI"),
+    //     connectionFactory: (connection) => {
+    //       connection.plugin(softDeletePlugin);
+    //       return connection;
+    //     },
+    //   }),
+    //   inject: [ConfigService],
+    // }),
     ConfigModule.forRoot({
       expandVariables: true,
       isGlobal: true,
     }),
-    MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        transport: {
-          host: configService.get("EMAIL_HOST"),
-          secure: false,
-          auth: {
-            user: configService.get("EMAIL_SENDER"),
-            pass: configService.get("EMAIL_PASSWORD"),
-          },
-        },
-        template: {
-          dir: process.cwd() + "/src/app/templates/email",
-          adapter: new HandlebarsAdapter(),
-          options: {
-            strict: false,
-          },
-        },
-        preview: configService.get("EMAIL_PREVIEW") === "true" ? true : false,
-      }),
-      inject: [ConfigService],
-    }),
-    UserModule,
-    SimModule,
-    AuthModule,
+    // MailerModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     transport: {
+    //       host: configService.get("EMAIL_HOST"),
+    //       secure: false,
+    //       auth: {
+    //         user: configService.get("EMAIL_SENDER"),
+    //         pass: configService.get("EMAIL_PASSWORD"),
+    //       },
+    //     },
+    //     template: {
+    //       dir: process.cwd() + "/src/app/templates/email",
+    //       adapter: new HandlebarsAdapter(),
+    //       options: {
+    //         strict: false,
+    //       },
+    //     },
+    //     preview: configService.get("EMAIL_PREVIEW") === "true" ? true : false,
+    //   }),
+    //   inject: [ConfigService],
+    // }),
+    // UserModule,
+    // SimModule,
+    // AuthModule,
     // BotModule,
   ],
   controllers: [AppController],

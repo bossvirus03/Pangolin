@@ -15,11 +15,7 @@ import { TransformInterceptor } from "./app/core/transform.interceptor";
 import OnTime from "./modules/ontime";
 import * as fs from "fs";
 import { CustomLogger } from "src/logger/log";
-import { Thread } from "src/db/models/threadModel";
-import { UserInThread } from "src/db/models/userInThreadModel";
-import { User } from "src/db/models/userModel";
-import sequelize from "src/db/database";
-const { exec } = require("child_process");
+
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
 
