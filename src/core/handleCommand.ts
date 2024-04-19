@@ -1,4 +1,4 @@
-import { ConsoleLogger, Logger } from "@nestjs/common";
+import { CustomLogger } from "../logger/log";
 import { readdirSync } from "fs";
 import { join } from "path";
 import * as tsNode from "ts-node";
@@ -7,6 +7,7 @@ class HandleCommand {
   constructor(private client: any) {}
 
   load() {
+    const Log = new CustomLogger();
     const commandPath = join(process.cwd(), "src", "modules", "commands");
 
     // Configure ts-node to transpile TypeScript files on the fly
@@ -25,9 +26,8 @@ class HandleCommand {
         const CommandClass = require(filePath).default;
 
         if (!CommandClass || !CommandClass.config) {
-          console.log(
-            `Error loading command from file ${file}: Invalid command structure`
-              .yellow,
+          Log.warn(
+            `Error loading command from file ${file}: Invalid command structure`,
           );
           continue;
         }
@@ -35,7 +35,7 @@ class HandleCommand {
         const { config } = CommandClass;
 
         if (!config || !config.name) {
-          console.error(
+          Log.warn(
             `Error loading command from file ${file}: Command name is undefined`,
           );
           continue;
@@ -60,12 +60,12 @@ class HandleCommand {
           this.client.onload.push(commandInstance);
         }
       } catch (error) {
-        console.error(`Error loading command from file ${file}:`, error);
+        Log.warn(`Error loading command from file ${file}: ${error}`);
       }
     }
 
-    console.log(
-      global.getLang("LoadCommandCount", commandCount, noprefixCount).rainbow,
+    Log.rainbow(
+      global.getLang("LoadCommandCount", commandCount, noprefixCount),
     );
   }
 }

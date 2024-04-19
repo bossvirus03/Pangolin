@@ -2,12 +2,13 @@ import { Logger } from "@nestjs/common";
 import { readdirSync } from "fs";
 import { join } from "path";
 import * as tsNode from "ts-node";
-import * as colors from "colors";
+import { CustomLogger } from "./../logger/log";
 
 class HandleEvent {
   constructor(private client: any) {}
 
   load() {
+    const Log = new CustomLogger();
     const eventPath = join(process.cwd(), "src", "modules", "events");
 
     // Configure ts-node to transpile TypeScript files on the fly
@@ -51,13 +52,11 @@ class HandleEvent {
           this.client.onload.push(eventInstance);
         }
       } catch (error) {
-        console.log(
-          colors.yellow(`Error loading event from file ${file}: ${error}`),
-        );
+        Log.warn(`Error loading event from file ${file}: ${error}`);
       }
     }
 
-    console.log(global.getLang("LoadEventCount", eventCount).rainbow);
+    Log.rainbow(global.getLang("LoadEventCount", eventCount));
   }
 }
 

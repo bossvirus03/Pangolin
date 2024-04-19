@@ -13,12 +13,14 @@ import { JwtAuthGuard } from "./app/auth/guards/jwt-auth.guard";
 import cookieParser from "cookie-parser";
 import { TransformInterceptor } from "./app/core/transform.interceptor";
 import OnTime from "./modules/ontime";
-import * as colors from "colors";
+import * as fs from "fs";
+import { CustomLogger } from "src/logger/log";
 
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
 
 async function bootstrap() {
+  const Log = new CustomLogger();
   /** =========== APP ===========*/
   const app = await NestFactory.create(AppModule);
   const reflector = app.get(Reflector);
@@ -43,6 +45,9 @@ async function bootstrap() {
 
   /**============ BOT ============= */
   try {
+    const configPath = join(process.cwd(), "pangolin.config.json");
+    const dataConfig = fs.readFileSync(configPath, "utf8");
+    const config = JSON.parse(dataConfig);
     const loginAsync = promisify(login);
     const loginPath = {
       appState: JSON.parse(
@@ -92,31 +97,57 @@ async function bootstrap() {
     const loadEvents = new HandleEvent(client);
     loadEvents.load();
     loadCommands.load();
-
     // Logging in to Facebook Chat API
-    console.log(
-      colors.rainbow(`
-    ██████╗░░█████╗░███╗░░██╗░██████╗░░█████╗░██╗░░░░░██╗███╗░░██╗
-    ██╔══██╗██╔══██╗████╗░██║██╔════╝░██╔══██╗██║░░░░░██║████╗░██║
-    ██████╔╝███████║██╔██╗██║██║░░██╗░██║░░██║██║░░░░░██║██╔██╗██║
-    ██╔═══╝░██╔══██║██║╚████║██║░░╚██╗██║░░██║██║░░░░░██║██║╚████║
-    ██║░░░░░██║░░██║██║░╚███║╚██████╔╝╚█████╔╝███████╗██║██║░╚███║
-    ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚══╝░╚═════╝░░╚════╝░╚══════╝╚═╝╚═╝░░╚══╝`),
+    Log.rainbow(
+      `
+      ██████╗░░█████╗░███╗░░██╗░██████╗░░█████╗░██╗░░░░░██╗███╗░░██╗
+      ██╔══██╗██╔══██╗████╗░██║██╔════╝░██╔══██╗██║░░░░░██║████╗░██║
+      ██████╔╝███████║██╔██╗██║██║░░██╗░██║░░██║██║░░░░░██║██╔██╗██║
+      ██╔═══╝░██╔══██║██║╚████║██║░░╚██╗██║░░██║██║░░░░░██║██║╚████║
+      ██║░░░░░██║░░██║██║░╚███║╚██████╔╝╚█████╔╝███████╗██║██║░╚███║
+      ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚══╝░╚═════╝░░╚════╝░╚══════╝╚═╝╚═╝░░╚══╝`,
     );
-    await loginAsync(loginPath, (err, api) => {
-      if (err) return console.error(err);
+    const P = ["\\", "|", "/", "-"];
+    let x = 0;
+    process.stdout.write(`Đang tiến hành đăng nhập `);
+    const loader = setInterval(() => {
+      process.stdout.write(`\rĐang tiến hành đăng nhập ${P[x++]}`);
+      x %= P.length;
+    }, 250);
 
-      //listen event
-      const ListenEvent = new Listen(api, client);
-      ListenEvent.listen();
+    try {
+      await new Promise((resolve, reject) => {
+        setTimeout(resolve, 3000);
+      });
+      clearInterval(loader);
+      process.stdout.write("\n");
+      await loginAsync(loginPath, async (err, api) => {
+        if (err) {
+          console.error("Error during login:", err);
+          return;
+        }
+        const currentUserID = await api.getCurrentUserID();
+        Log.rainbow("Login Successfully ");
+        console.table([
+          {
+            PREFIX: config.prefix,
+            UID: currentUserID,
+          },
+        ]);
+        // Lắng nghe sự kiện
+        const ListenEvent = new Listen(api, client);
+        ListenEvent.listen();
 
-      //
-      const schedulerService = app.get(OnTime);
-      schedulerService.scheduleTask(api);
-    });
+        // Schedule tasks
+        const schedulerService = app.get(OnTime);
+        schedulerService.scheduleTask(api);
+      });
+    } catch (error) {
+      clearInterval(loader);
+      console.error("Error during login:", error);
+    }
   } catch (error) {
-    console.error("Error during login:", error);
-    // Handle login error
+    console.error("Error:", error);
   }
 }
 
