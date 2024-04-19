@@ -3,7 +3,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class UnsendCommand {
   static config = {
     name: "unsend",
-    version: "1.0.0",
+    version: "1.0.1",
     author: "Lợi NDK-[FIX]",
     createdAt: "",
     description: {
@@ -17,9 +17,11 @@ export default class UnsendCommand {
   };
   static message = {
     vi: {
+      error: "Đã xảy ra lỗi không xác định.",
       syntaxError: "Vui lòng reply tin nhắn muốn gỡ của bot",
     },
     en: {
+      error: "An unknown error has occurred.",
       syntaxError: "Please reply the message you want to unsend",
     },
   };
