@@ -53,7 +53,7 @@ import OnTime from "src/modules/ontime";
     UserModule,
     SimModule,
     AuthModule,
-    BotModule,
+    // BotModule,
   ],
   controllers: [AppController],
   providers: [AppService, OnTime],

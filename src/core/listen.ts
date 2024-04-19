@@ -75,9 +75,14 @@ class Listen {
             tid: event.threadID,
             name: `${res.threadName}`,
             prefix: null,
-            rankup: true,
+            rankup: false,
           });
-          console.log("New thread created:", newThread.toJSON());
+          console.log(
+            "New thread created:",
+            newThread.name,
+            "|",
+            newThread.tid,
+          );
         });
       }
     } catch (error) {
@@ -236,9 +241,9 @@ class Listen {
           tid: tid,
           name: name,
           prefix: null,
-          rankup: true,
+          rankup: false,
         });
-        console.log("New thread created:", newThread.toJSON());
+        console.log("New thread created:", newThread.name, "|", newThread.tid);
       } catch (error) {
         console.error("Error creating new thread:", error);
       }
@@ -370,7 +375,14 @@ class Listen {
       listCommands.push(config.name);
     }
     for (let i = 0; i < this.client.onload.length; i++) {
-      this.client.onload[i].onload(this.api, this.client);
+      this.client.onload[i].onload({
+        api: this.api,
+        client: this.client,
+        UserData: this.UserData,
+        ThreadData: this.ThreadData,
+        UserInThreadData: this.UserInThreadData,
+        pangolin: config,
+      });
     }
     this.api.setOptions({ listenEvents: true });
     this.api.listenMqtt(async (err, event) => {

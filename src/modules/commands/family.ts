@@ -43,8 +43,8 @@ export default class NameCommand {
     UserInThreadData,
     getLang,
   }: IPangolinRun) {
-    const canvasWidth = 900;
-    const canvasHeight = 1200;
+    const canvasWidth = 1920;
+    const canvasHeight = 2880;
     const canvas = createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext("2d");
     const outputPath = join(
@@ -66,7 +66,7 @@ export default class NameCommand {
         (canvasWidth - 100) / columns,
         (canvasHeight - 400) / rows,
       ); // Kích thước của mỗi hình ảnh
-      const gap = 10; // khoảng cách giữa các hình ảnh
+      const gap = 2; // khoảng cách giữa các hình ảnh
 
       // Tạo canvas background
       const backgroundCanvas = createCanvas(canvasWidth, canvasHeight);
@@ -80,20 +80,20 @@ export default class NameCommand {
       const totalWidth = columns * (imageSize + gap) - gap;
       const totalHeight = rows * (imageSize + gap) - gap;
       const startXPos = (canvasWidth - totalWidth) / 2; // Vị trí bắt đầu vẽ theo chiều ngang
-      const startYPos = 300; // Vị trí bắt đầu vẽ theo chiều dọc
+      const startYPos = 900; // Vị trí bắt đầu vẽ theo chiều dọc
 
       let xPos = startXPos;
       let yPos = startYPos;
 
       // Tính toán kích thước của tiêu đề và điểm bắt đầu vẽ
       backgroundCtx.fillStyle = "#000"; // Màu chữ
-      let fontSize = 70;
+      let fontSize = 120;
       while (backgroundCtx.measureText(title).width > totalWidth) {
         fontSize--;
       }
       const textWidth = backgroundCtx.measureText(title).width;
       const textXPos = startXPos + (totalWidth - textWidth) / 2;
-      const textYPos = startYPos - 180;
+      const textYPos = startYPos - 380;
 
       // Vẽ tiêu đề
       backgroundCtx.textAlign = "center"; // Căn giữa theo chiều ngang

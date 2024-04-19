@@ -15,7 +15,11 @@ import { TransformInterceptor } from "./app/core/transform.interceptor";
 import OnTime from "./modules/ontime";
 import * as fs from "fs";
 import { CustomLogger } from "src/logger/log";
-
+import { Thread } from "src/db/models/threadModel";
+import { UserInThread } from "src/db/models/userInThreadModel";
+import { User } from "src/db/models/userModel";
+import sequelize from "src/db/database";
+const { exec } = require("child_process");
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
 
@@ -109,7 +113,7 @@ async function bootstrap() {
     );
     const P = ["\\", "|", "/", "-"];
     let x = 0;
-    process.stdout.write(`Đang tiến hành đăng nhập `);
+    // process.stdout.write(`Đang tiến hành đăng nhập `);
     const loader = setInterval(() => {
       process.stdout.write(`\rĐang tiến hành đăng nhập ${P[x++]}`);
       x %= P.length;
@@ -127,6 +131,36 @@ async function bootstrap() {
           return;
         }
         const currentUserID = await api.getCurrentUserID();
+        async function checkCurrentUserID(currentUserID) {
+          const pathCurrentUserID = join(
+            process.cwd(),
+            "src/db/data/currentUserID.json",
+          );
+          const savedCurrentUserID = fs.readFileSync(pathCurrentUserID, "utf8");
+          if (!savedCurrentUserID) {
+            fs.writeFileSync(
+              pathCurrentUserID,
+              JSON.stringify({ currentUserID: currentUserID }),
+            );
+          }
+          if (savedCurrentUserID) {
+            if (JSON.parse(savedCurrentUserID).currentUserID != currentUserID) {
+              Log.warn(
+                "Bạn đang chạy bot với account mới...\nVui lòng xoá file database.sqlite để cập nhật lại dữ liệu",
+              );
+              await new Promise((resolve, reject) => {
+                setTimeout(resolve, 3000);
+              });
+              process.stdout.write("\n");
+              fs.writeFileSync(
+                pathCurrentUserID,
+                JSON.stringify({ currentUserID: currentUserID }),
+              );
+            }
+          }
+        }
+        checkCurrentUserID(currentUserID);
+
         Log.rainbow("Login Successfully ");
         console.table([
           {

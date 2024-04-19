@@ -15,6 +15,14 @@ export interface IPangolinRun {
   getLang?: (...args: any[]) => Promise<string>;
   pangolin?: any;
 }
+export interface IPangolinOnload {
+  api?: Ifca;
+  client?: any;
+  UserData?: IUserData;
+  ThreadData?: IThreadData;
+  UserInThreadData?: IUserInThreadData;
+  pangolin?: any;
+}
 export interface IPangolinNoprefix extends IPangolinRun {}
 export interface IPangolinEvent {
   api?: Ifca;

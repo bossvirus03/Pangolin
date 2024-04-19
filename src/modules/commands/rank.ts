@@ -1,177 +1,160 @@
-// import * as fs from "fs";
-// import { join } from "path";
-// import { createCanvas, loadImage } from "canvas";
-// import axios from "axios";
-//
-//
-// export default class RankCommand {
-//   static config = {
-//     name: "rank",
-//     version: "1.0.0",
-//     author: "Lợi",
-//     createdAt: "",
-//     description:
-//       "Cách dùng: [prefix]rank\nChức năng: Lấy thông tin rank của người dùng",
-//   };
+import * as fs from "fs";
+import { join } from "path";
+import { createCanvas, loadImage } from "canvas";
+import axios from "axios";
 
-//   constructor(private client) {}
-//   drawRoundRect(ctx, x, y, width, height, radius) {
-//     ctx.beginPath();
-//     ctx.moveTo(x + radius, y);
-//     ctx.arcTo(x + width, y, x + width, y + height, radius);
-//     ctx.arcTo(x + width, y + height, x, y + height, radius);
-//     ctx.arcTo(x, y + height, x, y, radius);
-//     ctx.arcTo(x, y, x + width, y, radius);
-//     ctx.closePath();
-//     ctx.fill();
-//   }
+export default class RankCommand {
+  static config = {
+    name: "rank",
+    version: "1.0.0",
+    author: "Lợi",
+    createdAt: "",
+    description:
+      "Cách dùng: [prefix]rank\nChức năng: Lấy thông tin rank của người dùng",
+  };
 
-//   async createRankCard(
-//     avt,
-//     name,
-//     currentLevel,
-//     futureExp,
-//     nowExp,
-//     percentLevel
-//   ) {
-//     const canvas = createCanvas(1133, 370);
-//     const ctx = canvas.getContext("2d");
-//     const cardTemplatePath = join(
-//       process.cwd(),
-//       "src",
-//       "db",
-//       "data",
-//       "rank",
-//       "card",
-//       "card.png"
-//     );
+  constructor(private client) {}
 
-//     const template = await loadImage(cardTemplatePath);
+  drawRoundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + width, y, x + width, y + height, radius);
+    ctx.arcTo(x + width, y + height, x, y + height, radius);
+    ctx.arcTo(x, y + height, x, y, radius);
+    ctx.arcTo(x, y, x + width, y, radius);
+    ctx.closePath();
+    ctx.fill();
+  }
 
-//     // Tính toán tỷ lệ giữa chiều rộng và chiều cao của canvas và hình ảnh
-//     const ratio = Math.min(
-//       canvas.width / template.width,
-//       canvas.height / template.height
-//     );
+  async createRankCard(
+    top,
+    avt,
+    name,
+    currentLevel,
+    currentExp,
+    futureExp,
+    percentLevel,
+  ) {
+    const canvas = createCanvas(1133, 370);
+    const ctx = canvas.getContext("2d");
+    const cardTemplatePath = join(
+      process.cwd(),
+      "src",
+      "db",
+      "data",
+      "rank",
+      "card",
+      "card.png",
+    );
+    const template = await loadImage(cardTemplatePath);
 
-//     // Tính toán kích thước mới của hình ảnh để cover canvas mà không bị méo
-//     const newWidth = template.width * ratio;
-//     const newHeight = template.height * ratio;
+    // Tính toán tỷ lệ giữa chiều rộng và chiều cao của canvas và hình ảnh
+    const ratio = Math.min(
+      canvas.width / template.width,
+      canvas.height / template.height,
+    );
 
-//     // Vẽ hình ảnh với kích thước mới, sử dụng center để căn giữa canvas
-//     const offsetX = (canvas.width - newWidth) / 2;
-//     const offsetY = (canvas.height - newHeight) / 2;
+    // Tính toán kích thước mới của hình ảnh để cover canvas mà không bị méo
+    const newWidth = template.width * ratio;
+    const newHeight = template.height * ratio;
 
-//     // ctx.drawImage(template, offsetX, offsetY, newWidth, newHeight);
+    // Vẽ hình ảnh với kích thước mới, sử dụng center để căn giữa canvas
+    const offsetX = (canvas.width - newWidth) / 2;
+    const offsetY = (canvas.height - newHeight) / 2;
 
-//     ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
 
-//     const totalWidth = 702; // Độ rộng của thanh trạng thái
-//     const totalHeight = 47; // Độ cao của thanh trạng thái
-//     const currentValue = nowExp; // Giá trị hiện tại
-//     const futureValue = futureExp; // Giá trị tương lai
+    const totalWidth = 702; // Độ rộng của thanh trạng thái
+    const totalHeight = 47; // Độ cao của thanh trạng thái
+    const currentValue = currentExp; // Giá trị hiện tại
+    const futureValue = futureExp; // Giá trị tương lai
 
-//     // Vẽ hình chữ nhật đại diện cho toàn bộ thanh trạng thái với góc bo tròn
-//     ctx.fillStyle = "#ccc";
-//     this.drawRoundRect(ctx, 372, 260, totalWidth, totalHeight, 20);
+    // Vẽ hình chữ nhật đại diện cho toàn bộ thanh trạng thái với góc bo tròn
+    ctx.fillStyle = "#ccc";
+    this.drawRoundRect(ctx, 372, 260, totalWidth, totalHeight, 20);
 
-//     // Tính toán chiều rộng của hình chữ nhật đại diện cho giá trị hiện tại
-//     const currentWidth = (currentValue / futureValue) * totalWidth;
+    // Tính toán chiều rộng của hình chữ nhật đại diện cho giá trị hiện tại
+    const currentWidth = (currentValue / futureValue) * totalWidth;
 
-//     // Vẽ hình chữ nhật nhỏ hơn đại diện cho giá trị hiện tại
-//     ctx.fillStyle = "#008DDA";
-//     this.drawRoundRect(ctx, 372, 260, currentWidth, totalHeight, 20);
+    // Vẽ hình chữ nhật nhỏ hơn đại diện cho giá trị hiện tại
+    ctx.fillStyle = "#008DDA";
+    this.drawRoundRect(ctx, 372, 260, currentWidth, totalHeight, 20);
 
-//     // Vẽ chữ hiển thị % level
-//     ctx.fillStyle = "#ccc";
-//     ctx.font = "italic bold 32px Arial";
-//     ctx.fillText(`${percentLevel}%`, 696, 295);
+    // Vẽ chữ hiển thị % level
+    ctx.fillStyle = "#ccc";
+    ctx.font = "italic bold 32px Arial";
+    ctx.fillText(`${percentLevel}%`, 696, 295);
 
-//     // Vẽ chữ hiển thị Tên
-//     ctx.fillStyle = "#000000"; // Màu đen
-//     ctx.font = "italic bold 46px Arial";
-//     ctx.fillText(`${name}`, 372, 209);
+    // Vẽ chữ hiển thị Tên
+    ctx.fillStyle = "#fccf03";
+    ctx.font = "italic bold 56px Arial";
+    ctx.fillText(`${name}`, 450, 157);
 
-//     //thông tin level Nal/Nal và level hiện tại
-//     ctx.font = "italic bold 36px Arial";
-//     ctx.fillStyle = "#ccc";
-//     ctx.fillText(`${currentLevel}`, 1030, 85);
-//     ctx.fillText(`${nowExp} /${futureExp}`, 800, 85);
+    // Vẽ chữ hiển top
+    ctx.fillStyle = "#ccc";
+    ctx.font = "italic bold 36px Arial";
+    ctx.fillText(`#${top}`, 700, 85);
 
-//     // Vẽ hình tròn để cắt ảnh avatar
-//     ctx.beginPath();
-//     ctx.arc(180, 187, 147, 0, Math.PI * 2, true);
-//     ctx.closePath();
-//     ctx.clip();
-//     ctx.drawImage(await loadImage(avt), 36, 40, 328, 328);
+    //thông tin level Nal/Nal và level hiện tại
+    ctx.font = "italic bold 36px Arial";
+    ctx.fillStyle = "#ccc";
+    ctx.fillText(`${currentLevel}`, 1030, 85);
+    ctx.fillText(`${currentExp} /${futureExp}`, 800, 85);
 
-//     const fimg = canvas.toBuffer();
-//     await fs.writeFileSync(
-//       join(process.cwd(), "src", "db", "data", "rank", "card", "card2.png"),
-//       fimg
-//     );
-//     ctx.fillText(currentLevel, 485, 330.42);
-//     return fimg;
-//   }
-//   async run(api, event, client, args, UserData, ThreadData) {
-//     const countExp = (level) => {
-//       return (3 * (-2 + Math.pow(level * 2, 2))) / 4;
-//     };
-//     const avt = `https://graph.facebook.com/${event.senderID}/picture`;
-//     const avtUrl = await axios.get(avt, {
-//       params: {
-//         width: 480,
-//         height: 480,
-//         redirect: false,
-//         access_token: process.env.ACCESS_TOKEN_FB,
-//       },
-//       headers: {
-//         Accept:
-//           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0",
-//         Cookie: process.env.ACCESS_COOKIE_FB,
-//       },
-//     });
-//     // let avt = await api.getUserInfo(event.senderID, (err, ret) => {});
-//     // avt = avt[event.senderID].thumbSrc;
-//     const user = await UserData.get(event.senderID);
-//     const currentLevel = Math.floor(Math.sqrt(1 + (4 * user.exp) / 3 + 1) / 2);
-//     const futureExp = Math.floor(countExp(currentLevel + 1));
-//     const nowExp = Math.floor(countExp(currentLevel));
-//     const percentLevel = Math.floor((nowExp / futureExp) * 100);
+    // Vẽ hình tròn để cắt ảnh avatar
+    ctx.beginPath();
+    ctx.arc(180, 187, 147, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(await loadImage(avt), 36, 40, 328, 328);
+    const fimg = canvas.toBuffer("image/png");
+    return fimg;
+  }
 
-//     this.createRankCard(
-//       avtUrl.data.url,
-//       user.name,
-//       currentLevel,
-//       futureExp,
-//       user.exp,
-//       percentLevel
-//     );
+  async run({ api, event, client, args, UserData, pangolin }) {
+    const getTopRank = async (id) => {
+      let listUsers = await UserData.getAll();
+      listUsers.sort((a, b) => b.exp - a.exp);
+      const index = 1 + listUsers.findIndex((user) => user.uid === id);
+      return index;
+    };
+    const top = await getTopRank(event.senderID);
+    const avt = `https://graph.facebook.com/${event.senderID}/picture?type=large&redirect=true&width=480&height=480&access_token=${pangolin.access_token}`;
+    const avtUrl = await axios.get(avt, { responseType: "arraybuffer" });
+    const user = await UserData.get(event.senderID);
+    const currentExp = user.exp;
 
-//     setTimeout(async () => {
-//       api.sendMessage(
-//         {
-//           attachment: await fs.createReadStream(
-//             join(
-//               process.cwd(),
-//               "src",
-//               "db",
-//               "data",
-//               "rank",
-//               "card",
-//               "card2.png"
-//             )
-//           ),
-//         },
-//         event.threadID
-//       );
-//     }, 2000);
+    const currentLevel = Math.floor(Math.sqrt(1 + (4 * user.exp) / 3 + 1) / 2);
+    const nextLevelExp = Math.floor(
+      (2 * (2 * Math.pow(currentLevel + 1, 2) - 1) * 3) / 4,
+    );
+    const nextLevel = Math.floor(
+      Math.floor(Math.sqrt(1 + (4 * nextLevelExp) / 3 + 1) / 2),
+    );
+    const futureExp = Math.floor(nextLevelExp);
+    const percentLevel = Math.floor((currentExp / nextLevelExp) * 100);
 
-//     // ! TODO làm phần tag để get rank
-//     // if (!args[1]) return api.sendMessage(event.senderID, event.threadID);
-//     // const propertyValues = Object.keys(event.mentions);
-//     // propertyValues.forEach((item) => {
-//     //   api.sendMessage(item, event.threadID);
-//     // });
-//   }
-// }
+    console.log("Creating rank card...");
+    const outputPath = join(
+      process.cwd(),
+      `/public/images/rank_${event.senderID}.png`,
+    );
+
+    const buffer = await this.createRankCard(
+      top,
+      avtUrl.data,
+      user.name,
+      currentLevel,
+      currentExp,
+      nextLevelExp,
+      percentLevel,
+    );
+    fs.writeFileSync(outputPath, buffer);
+    api.sendMessage(
+      {
+        attachment: fs.createReadStream(outputPath),
+      },
+      event.threadID,
+    );
+  }
+}

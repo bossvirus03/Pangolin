@@ -26,7 +26,7 @@ export default class RestartCommand {
       console.error("Error executing command:", error);
     }
   }
-  async onload(api) {
+  async onload({ api }) {
     if (fs.existsSync(this.pathFile)) {
       const [time, threadID]: [number, string] = await new Promise(
         async (rs, rj) => {

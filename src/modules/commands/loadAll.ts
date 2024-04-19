@@ -1,5 +1,5 @@
-import { IPangolinRun } from "src/types/type.pangolin-handle";
-import { IUserInThreadData } from "src/types/type.userInThreadData";
+import { IPangolinOnload, IPangolinRun } from "src/types/type.pangolin-handle";
+
 export default class LoadAllCommand {
   static config = {
     name: "loadAll",
@@ -7,70 +7,69 @@ export default class LoadAllCommand {
     author: "Lợi",
     createdAt: "",
     description:
-      "[Chỉ dảnh cho ADMIN bot]:load all người dùng, thread đang hoạt động vào database",
+      "[Chỉ dành cho ADMIN bot]:load all người dùng, thread đang hoạt động vào database",
     permission: 2,
   };
 
   constructor(private client) {}
-  async run({
+
+  async onload({
     api,
-    event,
     UserData,
     ThreadData,
     UserInThreadData,
-  }: IPangolinRun) {
+    pangolin,
+  }: IPangolinOnload) {
     try {
       const threadsData = await ThreadData.getAll();
-      const threads = threadsData.map((item) => {
-        return item.dataValues.tid;
-      });
+      const threads = threadsData.map((item) => item.dataValues.tid);
       let usersData = await UserData.getAll();
-      let users = usersData.map((item) => {
-        return item.dataValues.uid;
-      });
-      const userInThreads = (await UserInThreadData.getAll()).map((item) => {
-        return item.dataValues.uniqueId;
-      });
+      let users = usersData.map((item) => item.dataValues.uid);
+      const userInThreads = (await UserInThreadData.getAll()).map(
+        (item) => item.dataValues.uniqueId,
+      );
+
       const allTags = [["INBOX"], ["OTHER"]];
-      allTags.forEach((item) => {
+      let allTasksCompleted = 0;
+
+      const onFinish = () => {
+        if (++allTasksCompleted === allTags.length) {
+          const currentTime = new Date().toLocaleString();
+          pangolin.admins.forEach((id) => {
+            api.sendMessage(
+              `[DONE] All groups and users have been loaded! (Time: ${currentTime})`,
+              id,
+            );
+          });
+        }
+      };
+
+      allTags.forEach((groupTags) => {
+        // Renamed 'tags' to 'groupTags'
         const [limit, timestamp, tags, callback] = [
           10,
           null,
-          item,
+          groupTags, // Used renamed variable 'groupTags' here
           async function (err, list) {
             if (err) {
               console.error("Error fetching threads:", err);
             } else {
               const listBox = list.filter((item) => item.isGroup == true);
-              // get list user from group
               if (listBox.length > 0) {
-                listBox.forEach((box) => {
+                for (const box of listBox) {
                   const usersFromListBox = box.participants;
-                  usersFromListBox.forEach(async (item) => {
-                    // Thêm mỗi tác vụ vào hàng đợi
-                    usersData = await UserData.getAll();
-                    users = usersData.map((item) => {
-                      return item.dataValues.uid;
-                    });
+                  for (const item of usersFromListBox) {
                     if (!users.includes(item.userID)) {
-                      const createUser = new Promise<void>(
-                        async (resolve, reject) => {
-                          try {
-                            await UserData.set(item.userID, item.name); // Assuming UserData.set() returns a promise
-                            resolve(); // Resolve the promise when the user creation is successful
-                          } catch (error) {
-                            reject(error); // Reject the promise if there's an error during user creation
-                          }
-                        },
-                      );
-
-                      Promise.all([createUser])
-                        .then(() => {
-                          console.log("User created successfully");
-                        })
-                        .catch((error) => {
-                          console.error("Error creating user:", error);
-                        });
+                      try {
+                        const nowDataUser = await UserData.getAll();
+                        if (
+                          !nowDataUser.some((user) => user.uid == item.userID)
+                        ) {
+                          await UserData.set(item.userID, item.name);
+                        }
+                      } catch (error) {
+                        console.error("Error creating user:", error);
+                      }
                     }
                     if (!userInThreads.includes(`${item.userID}${box.tid}`)) {
                       await UserInThreadData.set(
@@ -79,11 +78,10 @@ export default class LoadAllCommand {
                         box.threadID,
                       );
                     }
-                  });
-                });
+                  }
+                }
               }
 
-              // get list box form chat
               await listBox.forEach(async (item) => {
                 if (!threads.includes(item.threadID)) {
                   await ThreadData.set(item.threadID, item.name);
@@ -91,43 +89,29 @@ export default class LoadAllCommand {
               });
 
               const listUser = list.filter((item) => item.isGroup == false);
-              await listUser.forEach(async (item) => {
-                usersData = await UserData.getAll();
-                users = usersData.map((item) => {
-                  return item.dataValues.uid;
-                });
+              for (const item of listUser) {
                 if (!users.includes(item.userID)) {
-                  const createUser = new Promise<void>(
-                    async (resolve, reject) => {
-                      try {
-                        await UserData.set(item.userID, item.name); // Assuming UserData.set() returns a promise
-                        resolve(); // Resolve the promise when the user creation is successful
-                      } catch (error) {
-                        reject(error); // Reject the promise if there's an error during user creation
-                      }
-                    },
-                  );
-
-                  Promise.all([createUser])
-                    .then(() => {
-                      console.log("User created successfully");
-                    })
-                    .catch((error) => {
-                      console.error("Error creating user:", error);
-                    });
+                  try {
+                    const nowDataUser = await UserData.getAll();
+                    if (!nowDataUser.some((user) => user.uid == item.userID)) {
+                      await UserData.set(item.userID, item.name);
+                    }
+                  } catch (error) {
+                    console.error("Error creating user:", error);
+                  }
                 }
-              });
+              }
             }
+
+            onFinish(); // Mark this task as completed
           },
         ];
         api.getThreadList(limit, timestamp, tags, callback);
       });
-      api.sendMessage(
-        "[DONE] All groups and users have been loaded!",
-        event.threadID,
-      );
     } catch (error) {
-      api.sendMessage("Lỗi khi thực thi mã:" + error, event.threadID);
+      pangolin.admins.forEach((id) => {
+        api.sendMessage("Lỗi khi thực thi mã:" + error, id);
+      });
     }
   }
 }

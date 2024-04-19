@@ -1,10 +1,10 @@
 import * as colors from "colors";
 export class CustomLogger {
   error(text: string) {
-    console.log(colors.red(text));
+    console.log(colors.red("[ERR]" + text));
   }
   warn(text: string) {
-    console.log(text.yellow);
+    console.log(("[WARN]" + text).yellow);
   }
   info(text: string) {
     console.log(colors.white(text));
