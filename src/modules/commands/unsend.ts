@@ -4,17 +4,43 @@ export default class UnsendCommand {
   static config = {
     name: "unsend",
     version: "1.0.0",
-    author: "Lợi",
+    author: "Lợi NDK-[FIX]",
     createdAt: "",
-    description: "Cách dùng: [prefix]unsend(reply tin nhắn bot)",
+    description: {
+      vi: "Gỡ tin nhắn của bot",
+      en: "Unsend bot's message",
+    },
+    guide: {
+      vi: "[prefix]unsend (reply: tin nhắn muốn gỡ của bot)",
+      en: "[prefix]unsend (reply: the message you want to unsend)",
+    },
+  };
+  static message = {
+    vi: {
+      syntaxError: "Vui lòng reply tin nhắn muốn gỡ của bot",
+    },
+    en: {
+      syntaxError: "Please reply the message you want to unsend",
+    },
   };
 
-  constructor(private client) {}
-  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
-    if (event.type === "message_reply") {
-      api.unsendMessage(event.messageReply.messageID, (err) => {
-        api.sendMessage("Chỉ thu hồi được tin nhắn của bot!", event.threadID);
-      });
+  constructor() {}
+  async run({ api, event, getLang }: IPangolinRun) {
+    try {
+      const currentUserID = await api.getCurrentUserID();
+      if (!event.messageReply || event.messageReply.senderID != currentUserID)
+        return api.sendMessage(
+          getLang("syntaxError"),
+          event.threadID,
+          () => {},
+          event.messageID,
+        );
+      api.unsendMessage(event.messageReply.messageID);
+    } catch (error) {
+      let message = await getLang("error");
+      if (error instanceof Error) message = error.message;
+      console.log(error);
+      return api.sendMessage(message, event.threadID);
     }
   }
 }
