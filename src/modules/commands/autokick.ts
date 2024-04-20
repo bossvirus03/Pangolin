@@ -7,7 +7,7 @@ import {
 
 export default class AutokickCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "autokick",
     version: "1.0.0",
     author: "Nguyên Blue",

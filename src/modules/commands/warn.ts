@@ -5,7 +5,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class WarnCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "warn",
     version: "1.0.0",
     author: "Lợi",

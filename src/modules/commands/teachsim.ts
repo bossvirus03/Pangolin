@@ -6,7 +6,7 @@ sqlite3.verbose();
 
 export default class SimCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "teachsim",
     version: "1.0.0",
     author: "Lợi",

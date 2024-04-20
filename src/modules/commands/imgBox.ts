@@ -6,7 +6,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class ImgBoxCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "imgbox",
     version: "1.0.0",
     author: "Lợi",

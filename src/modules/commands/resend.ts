@@ -10,7 +10,7 @@ import {
 
 export default class ResendCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "resend",
     version: "1.0.1",
     author: "Lợi",

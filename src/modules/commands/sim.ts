@@ -8,7 +8,7 @@ import * as stringSimilarity from "string-similarity";
 
 export default class SimCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "sim",
     version: "1.0.0",
     author: "Lợi",

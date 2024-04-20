@@ -8,7 +8,7 @@ import {
 
 export default class ShortCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "short",
     version: "1.0.0",
     author: "Lợi",

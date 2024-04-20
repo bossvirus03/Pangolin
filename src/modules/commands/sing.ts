@@ -11,7 +11,7 @@ import {
 
 export default class YtCommand {
   static config = {
-    category: "",
+    category: "MEDIA",
     name: "sing",
     version: "1.0.0",
     author: "Lợi",

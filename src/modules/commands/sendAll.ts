@@ -9,7 +9,7 @@ import {
 } from "src/types/type.pangolin-handle";
 export default class SendAllCommand {
   static config = {
-    category: "",
+    category: "ADMIN",
     name: "sendAll", //your command name
     version: "1.0.0",
     author: "Lợi",

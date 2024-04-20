@@ -7,7 +7,7 @@ import {
 
 export default class AutosetnameCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "autosetname",
     version: "1.0.0",
     author: "Nguyên Blue",

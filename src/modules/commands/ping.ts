@@ -5,7 +5,7 @@ import {
 
 export default class PingCommand {
   static config = {
-    category: "",
+    category: "TOOL",
     name: "ping",
     version: "1.0.0",
     author: "Lợi",

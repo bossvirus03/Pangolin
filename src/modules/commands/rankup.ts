@@ -4,11 +4,10 @@ import { join } from "path";
 
 export default class RankUpCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "rankup",
     version: "1.0.0",
     author: "Lợi",
-
     description:
       "Cách dùng: [prefix]rankup [on/off]\nChức năng: bật tắt thông báo khi tăng cấp độ tương tác",
   };
@@ -17,7 +16,7 @@ export default class RankUpCommand {
   async event({ api, event, client, UserData, ThreadData }) {
     if (!event.senderID) return;
     if (!event.isGroup) return;
-    const thread = (await ThreadData.rankup.get(event.threadID)) || {};
+    const thread = (await ThreadData.rankup.get(event.threadID)) || null;
     if (!thread) return;
     const user = await UserData.get(event.senderID);
     if (!user) return;

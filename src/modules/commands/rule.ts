@@ -8,7 +8,7 @@ import {
 } from "src/types/type.pangolin-handle";
 export default class RuleCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "rule",
     version: "1.0.0",
     author: "Lợi",

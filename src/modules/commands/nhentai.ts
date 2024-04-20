@@ -5,7 +5,7 @@ import { join } from "path";
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class NhentaiCommand {
   static config = {
-    category: "",
+    category: "MEDIA",
     name: "nhentai",
     version: "1.0.0",
     author: "Lợi",

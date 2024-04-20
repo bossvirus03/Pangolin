@@ -2,7 +2,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class LinkCommand {
   static config = {
-    category: "",
+    category: "TOOL",
     name: "link",
     version: "1.0.0",
     author: "Nguyên blue",

@@ -9,7 +9,7 @@ import {
 
 export default class autoReaction {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "autoReaction",
     version: "1.0.0",
     author: "Lợi",

@@ -5,7 +5,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class GhepCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "ghep",
     version: "1.0.0",
     author: "Nguyên Blue",

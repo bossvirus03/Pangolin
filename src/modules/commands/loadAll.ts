@@ -2,7 +2,7 @@ import { IPangolinOnload, IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class LoadAllCommand {
   static config = {
-    category: "",
+    category: "ADMIN",
     name: "loadAll",
     version: "1.0.0",
     author: "Lợi",

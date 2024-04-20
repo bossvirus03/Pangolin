@@ -14,11 +14,10 @@ sqlite3.verbose();
 
 export default class ReportCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "report",
     version: "1.0.0",
     author: "Lợi",
-
     permission: 1,
     description: {
       vi: "",

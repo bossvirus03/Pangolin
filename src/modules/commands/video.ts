@@ -11,7 +11,7 @@ import {
 
 export default class VideoCommand {
   static config = {
-    category: "",
+    category: "MEDIA",
     name: "video",
     version: "1.0.0",
     author: "Lợi",

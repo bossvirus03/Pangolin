@@ -5,7 +5,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class RestartCommand {
   static config = {
-    category: "",
+    category: "ADMIN",
     name: "restart",
     version: "1.0.0",
     author: "Lợi",

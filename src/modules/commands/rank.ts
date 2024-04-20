@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default class RankCommand {
   static config = {
-    category: "",
+    category: "GROUP",
     name: "rank",
     version: "1.0.0",
     author: "Lợi",

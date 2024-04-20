@@ -5,7 +5,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class AianimeCommand {
   static config = {
-    category: "",
+    category: "MEDIA",
     name: "aianime",
     version: "1.0.0",
     author: "Nguyên Blue",

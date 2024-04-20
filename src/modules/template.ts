@@ -1,12 +1,10 @@
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
-
 export default class NameCommand {
   static config = {
+    category: "",
     name: "", //your command name
     version: "",
     author: "",
-    createdAt: "",
+
     description: {
       vi: "",
       en: "",

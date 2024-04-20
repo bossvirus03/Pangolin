@@ -4,7 +4,7 @@ import * as cache from "memory-cache";
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class AiCommand {
   static config = {
-    category: "",
+    category: "TOOL",
     name: "ai",
     version: "1.0.0",
     author: "Lợi",

@@ -2,11 +2,10 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class RunCommand {
   static config = {
-    category: "",
+    category: "ADMIN",
     name: "run", //tên lệnh của bạn
     version: "1.0.0",
     author: "Lợi NDK-[FIX]",
-
     permission: 2,
     description: {
       vi: "Test code nhanh",

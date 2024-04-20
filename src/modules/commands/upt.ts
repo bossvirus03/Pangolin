@@ -6,11 +6,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class UptCommand {
   static config = {
-    category: "",
+    category: "ADMIN",
     name: "upt",
     version: "1.0.0",
     author: "Nguyên Blue [convert] - nguồn niiozic team",
-
+    permission: 2,
     description: "Hiển thị thông tin hệ thống bot",
   };
 
