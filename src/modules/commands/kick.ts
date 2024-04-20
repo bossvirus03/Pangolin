@@ -2,10 +2,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class SetNameCommand {
   static config = {
+    category: "",
     name: "kick",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]kick @mentions\nChức năng: Kick những người được tag",
     permission: 1,

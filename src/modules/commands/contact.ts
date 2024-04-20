@@ -2,10 +2,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class ContactCommand {
   static config = {
+    category: "",
     name: "contact",
     version: "1.0.0",
     author: "nguyên blue",
-    createdAt: "",
+
     description: "Cách dùng: [prefix]contact để lấy thẻ liên hệ?",
   };
 

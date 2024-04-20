@@ -5,10 +5,11 @@ import { IPangolinEvent } from "src/types/type.pangolin-handle";
 
 export default class NotiCommand {
   static config = {
+    category: "",
     name: "leaveNoti",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description: "Thông báo khi có thành viên mới tham gia nhóm chat",
   };
 

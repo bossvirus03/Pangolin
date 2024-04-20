@@ -1,69 +1,32 @@
-import * as cache from "memory-cache";
-import Ifca from "src/types/type.api";
-import IEvent from "src/types/type.event";
-import { IUserInThreadData } from "src/types/type.userInThreadData";
-
-export default class CheckttCommand {
+const axios = require("axios");
+import { applyIsOptionalDecorator } from "@nestjs/mapped-types";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
+export default class TachCommand {
   static config = {
+    category: "",
     name: "test",
     version: "1.0.0",
-    author: "Nguyên Blue | Lợi",
-    createdAt: "",
-    permission: 1,
-    description: {
-      vi: "Kiểm tra số lượt thành viên tương tác của bạn trong nhóm",
-      en: "Check the number of your interactions in the group",
-    },
-    guide: {
-      vi: "[prefix]check",
-      en: "[prefix]check",
-    },
-  };
+    author: "Nguyên Blue",
 
-  static message = {
-    vi: {
-      listInteract: "$0",
-    },
-    en: {
-      listInteract: "$0",
-    },
+    description:
+      "Cách dùng: [prefix]tach (Reply 1 bức ảnh)\nChức năng: tách nền ảnh",
   };
 
   constructor(private client) {}
 
-  async run(
-    api: Ifca,
-    event: IEvent,
-    client,
-    args,
-    UserData,
-    ThreadData,
-    UserInThreadData: IUserInThreadData,
-    getLang
-  ) {
-    // const puppeteer = require("puppeteer");
+  async run({ api, event, UserData }: IPangolinRun) {
+    // const function = new Function();
+    const axios = require("axios");
+    const url = `https://graph.facebook.com/234/picture?type=large&redirect=false&width=480&height=480&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
 
-    // (async () => {
-    //   const browser = await puppeteer.launch({
-    //     headless: true, // Chạy trong chế độ headless
-    //     args: ["--no-sandbox", "--disable-setuid-sandbox"], // Cần thiết khi chạy trên máy chủ Linux
-    //   });
-    //   const page = await browser.newPage();
-    //   await page.goto("https://www.example.com");
-    //   console.log(await page.title());
-    //   await browser.close();
-    // })();
+    //vd0
+    // const data = axios.get(url);
+    // console.log(data);
 
-    if (!args[1]) {
-      const huongDanSuDung = `
-        Cách Sử Dụng:
-        - Để chỉnh sửa một tệp: \`!code edit <tên_tệp> <mã_mới>\`
-        - Để đọc một tệp: \`!code read <tên_tệp>\`
-        - Để tạo một tệp: \`!code cre <tên_tệp>\`
-        - Để xóa một tệp: \`!code del <tên_tệp>\`
-        - Để đổi tên một tệp: \`!code rename <tên_cũ> <tên_mới>\`
-      `;
-      return api.sendMessage(huongDanSuDung, event.threadID);
-    }
+    // vd1
+    const data = await axios.get(url);
+    api.sendMessage("hello world", event.threadID);
+
+    console.log(data);
   }
 }

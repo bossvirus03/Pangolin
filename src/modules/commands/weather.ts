@@ -4,10 +4,11 @@ import dayjs from "dayjs";
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class WeatherCommand {
   static config = {
+    category: "",
     name: "weather",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]weather [city]\nChức năng: Xem dự báo thời tiết",
   };

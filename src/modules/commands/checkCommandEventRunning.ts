@@ -4,6 +4,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class CheckCMCommand {
   static config = {
+    category: "",
     name: "checkCM",
     version: "1.0.0",
     author: "Lợi",

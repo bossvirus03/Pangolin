@@ -2,10 +2,11 @@ import fast from "fast-speedtest-api";
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class FastCommand {
   static config = {
+    category: "",
     name: "fast",
     version: "",
     author: "Nguyên Blue [convert] - nguồn niiozic team",
-    createdAt: "",
+
     description: "",
   };
 

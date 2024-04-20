@@ -3,10 +3,11 @@ import { shorten } from "tinyurl";
 
 export default class GetLinkCommand {
   static config = {
+    category: "",
     name: "getLink",
     version: "1.0.0",
     author: "Lợi NDK-[FIX]",
-    createdAt: "",
+
     description: {
       vi: "Lấy url [ảnh/video]",
       en: "Get url [photo/video]",

@@ -33,4 +33,32 @@ export class UserInThread extends Model<UserInThread> {
     allowNull: false,
   })
   tid!: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0,
+    allowNull: true,
+  })
+  countMessageOfDay: number;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: new Date(),
+    allowNull: true,
+  })
+  lastDayUpdate: Date;
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0,
+    allowNull: true,
+  })
+  countMessageOfWeek: number;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: new Date(),
+    allowNull: true,
+  })
+  lastWeekUpdate: Date;
 }

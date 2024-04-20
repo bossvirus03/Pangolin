@@ -2,10 +2,11 @@ import { IPangolinOnload, IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class LoadAllCommand {
   static config = {
+    category: "",
     name: "loadAll",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "[Chỉ dành cho ADMIN bot]:load all người dùng, thread đang hoạt động vào database",
     permission: 2,
@@ -29,7 +30,7 @@ export default class LoadAllCommand {
         (item) => item.dataValues.uniqueId,
       );
 
-      const allTags = [["INBOX"], ["OTHER"]];
+      const allTags = [["INBOX"], ["OTHER"], ["PENDING"]];
       let allTasksCompleted = 0;
 
       const onFinish = () => {
@@ -45,11 +46,10 @@ export default class LoadAllCommand {
       };
 
       allTags.forEach((groupTags) => {
-        // Renamed 'tags' to 'groupTags'
         const [limit, timestamp, tags, callback] = [
           10,
           null,
-          groupTags, // Used renamed variable 'groupTags' here
+          groupTags,
           async function (err, list) {
             if (err) {
               console.error("Error fetching threads:", err);

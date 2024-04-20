@@ -2,10 +2,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class UnsendCommand {
   static config = {
+    category: "",
     name: "unsend",
     version: "1.0.1",
     author: "Lợi NDK-[FIX]",
-    createdAt: "",
+
     description: {
       vi: "Gỡ tin nhắn của bot",
       en: "Unsend bot's message",

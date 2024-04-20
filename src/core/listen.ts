@@ -9,6 +9,7 @@ import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
 import * as fs from "fs";
+import moment from "moment";
 class Listen {
   constructor(
     private api: Ifca,
@@ -161,6 +162,58 @@ class Listen {
             { exp: user.exp + 1 },
             { where: { uniqueId: `${event.senderID}${event.threadID}` } },
           );
+
+          //update message of day
+          const userOfDay = await UserInThread.findOne({
+            where: { uniqueId: `${event.senderID}${event.threadID}` },
+          });
+          if (userOfDay) {
+            // Kiểm tra xem có phải là một ngày mới không
+            const homNay = moment().startOf("day");
+            const lastDayUpdate = moment(userOfDay.lastDayUpdate).startOf(
+              "day",
+            );
+
+            if (!lastDayUpdate.isSame(homNay, "day")) {
+              // Nếu là một ngày mới, đặt lại countMessageOfDay
+              await UserInThread.update(
+                { countMessageOfDay: 1, lastDayUpdate: new Date() },
+                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
+              );
+            } else {
+              // Nếu không phải là ngày mới, tăng countMessageOfDay lên 1
+              await UserInThread.update(
+                { countMessageOfDay: userOfDay.countMessageOfDay + 1 },
+                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
+              );
+            }
+          }
+
+          // Cập nhật số lượng tin nhắn trong tuần
+          const userOfWeek = await UserInThread.findOne({
+            where: { uniqueId: `${event.senderID}${event.threadID}` },
+          });
+          if (userOfWeek) {
+            // Kiểm tra xem có phải là một tuần mới không
+            const beginWeek = moment().startOf("isoWeek");
+            const lastWeekUpdate = moment(userOfWeek.lastWeekUpdate).startOf(
+              "isoWeek",
+            );
+
+            if (!lastWeekUpdate.isSame(beginWeek, "isoWeek")) {
+              // Nếu là một tuần mới, đặt lại countMessageOfWeek
+              await UserInThread.update(
+                { countMessageOfWeek: 1, lastWeekUpdate: new Date() },
+                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
+              );
+            } else {
+              // Nếu không phải là tuần mới, tăng countMessageOfWeek lên 1
+              await UserInThread.update(
+                { countMessageOfWeek: userOfWeek.countMessageOfWeek + 1 },
+                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
+              );
+            }
+          }
         }
       } catch (error) {
         console.error("Error", error);

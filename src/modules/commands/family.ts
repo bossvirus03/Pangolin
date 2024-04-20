@@ -6,10 +6,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class NameCommand {
   static config = {
+    category: "",
     name: "family", //your command name
     version: "",
     author: "",
-    createdAt: "",
+
     description: {
       vi: "",
       en: "",

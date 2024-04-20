@@ -10,10 +10,11 @@ import {
 
 export default class ResendCommand {
   static config = {
+    category: "",
     name: "resend",
     version: "1.0.1",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]on/off resend mode\nChức năng: on/off resend mode\nQuyền: admin group",
     permission: 1,

@@ -2,10 +2,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class SetPrefixCommand {
   static config = {
+    category: "",
     name: "setprefix",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]setprefix [prefix]\nChức năng: Đổi prefix của box",
     permission: 1,

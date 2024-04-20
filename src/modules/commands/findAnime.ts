@@ -6,10 +6,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class RankCommand {
   static config = {
+    category: "",
     name: "findAnime", //tên lệnh của bạn
     version: "",
     author: "",
-    createdAt: "",
+
     description: "",
   };
 

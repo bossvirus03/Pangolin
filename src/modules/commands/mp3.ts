@@ -5,10 +5,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class Mp3Command {
   static config = {
+    category: "",
     name: "zingmp3",
     version: "1.0.0",
     author: "Nguyên Blue",
-    createdAt: "",
+
     description: "Cách dùng: [prefix]zingmp3 search",
   };
 

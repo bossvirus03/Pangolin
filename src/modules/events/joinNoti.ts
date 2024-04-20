@@ -4,10 +4,11 @@ import { IPangolinEvent } from "src/types/type.pangolin-handle";
 
 export default class NotiCommand {
   static config = {
+    category: "",
     name: "joinNoti",
     version: "1.0.2",
     author: "Lợi",
-    createdAt: "",
+
     description: {
       vi: "Thông báo khi có thành viên mới vào nhóm.",
       en: "Notify when someone joins the group.",

@@ -2,10 +2,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class LinkCommand {
   static config = {
+    category: "",
     name: "link",
     version: "1.0.0",
     author: "Nguyên blue",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]link or [prefix]link @mentions\nChức năng: Lấy link của mình hoặc của người khác",
   };

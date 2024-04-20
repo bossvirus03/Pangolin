@@ -5,10 +5,11 @@ import axios from "axios";
 
 export default class RankCommand {
   static config = {
+    category: "",
     name: "rank",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]rank\nChức năng: Lấy thông tin rank của người dùng",
   };

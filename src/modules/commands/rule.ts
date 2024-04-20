@@ -8,10 +8,11 @@ import {
 } from "src/types/type.pangolin-handle";
 export default class RuleCommand {
   static config = {
+    category: "",
     name: "rule",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]rule [add/remove]\nChức năng: xem, thêm, xoá các luật lệ của nhóm",
   };

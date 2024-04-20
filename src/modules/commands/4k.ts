@@ -5,10 +5,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class LamNetCommand {
   static config = {
+    category: "",
     name: "4k",
     version: "1.0.0",
     author: "Nguyên Blue",
-    createdAt: "",
+
     description: "Cách dùng: [prefix]4k reply ảnh hoặc url",
   };
 

@@ -7,10 +7,11 @@ import {
 import * as cache from "memory-cache";
 export default class FileCommand {
   static config = {
+    category: "",
     name: "file",
     version: "",
     author: "",
-    createdAt: "",
+
     description: {
       vi: "",
       en: "",

@@ -5,10 +5,11 @@ import { join } from "path";
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class NhentaiCommand {
   static config = {
+    category: "",
     name: "nhentai",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]nhentai [tag] random ảnh anime 18+\nChức năng: xem ảnh anime 18+",
   };

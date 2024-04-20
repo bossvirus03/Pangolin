@@ -2,10 +2,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class UidCommand {
   static config = {
+    category: "",
     name: "uid",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]uid or [prefix]uid @mentions\nChức năng: Lấy uid của mình hoặc của người khác",
   };

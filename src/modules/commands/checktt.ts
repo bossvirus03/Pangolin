@@ -8,10 +8,11 @@ import { IUserInThreadData } from "src/types/type.userInThreadData";
 
 export default class CheckttCommand {
   static config = {
+    category: "",
     name: "checktt",
     version: "1.0.0",
     author: "Nguyên Blue | Lợi",
-    createdAt: "",
+
     permission: 0,
     description: {
       vi: "Kiểm tra số lượt thành viên tương tác của bạn trong nhóm",

@@ -5,10 +5,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class WarnCommand {
   static config = {
+    category: "",
     name: "warn",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]warn [@mentions or reply tin nhắn người cần warn]\nChức năng: cảnh báo ",
     permission: 1,

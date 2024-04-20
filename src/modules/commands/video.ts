@@ -11,10 +11,11 @@ import {
 
 export default class VideoCommand {
   static config = {
+    category: "",
     name: "video",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]video [tìm kiếm gì đó ở đây]\nChức năng: tải video từ youtube về",
   };

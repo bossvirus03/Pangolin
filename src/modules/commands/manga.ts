@@ -10,10 +10,11 @@ import {
 } from "src/types/type.pangolin-handle";
 export default class MangaCommand {
   static config = {
+    category: "",
     name: "manga",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]manga [tên truyện cần tìm]\nChức năng: đọc truyện",
   };

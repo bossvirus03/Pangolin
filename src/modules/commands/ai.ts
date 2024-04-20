@@ -4,10 +4,11 @@ import * as cache from "memory-cache";
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class AiCommand {
   static config = {
+    category: "",
     name: "ai",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description: {
       vi: "đặt câu hỏi gì đó cho chat gpt",
       en: "ask question to chat GPT",

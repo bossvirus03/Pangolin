@@ -5,10 +5,11 @@ import {
 
 export default class PingCommand {
   static config = {
+    category: "",
     name: "ping",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description: {
       vi: "kiểm tra bot còn đang hoạt động?",
       en: "kiểm tra bot còn đang hoạt động?",

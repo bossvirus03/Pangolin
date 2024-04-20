@@ -94,10 +94,11 @@ async function streamURL(url, type) {
 
 export default class autodown {
   static config = {
+    category: "",
     name: "autodown",
     version: "1.0.0",
     author: "Nguyên Blue",
-    createdAt: "",
+
     description: "",
   };
 

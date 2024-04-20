@@ -8,10 +8,11 @@ import * as stringSimilarity from "string-similarity";
 
 export default class SimCommand {
   static config = {
+    category: "",
     name: "sim",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]Sim on/off\nChức năng: Trò chuyện cùng với simsimi",
   };

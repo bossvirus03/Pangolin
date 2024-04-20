@@ -7,10 +7,11 @@ import {
 
 export default class AutokickCommand {
   static config = {
+    category: "",
     name: "autokick",
     version: "1.0.0",
     author: "Nguyên Blue",
-    createdAt: "",
+
     description:
       "Khi thành viên trong nhóm bất kỳ gõ từ cấm quá 3 lần sẽ bị xóa ra khỏi nhóm.",
   };

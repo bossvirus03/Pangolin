@@ -9,10 +9,11 @@ import {
 
 export default class autoReaction {
   static config = {
+    category: "",
     name: "autoReaction",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description: {
       vi: "Tự động thả reaction khi ai đó nhắn",
       en: "Auto reaction when someone send message",

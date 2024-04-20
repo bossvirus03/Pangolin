@@ -6,10 +6,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class InfoboxCommand {
   static config = {
+    category: "",
     name: "infobox",
     version: "1.0.0",
     author: "Nguyên Blue",
-    createdAt: "",
+
     description: "Cách dùng: [prefix]infobox",
   };
 

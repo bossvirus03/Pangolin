@@ -4,10 +4,11 @@ import { join } from "path";
 
 export default class RankUpCommand {
   static config = {
+    category: "",
     name: "rankup",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]rankup [on/off]\nChức năng: bật tắt thông báo khi tăng cấp độ tương tác",
   };

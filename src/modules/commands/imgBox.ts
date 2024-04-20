@@ -6,10 +6,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class ImgBoxCommand {
   static config = {
+    category: "",
     name: "imgbox",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]imgbox(Reply 1 bức ảnh)\nChức năng: đổi avatar nhóm",
     permission: 1,

@@ -2,10 +2,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class SetNameCommand {
   static config = {
+    category: "",
     name: "setname",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]setname @mention [new name]\nChức năng: Đổi biệt danh của 1 người",
   };

@@ -7,10 +7,11 @@ import {
 
 export default class AutosetnameCommand {
   static config = {
+    category: "",
     name: "autosetname",
     version: "1.0.0",
     author: "Nguyên Blue",
-    createdAt: "",
+
     description: "khi có thành viên mới vào nhóm bot sẽ tự động set name",
   };
 

@@ -9,10 +9,11 @@ import {
 
 export default class ExportCommand {
   static config = {
+    category: "",
     name: "export", //your command name
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description: {
       vi: "",
       en: "",

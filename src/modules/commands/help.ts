@@ -5,10 +5,11 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class HelpCommand {
   static config = {
+    category: "",
     name: "help",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description: {
       vi: "xem bot có bao nhiêu lệnh or xem hướng dẫn cách dùng của 1 lệnh nào đó",
       en: "see how many commands the bot has or see the instructions for using a certain command",

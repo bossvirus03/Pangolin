@@ -8,10 +8,11 @@ import {
 
 export default class ShortCommand {
   static config = {
+    category: "",
     name: "short",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]short [text1] | [text2]\nChức năng: tạo tin nhắn nhanh",
   };

@@ -11,10 +11,11 @@ import {
 
 export default class YtCommand {
   static config = {
+    category: "",
     name: "sing",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+
     description:
       "Cách dùng: [prefix]sing [tìm kiếm gì đó ở đây]\nChức năng: tải audio từ youtube về",
   };
