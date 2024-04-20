@@ -28,9 +28,9 @@ export default class NotiCommand {
   };
   constructor(private client) {}
   run({ api, event, pangolin, getLang }: IPangolinEvent) {
-    const UID_BOT = api.getCurrentUserID();
     const GifPath = join(process.cwd(), "/src/db/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
+    const UID_BOT = api.getCurrentUserID();
     api.getThreadInfo(event.threadID, async (err, info) => {
       if (err) {
         console.error("Error fetching thread info:", err);

@@ -25,7 +25,8 @@ export default class NotiCommand {
           if (err) return console.log(err);
         },
       );
-
+      const UID_BOT = await api.getCurrentUserID();
+      if (event.logMessageData.leftParticipantFbId === UID_BOT) return;
       if (event.logMessageData.leftParticipantFbId == event.author) {
         api.sendMessage(
           {

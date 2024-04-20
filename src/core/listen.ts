@@ -611,7 +611,10 @@ class Listen {
                   }
                 }
                 // check permissions for admin bot
-                else if (config.permission == 2) {
+                else if (
+                  config.permission == 2 &&
+                  (event.body as string).startsWith(PREFIX)
+                ) {
                   let isPermission = true;
                   let isAdmin = 0;
                   for (let id of ADMINS) {
