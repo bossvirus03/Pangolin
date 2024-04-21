@@ -9,5 +9,6 @@
         "youtube_search_api": "AIzaSyBDI5O0D9SHlMy8EhAyFbt5kc96WJqaFqQ"
     },
     "access_token": "6628568379%7Cc1e620fa708a1d5696fb991c1bde5662",
-    "log_event": false
+    "log_event": false,
+    "help_paginate": false
 }

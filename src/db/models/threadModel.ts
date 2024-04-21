@@ -22,8 +22,7 @@ export class Thread extends Model<Thread> {
 
   @Column({
     type: DataType.BOOLEAN,
-    defaultValue: false,
-    allowNull: true,
+    allowNull: false,
   })
   resend?: boolean;
 
@@ -31,6 +30,7 @@ export class Thread extends Model<Thread> {
     type: DataType.STRING,
     allowNull: false,
     unique: true,
+    primaryKey: true,
   })
   tid!: string;
 }

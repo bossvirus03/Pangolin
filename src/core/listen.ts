@@ -9,217 +9,19 @@ import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
 import * as fs from "fs";
-import moment from "moment";
+import {
+  createThreadIfNotExists,
+  createUserIfNotExists,
+  deleteThread,
+  deleteUserInThread,
+  logMessageUserInThread,
+} from "src/util";
 class Listen {
   constructor(
     private api: Ifca,
     private client: any,
   ) {}
 
-  async createUserIfNotExists(api: Ifca, event: IEvent) {
-    if (event.type == "message") {
-      try {
-        // Kiểm tra xem kết nối đã được thiết lập chưa
-        if (!sequelize.isDefined("User")) {
-          await sequelize.authenticate();
-          // Định nghĩa các model
-          sequelize.addModels([User]);
-          sequelize.sync();
-        }
-
-        // Tìm người dùng theo uid (senderID)
-        const user = await User.findOne({ where: { uid: event.senderID } });
-        if (!user) {
-          // Thêm user vào cơ sở dữ liệu nếu không tồn tại
-          const nameUser = await api.getUserInfo(
-            event.senderID,
-            (err, ret) => {},
-          );
-          const newUser = await User.create({
-            uid: event.senderID,
-            name: `${nameUser[event.senderID].name}`,
-            exp: 0,
-            money: 0,
-            prefix: null,
-          });
-          console.log(
-            global.getLang("UserCreated", `${newUser.name} | ${newUser.uid}`),
-          );
-        } else {
-          await User.update(
-            { exp: user.exp + 1 },
-            { where: { uid: event.senderID } },
-          );
-        }
-      } catch (error) {
-        console.error("Error finding or creating user:", error);
-      }
-    }
-  }
-
-  async createThreadIfNotExists(api: Ifca, event: any) {
-    try {
-      // Kiểm tra xem kết nối đã được thiết lập chưa
-      if (!sequelize.isDefined("Thread")) {
-        await sequelize.authenticate();
-        // Định nghĩa các model
-        sequelize.addModels([Thread]);
-        sequelize.sync();
-      }
-
-      // Tìm group theo tid (threadID)
-      const thread = await Thread.findOne({ where: { tid: event.threadID } });
-      if (!thread) {
-        await api.getThreadInfo(event.threadID, async (err, res) => {
-          // Thêm group vào cơ sở dữ liệu nếu không tồn tại
-          const newThread = await Thread.create({
-            tid: event.threadID,
-            name: `${res.threadName}`,
-            prefix: null,
-            rankup: false,
-          });
-          console.log(
-            "New thread created:",
-            newThread.name,
-            "|",
-            newThread.tid,
-          );
-        });
-      }
-    } catch (error) {
-      console.error("Error finding or creating thread:", error);
-    }
-  }
-
-  async deleteThread(api: Ifca, event: any) {
-    try {
-      // Kiểm tra xem kết nối đã được thiết lập chưa
-      if (!sequelize.isDefined("Thread")) {
-        await sequelize.authenticate();
-        // Định nghĩa các model
-        sequelize.addModels([Thread]);
-        sequelize.sync();
-      }
-      // Xoá group khỏi cơ sở dữ liệu
-      await Thread.destroy({ where: { tid: event.threadID } });
-      console.log("Thread deleted");
-    } catch (error) {
-      console.error("Error", error);
-    }
-  }
-  async deleteUserInThread(api: Ifca, event: any) {
-    console.log(event);
-    try {
-      // Kiểm tra xem kết nối đã được thiết lập chưa
-      if (!sequelize.isDefined("Thread")) {
-        await sequelize.authenticate();
-        // Định nghĩa các model
-        sequelize.addModels([UserInThread]);
-        sequelize.sync();
-      }
-      // Xoá user khỏi cơ sở dữ liệu
-      await UserInThread.destroy({
-        where: {
-          uid: event.logMessageData.leftParticipantFbId,
-          tid: event.threadID,
-        },
-      });
-      console.log("User deleted from thread");
-    } catch (error) {
-      console.error("Error", error);
-    }
-  }
-
-  async logMessageUserInThread(api, event) {
-    if (event.type == "message") {
-      try {
-        // Kiểm tra xem kết nối đã được thiết lập chưa
-        if (!sequelize.isDefined("UserInThread")) {
-          await sequelize.authenticate();
-          // Định nghĩa các model
-          sequelize.addModels([UserInThread]);
-          sequelize.sync();
-        }
-        // Tìm người dùng theo uid (senderID)
-        const user = await UserInThread.findOne({
-          where: { uniqueId: `${event.senderID}${event.threadID}` },
-        });
-        if (!user) {
-          // Thêm user vào cơ sở dữ liệu nếu không tồn tại
-          const nameUser = await api.getUserInfo(
-            event.senderID,
-            (err, ret) => {},
-          );
-          await UserInThread.create({
-            uid: event.senderID,
-            exp: 0,
-            name: `${nameUser[event.senderID].name}`,
-            tid: event.threadID,
-            uniqueId: `${event.senderID}${event.threadID}`,
-          });
-        } else {
-          await UserInThread.update(
-            { exp: user.exp + 1 },
-            { where: { uniqueId: `${event.senderID}${event.threadID}` } },
-          );
-
-          //update message of day
-          const userOfDay = await UserInThread.findOne({
-            where: { uniqueId: `${event.senderID}${event.threadID}` },
-          });
-          if (userOfDay) {
-            // Kiểm tra xem có phải là một ngày mới không
-            const homNay = moment().startOf("day");
-            const lastDayUpdate = moment(userOfDay.lastDayUpdate).startOf(
-              "day",
-            );
-
-            if (!lastDayUpdate.isSame(homNay, "day")) {
-              // Nếu là một ngày mới, đặt lại countMessageOfDay
-              await UserInThread.update(
-                { countMessageOfDay: 1, lastDayUpdate: new Date() },
-                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
-              );
-            } else {
-              // Nếu không phải là ngày mới, tăng countMessageOfDay lên 1
-              await UserInThread.update(
-                { countMessageOfDay: userOfDay.countMessageOfDay + 1 },
-                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
-              );
-            }
-          }
-
-          // Cập nhật số lượng tin nhắn trong tuần
-          const userOfWeek = await UserInThread.findOne({
-            where: { uniqueId: `${event.senderID}${event.threadID}` },
-          });
-          if (userOfWeek) {
-            // Kiểm tra xem có phải là một tuần mới không
-            const beginWeek = moment().startOf("isoWeek");
-            const lastWeekUpdate = moment(userOfWeek.lastWeekUpdate).startOf(
-              "isoWeek",
-            );
-
-            if (!lastWeekUpdate.isSame(beginWeek, "isoWeek")) {
-              // Nếu là một tuần mới, đặt lại countMessageOfWeek
-              await UserInThread.update(
-                { countMessageOfWeek: 1, lastWeekUpdate: new Date() },
-                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
-              );
-            } else {
-              // Nếu không phải là tuần mới, tăng countMessageOfWeek lên 1
-              await UserInThread.update(
-                { countMessageOfWeek: userOfWeek.countMessageOfWeek + 1 },
-                { where: { uniqueId: `${event.senderID}${event.threadID}` } },
-              );
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Error", error);
-      }
-    }
-  }
   UserData = {
     set: async (uid, name) => {
       if (uid && name) {
@@ -295,6 +97,7 @@ class Listen {
           name: name,
           prefix: null,
           rankup: false,
+          resend: false,
         });
         console.log("New thread created:", newThread.name, "|", newThread.tid);
       } catch (error) {
@@ -359,6 +162,27 @@ class Listen {
           return;
         } catch (error) {
           console.error("Error setting rankup status:", error);
+          throw error;
+        }
+      },
+    },
+    resend: {
+      get: async (tid) => {
+        try {
+          const res = await Thread.findOne({ where: { tid } });
+          return res ? res.dataValues.resend : false;
+        } catch (error) {
+          console.error("Error getting resend status:", error);
+          throw error;
+        }
+      },
+
+      set: async (tid, bool) => {
+        try {
+          const res = await Thread.update({ resend: bool }, { where: { tid } });
+          return;
+        } catch (error) {
+          console.error("Error setting resend status:", error);
           throw error;
         }
       },
@@ -438,23 +262,22 @@ class Listen {
       });
     }
     this.api.setOptions({ listenEvents: true });
-    this.api.listenMqtt(async (err, event) => {
+    this.api.listenMqtt(async (err, event: IEvent) => {
       // create user if not already
       try {
-        await this.createUserIfNotExists(this.api, event);
+        await createUserIfNotExists(this.api, event);
       } catch (error) {
         global.getLang("ErrorOccurred", error);
       }
       if (event.isGroup) {
         try {
-          await this.logMessageUserInThread(this.api, event);
+          await logMessageUserInThread(this.api, event);
         } catch (error) {
           global.getLang("ErrorOccurred", error);
         }
       }
-
       if (!event) return;
-
+      if (config.log_event) console.log(event);
       // Create a new thread when the bot is added to a group
       if (
         event.type == "event" &&
@@ -463,7 +286,7 @@ class Listen {
       ) {
         try {
           await sequelize.sync(); // Tạo bảng nếu chưa tồn tại
-          await this.createThreadIfNotExists(this.api, event);
+          await createThreadIfNotExists(this.api, event);
         } catch (error) {
           global.getLang("ErrorOccurred", error);
         }
@@ -477,7 +300,7 @@ class Listen {
       ) {
         try {
           await sequelize.sync();
-          await this.deleteThread(this.api, event);
+          await deleteThread(this.api, event);
         } catch (error) {
           global.getLang("ErrorOccurred", error);
         }
@@ -487,7 +310,7 @@ class Listen {
       if (event.type == "event" && event.logMessageType == "log:unsubscribe") {
         try {
           await sequelize.sync();
-          await this.deleteUserInThread(this.api, event);
+          await deleteUserInThread(this.api, event);
         } catch (error) {
           global.getLang("ErrorOccurred", error);
         }
@@ -531,7 +354,7 @@ class Listen {
         });
       });
       if (event.body != undefined) {
-        let args = event.body.trim().split(" ");
+        let args = (event.body as string).trim().split(" ");
         let configGuideLang = new ConfigGuideLang(this.client, args[0]);
         function getLang(key, ...args) {
           const message = configGuideLang.getLang(key, args);
@@ -561,7 +384,7 @@ class Listen {
           (await this.ThreadData.prefix(event.threadID)) ||
           config.prefix ||
           ";";
-        args = event.body.slice(PREFIX.length).trim().split(" ");
+        args = (event.body as string).slice(PREFIX.length).trim().split(" ");
 
         this.client.commands.forEach((value, key) => {
           listCommands.push(key);
@@ -639,7 +462,7 @@ class Listen {
         }
         const isPermission = await checkPermission(this.client, this.api);
 
-        if (!event.body.startsWith(PREFIX)) return;
+        if (!(event.body as string).startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {
           var matches = stringSimilarity.findBestMatch(args[0], listCommands);
           return this.api.sendMessage(

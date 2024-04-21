@@ -12,6 +12,7 @@ export class User extends Model<User> {
     type: DataType.STRING,
     allowNull: false,
     unique: true,
+    primaryKey: true,
   })
   uid!: string;
 

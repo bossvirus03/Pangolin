@@ -8,3 +8,4 @@ ErrorOccurred=Error occurred: $2
 EmailOrPasswordAlready=Email or Username is already taken!
 InvalidUserNameOrPassword=Invalid user name or password!
 InvalidAccessToken=The access token is invalid or has expired. Please try again!
+AddBot=Thank you for add bot to this group.\nUse $1help to see all command!

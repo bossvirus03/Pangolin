@@ -1,6 +1,7 @@
 import { readdirSync } from "fs";
 import * as fs from "fs";
 import { join } from "path";
+import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class RankUpCommand {
   static config = {
@@ -13,7 +14,7 @@ export default class RankUpCommand {
   };
 
   constructor(private client) {}
-  async event({ api, event, client, UserData, ThreadData }) {
+  async event({ api, event, client, UserData, ThreadData }: IPangolinRun) {
     if (!event.senderID) return;
     if (!event.isGroup) return;
     const thread = (await ThreadData.rankup.get(event.threadID)) || null;
@@ -33,7 +34,7 @@ export default class RankUpCommand {
     );
     const randomGif = getRandomGif(listGif);
     if (level - currentLevel == 1 && level != 1) {
-      api.sendMessage(
+      return api.sendMessage(
         {
           body: `Chúc mừng @${user.name} đã tăng cấp`,
           mentions: [

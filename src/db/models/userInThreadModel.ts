@@ -17,6 +17,7 @@ export class UserInThread extends Model<UserInThread> {
   @Column({
     unique: true,
     type: DataType.STRING,
+    primaryKey: true,
     allowNull: false,
   })
   uniqueId!: string;

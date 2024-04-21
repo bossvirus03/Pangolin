@@ -15,12 +15,53 @@ import { TransformInterceptor } from "./app/core/transform.interceptor";
 import OnTime from "./modules/ontime";
 import * as fs from "fs";
 import { CustomLogger } from "src/logger/log";
+import * as readlineSync from "readline-sync";
+
+const Log = new CustomLogger();
+const configPath = join(process.cwd(), "pangolin.config.json");
+let dataConfig = fs.readFileSync(configPath, "utf8");
+let config = JSON.parse(dataConfig);
+
+function importInfoBot(callback) {
+  const defaultName = "pangolin";
+  const defaultPrefix = ";";
+  const name = readlineSync.question(
+    `YOUR BOT NAME:(${defaultName}) `.rainbow,
+    {
+      defaultInput: defaultName,
+    },
+  );
+  const prefix = readlineSync.question(
+    `YOUR PREFIX:(${defaultPrefix}) `.rainbow,
+    {
+      defaultInput: defaultPrefix,
+    },
+  );
+  callback(name, prefix);
+}
+
+if (!config.botname || !config.prefix) {
+  Log.info("Bạn chưa khởi tạo bot!");
+  Log.info("Tiến hành nhập thông tin bot");
+  importInfoBot((name, prefix) => {
+    fs.writeFileSync(
+      configPath,
+      JSON.stringify({
+        ...config,
+        botname: name,
+        prefix: prefix,
+      }),
+      {
+        encoding: "utf-8",
+      },
+    );
+  });
+}
 
 // Assuming `login` is a function within the facebook-chat-api module
 const login: Function = loginModule.default || loginModule;
 
 async function bootstrap() {
-  const Log = new CustomLogger();
   /** =========== APP ===========*/
   const app = await NestFactory.create(AppModule);
   const reflector = app.get(Reflector);
@@ -45,9 +86,6 @@ async function bootstrap() {
 
   /**============ BOT ============= */
   try {
-    const configPath = join(process.cwd(), "pangolin.config.json");
-    const dataConfig = fs.readFileSync(configPath, "utf8");
-    const config = JSON.parse(dataConfig);
     const loginAsync = promisify(login);
     const loginPath = {
       appState: JSON.parse(
@@ -85,7 +123,7 @@ async function bootstrap() {
 
     global.getLang = function (...args: any[]) {
       const lang = client.language;
-      if (!lang.hasOwnProperty(args[0])) throw new Error("Invalid language");
+      if (!lang.hasOwnProperty(args[0])) console.log("Invalid language");
       let text = lang[args[0]];
       args.forEach((key, index) => {
         text = text.replace(`\$${index}`, args[index]);
@@ -109,11 +147,11 @@ async function bootstrap() {
     );
     const P = ["\\", "|", "/", "-"];
     let x = 0;
-    // process.stdout.write(`Đang tiến hành đăng nhập `);
+
     const loader = setInterval(() => {
       process.stdout.write(`\rĐang tiến hành đăng nhập ${P[x++]}`);
       x %= P.length;
-    }, 250);
+    }, 200);
 
     try {
       await new Promise((resolve, reject) => {
@@ -158,6 +196,8 @@ async function bootstrap() {
         checkCurrentUserID(currentUserID);
 
         Log.rainbow("Login Successfully ");
+        dataConfig = fs.readFileSync(configPath, "utf8");
+        config = JSON.parse(dataConfig);
         console.table([
           {
             PREFIX: config.prefix,

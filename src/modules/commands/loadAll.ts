@@ -102,8 +102,7 @@ export default class LoadAllCommand {
                 }
               }
             }
-
-            onFinish(); // Mark this task as completed
+            onFinish();
           },
         ];
         api.getThreadList(limit, timestamp, tags, callback);

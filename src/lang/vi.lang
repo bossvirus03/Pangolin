@@ -8,3 +8,4 @@ ErrorOccurred=Có lỗi xảy ra: $1
 EmailOrPasswordAlready=Email hoặc username đã tồn tại vui lòng thử lại!
 InvalidUserNameOrPassword=Tên tài khoản hoặc mật khẩu không hợp lệ!
 InvalidAccessToken=Access token không hợp lệ hoặc đã hết hạn. Vui lòng thử lại!
+AddBot=Cảm ơn bạn đã thêm bot vào nhóm.\nSử dụng $1help để xem tất cả các lệnh!

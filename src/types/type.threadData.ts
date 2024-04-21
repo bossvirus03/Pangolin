@@ -3,6 +3,10 @@ interface Rankup {
   get(tid: string): Promise<string>;
   set(tid: string, value: boolean): Promise<void>;
 }
+interface Resend {
+  get(tid: string): Promise<string>;
+  set(tid: string, value: boolean): Promise<void>;
+}
 export interface IThreadData {
   set(tid: string, name: string): Promise<void>;
   setPrefix(tid: string, prefix: string): Promise<void>;
@@ -10,4 +14,5 @@ export interface IThreadData {
   get(tid: string): Promise<Thread | null>;
   prefix(tid: string): Promise<string>;
   rankup: Rankup;
+  resend: Resend;
 }
