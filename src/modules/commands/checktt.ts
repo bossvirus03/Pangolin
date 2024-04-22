@@ -27,9 +27,11 @@ export default class CheckttCommand {
   static message = {
     vi: {
       listInteract: "$0",
+      notGroup: "Đây không phải 1 nhóm!",
     },
     en: {
       listInteract: "$0",
+      notGroup: "This is not a group!",
     },
   };
 
@@ -110,10 +112,16 @@ export default class CheckttCommand {
     getLang,
   }: IPangolinRun) {
     try {
+      if (!event.isGroup) {
+        return api.sendMessage(
+          getLang("notGroup"),
+          event.threadID,
+          () => {},
+          event.messageID,
+        );
+      }
       const user = event.senderID;
       const res = await UserInThreadData.get(user, event.threadID);
-
-      //   const threadInfo = await api.getThreadInfo(event.threadID);
       const threadInfo: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
           if (err) reject(err);

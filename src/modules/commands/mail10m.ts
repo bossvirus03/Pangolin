@@ -4,7 +4,7 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 export default class MailCommand {
   static config = {
     category: "TOOL",
-    name: "10mm",
+    name: "mail10m",
     version: "1.0.0",
     author: "Nguyên Blue",
     description: "tạo gmail 10 phút",

@@ -1,13 +1,25 @@
 import * as colors from "colors";
 export class CustomLogger {
-  error(text: string) {
-    console.log(colors.red("[ERR]" + text));
+  error(...text) {
+    let res = "";
+    text.forEach((arg) => {
+      res += arg + " ";
+    });
+    console.log(colors.red("[ERR]" + res));
   }
-  warn(text: string) {
-    console.log(("[WARN]" + text).yellow);
+  warn(...text) {
+    let res = "";
+    text.forEach((arg) => {
+      res += arg + " ";
+    });
+    console.log(("[WARN]" + res).yellow);
   }
-  info(text: string) {
-    console.log(colors.white(text));
+  info(...text) {
+    let res = "";
+    text.forEach((arg) => {
+      res += arg + " ";
+    });
+    console.log(("[WARN]" + res).blue);
   }
   green(text: string) {
     console.log(colors.green(text));

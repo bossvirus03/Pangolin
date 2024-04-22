@@ -88,7 +88,7 @@ class Listen {
   };
 
   ThreadData = {
-    set: async (tid, name) => {
+    set: async (tid, name, emoji, imageSrc, color) => {
       try {
         const check = await Thread.findOne({ where: { tid } });
         if (check) return;
@@ -96,6 +96,9 @@ class Listen {
           tid: tid,
           name: name,
           prefix: null,
+          emoji,
+          imageSrc,
+          color,
           rankup: false,
           resend: false,
         });
@@ -183,6 +186,54 @@ class Listen {
           return;
         } catch (error) {
           console.error("Error setting resend status:", error);
+          throw error;
+        }
+      },
+    },
+    antichangeinfobox: {
+      get: async (tid) => {
+        try {
+          const res = await Thread.findOne({ where: { tid } });
+          return res ? res.dataValues.antichangeinfobox : false;
+        } catch (error) {
+          console.error("Error getting antichangeinfobox status:", error);
+          throw error;
+        }
+      },
+
+      set: async (tid, bool) => {
+        try {
+          const res = await Thread.update(
+            { antichangeinfobox: bool },
+            { where: { tid } },
+          );
+          return;
+        } catch (error) {
+          console.error("Error setting resend status:", error);
+          throw error;
+        }
+      },
+    },
+    antileave: {
+      get: async (tid) => {
+        try {
+          const res = await Thread.findOne({ where: { tid } });
+          return res ? res.dataValues.antileave : false;
+        } catch (error) {
+          console.error("Error getting antileave status:", error);
+          throw error;
+        }
+      },
+
+      set: async (tid, bool) => {
+        try {
+          const res = await Thread.update(
+            { antileave: bool },
+            { where: { tid } },
+          );
+          return;
+        } catch (error) {
+          console.error("Error setting antileave status:", error);
           throw error;
         }
       },

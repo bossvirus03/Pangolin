@@ -57,16 +57,16 @@ export default class NotiCommand {
         const msgBody = getLang(
           "join",
           nameUsers.length > 1
-            ? process.env.LANGUAGE_CODE == "vi"
+            ? pangolin.language == "vi"
               ? nameUsers.join(" và ")
               : nameUsers.join(" and ")
             : nameUsers[0],
           info.threadName,
           nameUsers.length > 1
-            ? process.env.LANGUAGE_CODE == "vi"
+            ? pangolin.language == "vi"
               ? nameUsers.length + "bạn"
               : "you"
-            : process.env.LANGUAGE_CODE == "vi"
+            : pangolin.language == "vi"
               ? " Bạn"
               : "You",
           getNumberRank(info.participantIDs.length),

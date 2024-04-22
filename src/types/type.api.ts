@@ -14,7 +14,12 @@ export default interface Ifca {
    *
    * */
   login(): Promise<any>;
-  addUserToGroup(): Promise<any>;
+  addUserToGroup(
+    userID: string,
+    ThreadID: string,
+    callback?: any,
+  ): Promise<any>;
+  changeAvt(image: any, caption: string, callback?: any): Promise<any>;
   changeAdminStatus(): Promise<any>;
   changeArchivedStatus(): Promise<any>;
   changeBlockedStatus(): Promise<any>;
@@ -33,8 +38,16 @@ export default interface Ifca {
     callback?: (err) => void,
   ): Promise<undefined>;
 
-  changeThreadColor(): Promise<any>;
-  changeThreadEmoji(): Promise<any>;
+  changeThreadColor(
+    color: string,
+    threadID: string,
+    callback?: any,
+  ): Promise<any>;
+  changeThreadEmoji(
+    color: string,
+    threadID: string,
+    callback?: any,
+  ): Promise<any>;
   createPoll(): Promise<any>;
   deleteMessage(): Promise<any>;
   deleteThread(): Promise<any>;
@@ -96,7 +109,7 @@ export default interface Ifca {
     callback?: (err) => void,
   ): Promise<undefined>;
 
-  setTitle(): Promise<any>;
+  setTitle(newTitle: string, threadID: string, callback?: any): Promise<any>;
   threadColors(): Promise<any>;
 
   unsendMessage(
@@ -106,4 +119,9 @@ export default interface Ifca {
 
   getThreadHistoryDeprecated(): Promise<any>;
   getThreadInfoDeprecated(): Promise<any>;
+  postTextStory(
+    caption: string,
+    font: string,
+    background: string,
+  ): Promise<any>;
 }

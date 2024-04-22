@@ -84,7 +84,13 @@ export default class LoadAllCommand {
 
               await listBox.forEach(async (item) => {
                 if (!threads.includes(item.threadID)) {
-                  await ThreadData.set(item.threadID, item.name);
+                  await ThreadData.set(
+                    item.threadID,
+                    item.name,
+                    item.emoji,
+                    item.imageSrc,
+                    item.color,
+                  );
                 }
               });
 

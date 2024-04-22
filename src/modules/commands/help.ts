@@ -5,6 +5,7 @@ import {
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 import * as cache from "memory-cache";
+import * as fs from "fs";
 export default class HelpCommand {
   static config = {
     category: "GROUP",
@@ -44,7 +45,11 @@ export default class HelpCommand {
   commandFiles = readdirSync(this.commandPath).filter((file: string) =>
     file.endsWith(".ts"),
   );
-  CurrentLanguage = process.env.LANGUAGE_CODE || "en";
+
+  configPath = join(process.cwd(), "pangolin.config.json");
+  dataConfig = fs.readFileSync(this.configPath, "utf8");
+  config = JSON.parse(this.dataConfig);
+  CurrentLanguage = this.config.language || "en";
   getAllCommand(api, event, args, getLang) {
     let commandInCategory = [];
     let commandInCategoryNoPrefix = [];

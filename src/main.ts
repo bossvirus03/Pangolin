@@ -108,10 +108,7 @@ async function bootstrap() {
 
     const LangData = (
       await readFileSync(
-        join(
-          process.cwd(),
-          `/src/lang/${client.config.LANGUAGE_CODE || "en"}.lang`,
-        ),
+        join(process.cwd(), `/src/lang/${config.language || "en"}.lang`),
         "utf-8",
       ).split(/\r?\n|\r/)
     ).filter((item) => item && item.charAt(0) != "#");
