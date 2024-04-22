@@ -59,4 +59,4 @@ $ npm run start:prod
 
 ## Stay in touch
 
-- Author - [Bossvirus03](https://nghuuloidev.click)
+- Author - [bossvirus03](https://nghuuloidev.click) along with contributions from <a href="https://github.com/Nguyenblur">Nguyenblur</a> and <a href="https://github.com/dev-ndk">dev-ndk</a>
