@@ -57,6 +57,199 @@ $ npm run start:prod
 
 <img src="https://i.ibb.co/Ytzdjds/Screenshot-2024-04-21-191605.png" alt="Screenshot-2024-04-21-191605" border="0">
 
+## Example create modules
+
+<li>From root directory to /src/modules/commands or /src/modules/events and then you need follow template <a href="https://github.com/bossvirus03/Pangolin/blob/master/src/modules/template.ts">Here</a></li>
+
+
+
+
+### With prefix
+```javascript
+import { IPangolinRun } from "src/types/type.pangolin-handle";
+ async run({
+    api,
+    event,
+    client,
+    args,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+    getLang,
+    pangolin,
+  }: IPangolinRun) {
+    // logic here
+  }
+```
+
+### Listen event from command has prefix
+
+```javascript
+import { IPangolinListenEvent } from "src/types/type.pangolin-handle";
+ async event({
+    api,
+    event,
+    client,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+    getLang,
+    pagolin,
+  }: IPangolinListenEvent) {
+    // logic
+  }
+```
+
+### No prefix
+```javascript
+import { IPangolinNoprefix } from "src/types/type.pangolin-handle";
+ async noprefix({
+    api,
+    event,
+    client,
+    args,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+    getLang,
+    pangolin,
+  }: IPangolinNoprefix) {
+    // logic
+  }
+```
+### Something you need to know
+<ul>
+    <li>From functions handle command</li>
+</ul>
+```javascript
+async run({
+    api,
+    event,
+    client,
+    args,
+    UserData,
+    ThreadData,
+    UserInThreadData,
+    getLang,
+    pangolin,
+  }: IPangolinRun){}
+```
+<p>In the code above</p>
+
+#### api
+<p>Example: send a message</p>
+
+```javascript
+    api.sendMessage("hello world", event.ThreadID)
+```
+<p>To see detail you need to <a href="https://github.com/bossvirus03/facebook-chat-api">Here</a></p>
+
+#### event
+
+<p>Some event you need to know</p>
+
+<ul>
+    <li>event.type</li>
+    <li>event.messageID</li>
+    <li>event.threadID</li>
+    <li>event.isGroup</li>
+    <li>event.body</li>
+    <li>event.senderID</li>
+    <li>...<a href="https://github.com/bossvirus03/Pangolin/blob/master/src/types/type.event.ts">Here</a></li>
+</ul>
+
+#### args
+
+##### Example
+
+<p>If you receive a message which is "nguyen van a", then args[0] = "nguyen", args[1] = "van", args[2] = "a"</p>
+
+#### UserData
+
+<p>Example get a user</p>
+
+```javascript
+const user = await UserData.get("61556745520442");
+console.log(user)
+//response
+/*
+   User {
+        uid: "",
+        name: "",
+        exp: 0,
+        money: 0,
+        prefix: ""
+    }
+*/
+```
+#### ThreadData
+
+<p>Example get a thread</p>
+
+```javascript
+const thread = await ThreadData.get("47923492740238");
+console.log(thread)
+//response
+/*
+   Thread {
+        name: "",
+        tid: "",
+        prefix: "",
+        rankup: false,
+        resend: false,
+    }
+*/
+```
+
+#### UserInThreadData
+
+<p>Example get a user in group</p>
+
+```javascript
+const userInThread = await UserInThreadData.get("61556745520442","47923492740238");
+console.log(userInThread)
+//response
+/*
+   UserInThread {
+        name: "",
+        uid: "",
+        uniqueId: "",
+        tid: "",
+        countMessageOfDay: 0,
+        lastDayUpdate: "",
+        countMessageOfWeek:0,
+        lastWeekUpdate: ""
+    }
+*/
+```
+
+#### pangolin
+
+<p>To get all config of current bot</p>
+
+```javascript
+const config = pangolin;
+console.log(config);
+// response
+/*
+   {
+    "botname": "heloo",
+    "admins": [
+        "100049732817959",
+        "100000113681117"
+    ],
+    "prefix": ";",
+    "commands": {
+        "youtube_search_api": ""
+    },
+    "access_token": "",
+    "log_event": false,
+    "help_paginate": false
+} 
+*/
+```
+
+
 ## Stay in touch
 
 - Author - [bossvirus03](https://nghuuloidev.click) along with contributions from <a href="https://github.com/Nguyenblur">Nguyenblur</a> and <a href="https://github.com/dev-ndk">dev-ndk</a>
