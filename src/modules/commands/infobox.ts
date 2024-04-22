@@ -10,13 +10,27 @@ export default class InfoboxCommand {
     name: "infobox",
     version: "1.0.0",
     author: "Nguyên Blue",
-
-    description: "Cách dùng: [prefix]infobox",
+    guide: {
+      vi: "[prefix]infobox",
+      en: "[prefix]infobox",
+    },
+    description: {
+      vi: "Hiển thị thông tin của Group",
+      en: "Display Group information",
+    },
   };
 
+  static message = {
+    vi: {
+      info: "🏘️ Box: $0\n🔢 ID: $1\n🔒 Phê duyệt: $2\n📝 Emoji: $3\n✏️ Thông tin: $4 thành viên $5 nam $6 nữ\n🧿 Tổng QTV: $7\n\n$8\n💬 Tổng: $9 tin nhắn\n♻️ Tổng $10 tin nhắn thu hồi\n📊 Mức tương tác: 100%",
+    },
+    en: {
+      info: "🏘️ Box: $0\n🔢 ID: $1\n🔒 Approval: $2\n📝 Emoji: $3\n✏️ Information: $4 members $5 men $6 women\n   Total QTV: $7\n\n $8\n💬 Total: $9 messages\n♻️ Total $10 recall messages\n📊 Interaction level: 100%",
+    },
+  };
   constructor(private client) {}
 
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang }: IPangolinRun) {
     try {
       const threadInfo: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
@@ -65,7 +79,20 @@ export default class InfoboxCommand {
       let callback = () =>
         api.sendMessage(
           {
-            body: `🏘️ Box: ${threadName}\n🔢 ID: ${id}\n🔒 Phê duyệt: ${pd}\n📝 Emoji: ${icon || "👍"}\n✏️ Thông tin: ${threadMem} thành viên ${nam} nam ${nu} nữ\n🧿 Tổng QTV: ${qtv}\n\n${listName}\n💬 Tổng: ${sl} tin nhắn\n♻️ Tổng ${un} tin nhắn thu hồi\n📊 Mức tương tác: 100%`,
+            body: getLang(
+              "info",
+              threadName,
+              id,
+              pd,
+              icon || "👍",
+              threadMem,
+              nam,
+              nu,
+              qtv,
+              listName,
+              sl,
+              un,
+            ),
             attachment: fs.createReadStream(`${path}/1.png`),
           },
           event.threadID,

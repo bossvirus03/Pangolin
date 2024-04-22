@@ -5,11 +5,11 @@ export default class CheckttCommand {
     name: "poststory",
     version: "1.0.0",
     author: "Lợi",
-    createdAt: "",
+    category: "ADMIN",
     permission: 2,
     description: {
-      vi: "",
-      en: "",
+      vi: "Đăng story tài khoản bot",
+      en: "Post a story on a bot account",
     },
     guide: {
       vi: "[prefix]poststory",
@@ -19,21 +19,21 @@ export default class CheckttCommand {
 
   static message = {
     vi: {
-      listInteract: "$0",
+      info: "Đã đăng thành công",
     },
     en: {
-      listInteract: "$0",
+      info: "Posted successfully",
     },
   };
 
   constructor(private client) {}
 
-  async run({ api, event, args }: IPangolinRun) {
+  async run({ api, event, args, getLang }: IPangolinRun) {
     new Promise<void>(() => {
       const caption = (event.body as string).split(args[0])[1];
       api.postTextStory(caption, "233490655168261", "525779004528357"); //tạm thời fix cứng font và background
     }).then(() => {
-      api.sendMessage("Đã đăng story thành công", event.threadID);
+      api.sendMessage(getLang("info"), event.threadID);
     });
   }
 }

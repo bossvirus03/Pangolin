@@ -9,13 +9,14 @@ export default class ClassName {
     name: "antileave", //your command name
     version: "1.0.0",
     author: "Lợi",
+    category: "GROUP",
     description: {
-      vi: "",
-      en: "",
+      vi: "Chặn thành viên ra khỏi nhóm",
+      en: "Block members from the group",
     },
     guide: {
-      vi: "",
-      en: "",
+      vi: "[prefix]antileave on/off",
+      en: "[prefix]antileave on/off",
     },
   };
 
@@ -23,10 +24,12 @@ export default class ClassName {
     vi: {
       onModule: "Đã bật chế độ cấm thành viên out box",
       offModule: "Đã tắt chế độ cấm thành viên out box",
+      dontAllow: "Không được đâu ní ơi :>>",
     },
     en: {
       onModule: "Enabled mode to prohibit members from out box",
       offModule: "Disabled mode to disable members from out box",
+      dontAllow: "No way :>>",
     },
   };
 
@@ -62,7 +65,7 @@ export default class ClassName {
             event.threadID,
           );
         }).then(() => {
-          api.sendMessage("Không đc out đâu ní ơi :>", event.threadID);
+          api.sendMessage(getLang("dontAllow"), event.threadID);
         });
       }
     }

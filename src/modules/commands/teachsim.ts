@@ -10,18 +10,32 @@ export default class SimCommand {
     name: "teachsim",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]Sim on/off\nChức năng: Trò chuyện cùng với simsimi",
+    guide: {
+      vi: "[prefix]teachsim (câu hỏi | câu trả lời)",
+      en: "[prefix]teachsim (question | answer)",
+    },
+    description: {
+      vi: "Dạy simsimi",
+      en: "teach simsimi",
+    },
   };
 
-  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
+  static message = {
+    vi: {
+      syntaxError:
+        "Vui lòng nhập câu hỏi và câu trả lời theo định dạng: câu hỏi | câu trả lời",
+      info: "Đã dạy sim thành công",
+    },
+    en: {
+      syntaxError:
+        "Please enter questions and answers in the format: question | answer",
+      info: "Successfully taught sim",
+    },
+  };
+  async run({ api, event, args, getLang }: IPangolinRun) {
     const body = (event.body as string).split(args[0])[1].split("|");
     if (!body[0] || !body[1]) {
-      return api.sendMessage(
-        "Vui lòng nhập câu hỏi và câu trả lời theo định dạng: câu hỏi | câu trả lời",
-        event.threadID,
-      );
+      return api.sendMessage(getLang("syntaxError"), event.threadID);
     }
     const [question, reply] = [body[0].trim(), body[1].trim()];
     const db = new sqlite3.Database(
@@ -40,6 +54,6 @@ export default class SimCommand {
         throw err;
       }
     });
-    api.sendMessage("Đã dạy sim thành công", event.threadID);
+    api.sendMessage(getLang("info"), event.threadID);
   }
 }

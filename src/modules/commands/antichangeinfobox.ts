@@ -10,13 +10,14 @@ export default class AntiChangeInfoBox {
     name: "antichangeinfobox",
     version: "1.0.0",
     author: "Lợi",
+    category: "GROUP",
     description: {
-      vi: "",
-      en: "",
+      vi: "Không cho thành viên thay đổi thông tin đoạn chat",
+      en: "Do not allow members to change chat information",
     },
     guide: {
-      vi: "",
-      en: "",
+      en: "[prefix]antichangeinfobox on/off",
+      vi: "[prefix]antichangeinfobox on/off",
     },
   };
 

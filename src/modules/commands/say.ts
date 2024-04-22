@@ -6,9 +6,14 @@ export default class SayCommand {
     name: "say",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]say [câu muốn bot nói]\nChức năng: nói theo",
+    description: {
+      vi: "bot nói theo",
+      en: "the bot said",
+    },
+    guide: {
+      vi: "[prefix]say (text)",
+      en: "[prefix]say (text)",
+    },
   };
 
   constructor(private client) {}

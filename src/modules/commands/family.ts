@@ -8,27 +8,15 @@ export default class NameCommand {
   static config = {
     category: "GROUP",
     name: "family", //your command name
-    version: "",
-    author: "",
-
+    version: "1.0.1",
+    author: "Lợi",
     description: {
-      vi: "",
-      en: "",
+      vi: "Tạo ảnh của cả nhóm",
+      en: "Create a group photo",
     },
     guide: {
-      vi: "",
-      en: "",
-    },
-  };
-
-  static message = {
-    vi: {
-      text1: "",
-      text2: "",
-    },
-    en: {
-      text1: "",
-      text2: "",
+      vi: "[prefix]family",
+      en: "[prefix]family",
     },
   };
 

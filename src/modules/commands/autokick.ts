@@ -11,11 +11,26 @@ export default class AutokickCommand {
     name: "autokick",
     version: "1.0.0",
     author: "Nguyên Blue",
-
-    description:
-      "Khi thành viên trong nhóm bất kỳ gõ từ cấm quá 3 lần sẽ bị xóa ra khỏi nhóm.",
+    description: {
+      vi: "",
+      en: "",
+    },
+    guide: {
+      vi: "",
+      en: "",
+    },
   };
 
+  static message = {
+    vi: {
+      text1: "",
+      text2: "",
+    },
+    en: {
+      text1: "",
+      text2: "",
+    },
+  };
   constructor(private client) {}
 
   async event({ api, event, client }: IPangolinListenEvent) {

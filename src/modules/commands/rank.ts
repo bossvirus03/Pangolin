@@ -9,9 +9,14 @@ export default class RankCommand {
     name: "rank",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]rank\nChức năng: Lấy thông tin rank của người dùng",
+    description: {
+      vi: "Lấy thông tin rank của người dùng",
+      en: "Get user rank information",
+    },
+    guide: {
+      vi: "[prefix]rank",
+      en: "[prefix]rank",
+    },
   };
 
   constructor(private client) {}
@@ -134,7 +139,6 @@ export default class RankCommand {
     );
     const futureExp = Math.floor(nextLevelExp);
     const percentLevel = Math.floor((currentExp / nextLevelExp) * 100);
-
     console.log("Creating rank card...");
     const outputPath = join(
       process.cwd(),
@@ -156,6 +160,8 @@ export default class RankCommand {
         attachment: fs.createReadStream(outputPath),
       },
       event.threadID,
+      () => {},
+      event.messageID,
     );
   }
 }

@@ -15,23 +15,21 @@ export default class ExportCommand {
     author: "Lợi",
 
     description: {
-      vi: "",
-      en: "",
+      vi: "Lấy file module từ source bot",
+      en: "Get module file from source bot",
     },
     guide: {
-      vi: "",
-      en: "",
+      vi: "[prefix]export",
+      en: "[prefix]export",
     },
   };
 
   static message = {
     vi: {
-      text1: "",
-      text2: "",
+      result: "$0 reply số tương ứng để lấy file",
     },
     en: {
-      text1: "",
-      text2: "",
+      result: "$0 reply the corresponding number to get the file",
     },
   };
 
@@ -59,7 +57,7 @@ export default class ExportCommand {
       msg += `[${++index}]. ${file}\n`;
     });
     api.sendMessage(
-      msg + "reply số tương ứng để lấy file",
+      getLang("result", msg),
       event.threadID,
       (err, info) => {
         if (err) console.log(err);

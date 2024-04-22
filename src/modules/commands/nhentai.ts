@@ -9,14 +9,31 @@ export default class NhentaiCommand {
     name: "nhentai",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]nhentai [tag] random ảnh anime 18+\nChức năng: xem ảnh anime 18+",
+    description: {
+      vi: "Random ảnh anime 18+",
+      en: "Random anime photos 18+",
+    },
+    guide: {
+      vi: "[prefix]nhentai [tag]",
+      en: "[prefix]nhentai [tag]",
+    },
   };
 
+  static message = {
+    vi: {
+      syntaxError: "Vui lòng chọn 1 tag",
+      notFound: "Không thấy hình ảnh nào, Vui lòng chọn tag khác!",
+      warning: "18+ cân nhắc trước khi sử dụng",
+    },
+    en: {
+      syntaxError: "Please choose 1 tag",
+      notFound: "No images found, Please choose another tag!",
+      warning: "18+ considerations before use",
+    },
+  };
   constructor(private client) {}
 
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang, args }: IPangolinRun) {
     try {
       const imgPath = join(
         process.cwd(),
@@ -40,7 +57,7 @@ export default class NhentaiCommand {
         }
       }
       if (!args[1]) {
-        return api.sendMessage("Vui lòng chọn 1 tag", event.threadID);
+        return api.sendMessage(getLang("syntaxError"), event.threadID);
       }
       if (args[1] == "tag") {
         return api.sendMessage(
@@ -54,10 +71,7 @@ export default class NhentaiCommand {
           return item.tag.includes(tag);
         });
         if (!tagItems) {
-          return api.sendMessage(
-            "Không thấy hình ảnh nào, Vui lòng chọn tag khác!",
-            event.threadID,
-          );
+          return api.sendMessage(getLang("notFound"), event.threadID);
         }
         const randomIndex = Math.floor(Math.random() * tagItems.length);
         const item = tagItems[randomIndex];
@@ -80,7 +94,7 @@ export default class NhentaiCommand {
           api.sendMessage(
             {
               attachment: img,
-              body: "18+ cân nhắc trước khi sử dụng",
+              body: getLang("warning"),
             },
             event.threadID,
             (err) => {

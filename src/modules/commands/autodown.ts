@@ -98,76 +98,86 @@ export default class autodown {
     name: "autodown",
     version: "1.0.0",
     author: "Nguyên Blue",
-    description: "",
+    description: {
+      vi: "Tự động tải (video/hình ảnh) mạng xã hội",
+      en: "Automatically download (videos/images) to social networks",
+    },
+    guide: {
+      vi: "[prefix]autodown",
+      en: "[prefix]autodown",
+    },
+  };
+  static message = {
+    vi: {
+      listSocialSupported: `
+      〈 Autodown Social Network 〉
+      ╭─────────────⭓
+      │› Status: turned ON
+      │› Tiktok: ✅
+      │› Douyin: ✅
+      │› Instagram: ✅
+      │› Threads: ✅
+      │› Facebook: ✅
+      │› Pinterest: ✅
+      │› Capcut: ✅
+      │› Soundcloud: ✅
+      │› Spotify: ✅
+      │› Zingmp3: ✅
+      │› WhatsApp: ❎
+      │› YouTube: ✅
+      │› Weibo: ❎
+      │› Twitter: ✅
+      │› Kuaishou: ✅
+      │› Reddit: ❎
+      ╰─────────────⭓
+      `,
+      invalidCommand:
+        "Lệnh không hợp lệ. Vui lòng sử dụng 'autodown on' hoặc 'autodown off'.",
+    },
+    en: {
+      listSocialSupported: `
+      〈 Autodown Social Network 〉
+      ╭─────────────⭓
+      │› Status: turned ON
+      │› Tiktok: ✅
+      │› Douyin: ✅
+      │› Instagram: ✅
+      │› Threads: ✅
+      │› Facebook: ✅
+      │› Pinterest: ✅
+      │› Capcut: ✅
+      │› Soundcloud: ✅
+      │› Spotify: ✅
+      │› Zingmp3: ✅
+      │› WhatsApp: ❎
+      │› YouTube: ✅
+      │› Weibo: ❎
+      │› Twitter: ✅
+      │› Kuaishou: ✅
+      │› Reddit: ❎
+      ╰─────────────⭓
+      `,
+      invalidCommand:
+        "Invalid order. Please use 'autodown on' or 'autodown off'.",
+    },
   };
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, args, getLang }: IPangolinRun) {
     try {
       const duongdan = join(process.cwd(), `/src/db/data/autodown.json`);
       if (args[1] === "on") {
         fs.writeFileSync(duongdan, "on", "utf8");
-        await api.sendMessage(
-          `
-〈 Autodown Social Network 〉
-╭─────────────⭓
-│› Status: turned ON
-│› Tiktok: ✅
-│› Douyin: ✅
-│› Instagram: ✅
-│› Threads: ✅
-│› Facebook: ✅
-│› Pinterest: ✅
-│› Capcut: ✅
-│› Soundcloud: ✅
-│› Spotify: ✅
-│› Zingmp3: ✅
-│› WhatsApp: ❎
-│› YouTube: ✅
-│› Weibo: ❎
-│› Twitter: ✅
-│› Kuaishou: ✅
-│› Reddit: ❎
-╰─────────────⭓
-`,
-          event.threadID,
-        );
+        await api.sendMessage(getLang("listSocialSupported"), event.threadID);
       } else if (args[1] === "off") {
         const fileExists = fs.existsSync(duongdan);
         if (fileExists) {
           fs.writeFileSync(duongdan, "off", "utf8");
-          await api.sendMessage(
-            `
-〈 Autodown Social Network 〉
-╭─────────────⭓
-│› Status: turned OFF
-│› Tiktok: ✅
-│› Douyin: ✅
-│› Instagram: ✅
-│› Threads: ✅
-│› Facebook: ✅
-│› Pinterest: ✅
-│› Capcut: ✅
-│› Soundcloud: ✅
-│› Spotify: ✅
-│› Zingmp3: ✅
-│› WhatsApp: ❎
-│› YouTube: ✅
-│› Weibo: ❎
-│› Twitter: ✅
-│› Kuaishou: ✅
-│› Reddit: ❎
-╰─────────────⭓
-`,
-            event.threadID,
-          );
+          await api.sendMessage(getLang("listSocialSupported"), event.threadID);
         }
       } else {
-        await api.sendMessage(
-          "Lệnh không hợp lệ. Vui lòng sử dụng 'autodown on' hoặc 'autodown off'.",
-          event.threadID,
-        );
+        await api.sendMessage(getLang("invalidCommand"), event.threadID);
       }
     } catch (error) {
       console.error("Lỗi:", error);

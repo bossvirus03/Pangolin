@@ -4,14 +4,28 @@ export default class FastCommand {
   static config = {
     category: "TOOL",
     name: "fast",
-    version: "",
+    version: "1.0.0",
     author: "Nguyên Blue [convert] - nguồn niiozic team",
-
-    description: "",
+    description: {
+      vi: "Xem tốc độ internet của bot",
+      en: "See the bot's internet speed",
+    },
+    guide: {
+      vi: "[prefix]fast",
+      en: "[prefix]fast",
+    },
   };
 
+  static message = {
+    vi: {
+      canNotSend: "⚠️ Không thể speedtest ngay lúc này, hãy thử lại sau!",
+    },
+    en: {
+      canNotSend: "⚠️ Can't speedtest right now, try again later!",
+    },
+  };
   constructor(private client) {}
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang }: IPangolinRun) {
     try {
       const speedTest = new fast({
         token: "YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm",
@@ -31,7 +45,7 @@ export default class FastCommand {
       );
     } catch {
       return api.sendMessage(
-        "⚠️ Không thể speedtest ngay lúc này, hãy thử lại sau!",
+        getLang("canNotSend"),
         event.threadID,
         () => {},
         event.messageID,

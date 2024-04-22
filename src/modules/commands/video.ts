@@ -9,39 +9,53 @@ import {
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
-export default class VideoCommand {
+export default class YtCommand {
   static config = {
     category: "MEDIA",
     name: "video",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]video [tìm kiếm gì đó ở đây]\nChức năng: tải video từ youtube về",
+    description: {
+      vi: "Tìm kiếm và tải video từ youtube",
+      en: "Search and download video from youtube",
+    },
+    guide: {
+      vi: "[prefix]video (tìm gì đó)",
+      en: "[prefix]video (find something)",
+    },
   };
 
+  static message = {
+    vi: {
+      tooLong: "Video này quá dài vui lòng tự xem tại ",
+      info: "Có $0 kết quả phù hợp: $1",
+    },
+    en: {
+      tooLong: "This video is too long, please watch it yourself at",
+      info: "There are $0 matches: $1",
+    },
+  };
   constructor(private client) {}
-  async event({ api, event, client }: IPangolinListenEvent) {
+  async event({ api, event, getLang }: IPangolinListenEvent) {
     if (event.type == "message_reply") {
-      const listVideoYoutubeSearch = cache.get("list-video-youtube-search");
+      const listVideoYoutubeSearch = cache.get("list-audio-youtube-search");
       if (
         listVideoYoutubeSearch &&
         event.messageReply.messageID == listVideoYoutubeSearch.messageID
       ) {
         listVideoYoutubeSearch.data.forEach((item) => {
           if (event.body == item.index) {
-            let video;
+            let audio;
             const path = join(
               process.cwd(),
-              `/public/videos/${item.index}.mp4`,
+              `/public/audios/${item.index}.mp4`,
             );
             ytdl
               .getInfo(item.id)
-              .then((res) => {
+              .then(async (res) => {
                 if (parseInt(res.videoDetails.lengthSeconds) > 900) {
-                  console.log(res.videoDetails.lengthSeconds);
                   api.sendMessage(
-                    "Xin lỗi video này quá dài bạn vui lòng tự nhấn xem tại: " +
+                    (await getLang("tooLong")) +
                       "https://www.youtube.com/watch?v=" +
                       item.id,
                     event.threadID,
@@ -49,21 +63,17 @@ export default class VideoCommand {
                   return;
                 }
                 const videoUrl = res.formats.filter(
-                  (item) =>
-                    item.hasAudio == true &&
-                    item.hasAudio == true &&
-                    item.quality == "medium",
+                  (item) => item.hasAudio == true && item.quality == "medium",
                 )[0].url;
-                // console.log(videoUrl);
                 axios
                   .get(videoUrl, { responseType: "arraybuffer" })
                   .then((res) => {
                     const buffer = Buffer.from(res.data);
                     fs.writeFileSync(path, buffer);
-                    video = fs.createReadStream(path);
+                    audio = fs.createReadStream(path);
                     api.sendMessage(
                       {
-                        attachment: video,
+                        attachment: audio,
                         body: "Download success",
                       },
                       event.threadID,
@@ -79,7 +89,7 @@ export default class VideoCommand {
     }
   }
 
-  async run({ api, event, pangolin, args }: IPangolinRun) {
+  async run({ api, event, pangolin, args, getLang }: IPangolinRun) {
     const search = (event.body as string).split(args[0])[1];
     var listVideoResult = [];
     let index = 1;
@@ -88,7 +98,7 @@ export default class VideoCommand {
         params: {
           q: search,
           regionCode: "vi",
-          type: "video",
+          type: "audio",
           key: pangolin.commands.youtube_search_api,
           part: "snippet",
           maxResults: 5,
@@ -110,11 +120,11 @@ export default class VideoCommand {
       smg += `[${item.index}] - ${item.title}\nChannel: ${item.channel}\n\n`;
     });
     api.sendMessage(
-      `Có ${listVideoResult.length} kết quả phù hợp: \n` + smg,
+      getLang("info", listVideoResult.length, smg),
       event.threadID,
       (err, res) => {
         cache.put(
-          "list-video-youtube-search",
+          "list-audio-youtube-search",
           {
             data: listVideoResult,
             messageID: res.messageID,

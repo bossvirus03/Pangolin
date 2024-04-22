@@ -14,19 +14,37 @@ export default class ResendCommand {
     name: "resend",
     version: "1.0.2",
     author: "Lợi",
-    description:
-      "Cách dùng: [prefix]on/off resend mode\nChức năng: on/off resend mode\nQuyền: admin group",
+    description: {
+      vi: "Gửi lại bức ảnh đã gỡ",
+      en: "Resend the removed photo",
+    },
+    guide: {
+      vi: "[prefix]resend on/off",
+      en: "[prefix]resend on/off",
+    },
     permission: 1,
   };
 
+  static message = {
+    vi: {
+      error: "Đã xảy ra lỗi không xác định.",
+      syntaxError: "Chỉ có thể dùng: on/off",
+      info: "$0 vừa gỡ tin nhắn với nội dung: $1",
+    },
+    en: {
+      error: "An unknown error has occurred.",
+      syntaxError: "Can only be used: on/off",
+      info: "$0 just removed a message with content: $1",
+    },
+  };
   constructor(private client) {}
-  async event({ api, event, client, ThreadData }: IPangolinListenEvent) {
+  async event({ api, event, getLang, ThreadData }: IPangolinListenEvent) {
     async function handleMessageUnSend(message) {
       const user = await api.getUserInfo(event.senderID, (err, ret) => {});
       if (!message.attachments.length) {
         api.sendMessage(
           {
-            body: `${user[event.senderID].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
+            body: getLang("info", user[event.senderID].name, message.body),
           },
           event.threadID,
         );
@@ -38,7 +56,7 @@ export default class ResendCommand {
         if (++task == attachments.length) {
           api.sendMessage(
             {
-              body: `${user[event.senderID].name} vừa gỡ tin nhắn với nội dung: ${message.body}`,
+              body: getLang("info", user[event.senderID].name, message.body),
               attachment: listAttachmentUnsend,
             },
             event.threadID,
@@ -96,7 +114,7 @@ export default class ResendCommand {
       }
     }
   }
-  async run({ api, event, args, ThreadData }: IPangolinRun) {
+  async run({ api, event, args, ThreadData, getLang }: IPangolinRun) {
     // handle switch resend
     if (args[1] == "on") {
       ThreadData.resend.set(event.threadID, true);
@@ -105,7 +123,7 @@ export default class ResendCommand {
       ThreadData.resend.set(event.threadID, false);
       api.sendMessage("Resend is disabled!!", event.threadID);
     } else {
-      return api.sendMessage("Chỉ có thể dùng: on/off", event.threadID);
+      return api.sendMessage(getLang("syntaxError"), event.threadID);
     }
   }
 }

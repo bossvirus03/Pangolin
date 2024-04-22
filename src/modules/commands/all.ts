@@ -4,25 +4,24 @@ export default class AllCommand {
   static config = {
     name: "all", //your command name
     version: "1.0.0",
+    category: "GROUP",
     author: "Lợi",
     description: {
-      vi: "",
-      en: "",
+      vi: "Tag tất cả mọi người",
+      en: "Tag everyone",
     },
     guide: {
-      vi: "",
-      en: "",
+      vi: "[prefix]all",
+      en: "[prefix]all",
     },
   };
 
   static message = {
     vi: {
       notGroup: "Chỉ sử dụng trong nhóm chat",
-      text2: "",
     },
     en: {
       notGroup: "only use it in groups",
-      text2: "",
     },
   };
 

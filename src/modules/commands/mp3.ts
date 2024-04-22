@@ -9,12 +9,28 @@ export default class Mp3Command {
     name: "zingmp3",
     version: "1.0.0",
     author: "Nguyên Blue",
-
-    description: "Cách dùng: [prefix]zingmp3 search",
+    description: {
+      en: "Listen to music on zingmp3",
+      vi: "Nghe nhạc trên zingmp3",
+    },
+    guide: {
+      en: "[prefix]zingmp3 (song name)",
+      vi: "[prefix]zingmp3 (tên bài hát)",
+    },
   };
 
+  static message = {
+    en: {
+      error: "An error occurred while downloading the song.",
+      notFound: "No suitable song found.",
+    },
+    vi: {
+      error: "Có lỗi xảy ra khi tải bài hát.",
+      notFound: "Không tìm thấy bài hát phù hợp.",
+    },
+  };
   constructor(private client) {}
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang, args }: IPangolinRun) {
     const text = (event.body as string).split(args[0])[1];
     const encodedText = encodeURIComponent(text);
     try {
@@ -44,11 +60,10 @@ export default class Mp3Command {
           event.threadID,
         );
       } else {
-        api.sendMessage("Không tìm thấy bài hát phù hợp.", event.threadID);
+        api.sendMessage(getLang("notFound"), event.threadID);
       }
     } catch (error) {
-      console.error("Đã xảy ra lỗi khi tải bài hát:", error);
-      api.sendMessage("Có lỗi xảy ra khi tải bài hát.", event.threadID);
+      api.sendMessage(getLang("error"), event.threadID);
     }
   }
 }

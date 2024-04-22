@@ -12,11 +12,36 @@ export default class ShortCommand {
     name: "short",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]short [text1] | [text2]\nChức năng: tạo tin nhắn nhanh",
+    description: {
+      vi: "Tạo tin nhắn nhanh",
+      en: "Create instant messages",
+    },
+    guide: {
+      vi: "[prefix]short [text1] | [text2]",
+      en: "[prefix]short [text1] | [text2]",
+    },
   };
 
+  static message = {
+    vi: {
+      notFound: "Nhóm hiện chưa có short message nào",
+      example:
+        "Thêm short message với nội dung: [short name] | [content] để thêm shortcut",
+      created: "Đã thêm short message với nội dung: $0 - $1",
+      list: "Danh sách tin nhắn nhanh của nhóm: \n",
+      reply: "\nReply 1 số tương ứng để xoá short message!!",
+      isNumber: "Vui lòng reply 1 số!!",
+    },
+    en: {
+      notFound: "The group currently does not have any short messages",
+      example:
+        "Add a short message with the content: [short name] | [content] to add shortcuts",
+      created: "Added short message with content: $0 - $1",
+      list: "Group instant message list: \n",
+      reply: "\nReply a corresponding number to delete the short message!!",
+      isNumber: "Please reply with a number!!",
+    },
+  };
   constructor(private client) {}
   partDataShort = join(process.cwd(), "/src/db/data/short.json");
   async handleAddShort(threadID, shortName, shortContent) {
@@ -111,20 +136,17 @@ export default class ShortCommand {
       }
     }
   }
-  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
+  async run({ api, event, client, args, getLang, ThreadData }: IPangolinRun) {
     if (args[1]) {
       const short = (event.body as string).split(args[0])[1].trim().split("|");
       const shortName = short[0].trim();
       const shortContent = short[1].trim();
       if (!shortContent || !shortName) {
-        api.sendMessage(
-          "Thêm short message với nội dung: [short name] | [content] để thêm shortcut",
-          event.threadID,
-        );
+        api.sendMessage(getLang("example"), event.threadID);
       }
       this.handleAddShort(event.threadID, shortName, shortContent);
       api.sendMessage(
-        `Đã thêm short message với nội dung: ${shortName} - ${shortContent}`,
+        getLang("created", shortName, shortContent),
         event.threadID,
       );
     } else {
@@ -133,21 +155,15 @@ export default class ShortCommand {
         "utf-8",
       );
       if (!listShortFromThread)
-        return api.sendMessage(
-          "Nhóm hiện chưa có short message nào",
-          event.threadID,
-        );
+        return api.sendMessage(getLang("notFound"), event.threadID);
       const listShortFromThreadArr = JSON.parse(listShortFromThread);
       const DataShort = listShortFromThreadArr.filter(
         (item) => item.threadID == event.threadID,
       );
       if (DataShort[0].shorts.length == 0) {
-        return api.sendMessage(
-          "Nhóm hiện chưa có short message nào",
-          event.threadID,
-        );
+        return api.sendMessage(getLang("notFound"), event.threadID);
       }
-      let smg = "Danh sách tin nhắn nhanh của nhóm: \n";
+      let smg = await getLang("list");
       listShortFromThreadArr.forEach((item) => {
         if (item.threadID === event.threadID) {
           item.shorts.forEach((itemShort, index) => {
@@ -157,7 +173,7 @@ export default class ShortCommand {
       });
       const messageID = await new Promise((resolve, reject) => {
         api.sendMessage(
-          smg + "\nReply 1 số tương ứng để xoá short message!!",
+          smg + getLang("reply"),
           event.threadID,
           (err, info) => {
             if (err) reject(err);
@@ -169,13 +185,7 @@ export default class ShortCommand {
       cache.put("short", messageID);
     }
   }
-  async event({
-    api,
-    event,
-    client,
-    UserData,
-    ThreadData,
-  }: IPangolinListenEvent) {
+  async event({ api, event, client, UserData, getLang }: IPangolinListenEvent) {
     const listShortFromThread = await fs.readFileSync(
       this.partDataShort,
       "utf-8",
@@ -194,7 +204,7 @@ export default class ShortCommand {
       if (event.messageReply.messageID == cache.get("short")) {
         const regexNumber = /^-?\d*\.?\d+$/;
         if (!regexNumber.test(event.body as string))
-          return api.sendMessage("Vui lòng reply 1 số!!", event.threadID);
+          return api.sendMessage(getLang("isNumber"), event.threadID);
         this.handleRemoveShort(event.threadID, event.body);
       }
     }

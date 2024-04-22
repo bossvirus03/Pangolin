@@ -16,25 +16,27 @@ export default class SendAllCommand {
 
     permission: 2,
     description: {
-      vi: "",
-      en: "",
+      vi: "Gửi tin nhắn đến tất cả nhóm",
+      en: "Send a message to all groups",
     },
     guide: {
-      vi: "",
-      en: "",
+      vi: "[prefix]sendAll (text)",
+      en: "[prefix]sendAll (text)",
     },
   };
 
   static message = {
     vi: {
-      adminSend: "--------Admin Send--------\n\n message: $0",
+      adminSend:
+        "--------Admin Send--------\n\n message: $0\nreply tin nhắn này để trả lời",
       threadResponse:
-        "--------Thread Response--------\n\nname: $0\ntid: $1\n\nmessage: $2",
+        "--------Thread Response--------\n\nname: $0\ntid: $1\n\nmessage: $2\nreply tin nhắn này để trả lời",
     },
     en: {
-      adminSend: "--------Admin Send--------\n\n message: $0",
+      adminSend:
+        "--------Admin Send--------\n\n message: $0\nreply to this message to reply",
       threadResponse:
-        "--------Thread Response--------\n\nname: $0\ntid: $1\n\nmessage: $2",
+        "--------Thread Response--------\n\nname: $0\ntid: $1\n\nmessage: $2\nreply tin nhắn này để trả lời",
     },
   };
 

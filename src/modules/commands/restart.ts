@@ -9,7 +9,6 @@ export default class RestartCommand {
     name: "restart",
     version: "1.0.0",
     author: "Lợi",
-
     description: "",
     permission: 2,
   };

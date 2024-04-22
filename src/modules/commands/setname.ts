@@ -6,13 +6,26 @@ export default class SetNameCommand {
     name: "setname",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]setname @mention [new name]\nChức năng: Đổi biệt danh của 1 người",
+    description: {
+      vi: "Đổi biệt danh của 1 thành viên",
+      en: "Change a member's nickname",
+    },
+    guide: {
+      vi: "[prefix]setname @mention [new name]",
+      en: "[prefix]setname @mention [new name]",
+    },
   };
 
+  static message = {
+    vi: {
+      info: "Đã đổi tên thành công!",
+    },
+    en: {
+      info: "Name changed successfully!",
+    },
+  };
   constructor(private client) {}
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang, args }: IPangolinRun) {
     if (!args[1] || !event.mentions)
       return api.sendMessage("Vui lòng tag một người!", event.threadID);
     const nickName = (event.body as string).split(
@@ -21,6 +34,6 @@ export default class SetNameCommand {
     const mention = Object.keys(event.mentions)[0];
     console.log(mention);
     await api.changeNickname(nickName, event.threadID, mention);
-    api.sendMessage("Đã đổi tên thành công!", event.threadID);
+    api.sendMessage(getLang("info"), event.threadID);
   }
 }

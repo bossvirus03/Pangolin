@@ -9,27 +9,16 @@ export default class FileCommand {
   static config = {
     category: "ADMIN",
     name: "file",
-    version: "",
-    author: "",
+    version: "1.0.0",
+    author: "Lợi",
     permission: 2,
     description: {
-      vi: "",
-      en: "",
+      vi: "Xem tất cả file trong sources bot",
+      en: "View all files in sources bot",
     },
     guide: {
-      vi: "",
-      en: "",
-    },
-  };
-
-  static message = {
-    vi: {
-      text1: "",
-      text2: "",
-    },
-    en: {
-      text1: "",
-      text2: "",
+      vi: "[prefix]file",
+      en: "[prefix]file",
     },
   };
 
@@ -146,7 +135,6 @@ export default class FileCommand {
                   },
                   event.threadID,
                 );
-              // msg += `📄 ${item} - ${this.formatBytes(stats.size)}\n`;
             }
           }
         }

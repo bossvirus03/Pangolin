@@ -12,21 +12,35 @@ export default class SimCommand {
     name: "sim",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]Sim on/off\nChức năng: Trò chuyện cùng với simsimi",
+    description: {
+      vi: "Trò chuyện cùng với simsimi",
+      en: "Chat with simsimi",
+    },
+    guide: {
+      vi: "[prefix]Sim on/off",
+      en: "[prefix]Sim on/off",
+    },
   };
-
+  static message = {
+    vi: {
+      on: "Đã bật simsimi",
+      off: "Đã tắt simsimi",
+    },
+    en: {
+      on: "simsimi enabled",
+      off: "simsimi disabled!",
+    },
+  };
   constructor(private client) {}
 
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, args, getLang }: IPangolinRun) {
     if (args[1] == "on") {
       cache.put("simsimi", event.threadID, 15 * 1000 * 60);
-      api.sendMessage("Đã bật simsimi", event.threadID);
+      api.sendMessage(getLang("on"), event.threadID);
     }
     if (args[1] == "off") {
       cache.del("simsimi");
-      api.sendMessage("Đã tắt simsimi", event.threadID);
+      api.sendMessage(getLang("off"), event.threadID);
     }
   }
   async event({

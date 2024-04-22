@@ -12,7 +12,6 @@ export default class CheckttCommand {
     name: "checktt",
     version: "1.0.0",
     author: "Nguyên Blue | Lợi",
-
     permission: 0,
     description: {
       vi: "Kiểm tra số lượt thành viên tương tác của bạn trong nhóm",

@@ -6,7 +6,14 @@ export default class ContactCommand {
     name: "contact",
     version: "1.0.0",
     author: "nguyên blue",
-    description: "Cách dùng: [prefix]contact để lấy thẻ liên hệ?",
+    description: {
+      vi: "Lấy thẻ liên hệ?",
+      en: "Get contact?",
+    },
+    guide: {
+      vi: "[prefix]contact",
+      en: "[prefix]contact",
+    },
   };
 
   constructor(private client) {}

@@ -9,20 +9,32 @@ export default class WarnCommand {
     name: "warn",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]warn [@mentions or reply tin nhắn người cần warn]\nChức năng: cảnh báo ",
+    description: {
+      vi: "Cảnh báo thành viên",
+      en: "Warning members",
+    },
+    guide: {
+      vi: "[prefix]warn [@mentions or reply tin nhắn người cần warn]",
+      en: "[prefix]warn [@mentions or reply to the message the person needs to warn]",
+    },
     permission: 1,
   };
 
+  static message = {
+    vi: {
+      syntaxError: "Chỉ reply hoặc chỉ tag user cần warn!",
+    },
+    en: {
+      syntaxError: "Only reply or only tag the user who needs to warn!",
+    },
+  };
   constructor(private client) {}
 
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang, args }: IPangolinRun) {
+    if (!event.isGroup)
+      return api.sendMessage(getLang("notGroup"), event.threadID);
     if (event.type === "message_reply" && event.mentions) {
-      return api.sendMessage(
-        "Chỉ reply hoặc chỉ tag user cần warn!",
-        event.threadID,
-      );
+      return api.sendMessage(getLang("syntaxError"), event.threadID);
     }
     const pathDataWarn = join(process.cwd(), "/src/db/data/warn.json");
     async function delDataWarn(warnedId) {
@@ -180,10 +192,7 @@ export default class WarnCommand {
           }
         });
       } else {
-        return api.sendMessage(
-          "Vui lòng tag một người! hoặc reply tin nhắn của người cần warn",
-          event.threadID,
-        );
+        return api.sendMessage(getLang("syntaxError"), event.threadID);
       }
     }
   }

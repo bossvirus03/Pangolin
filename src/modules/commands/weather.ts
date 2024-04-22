@@ -8,9 +8,14 @@ export default class WeatherCommand {
     name: "weather",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]weather [city]\nChức năng: Xem dự báo thời tiết",
+    guide: {
+      vi: "[prefix]weather <tên thành phố>",
+      en: "[prefix]weather <city name>",
+    },
+    description: {
+      vi: "Lấy thông tin thời tiết",
+      en: "Get weather information",
+    },
   };
 
   constructor(private client) {}

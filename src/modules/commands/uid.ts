@@ -6,9 +6,14 @@ export default class UidCommand {
     name: "uid",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]uid or [prefix]uid @mentions\nChức năng: Lấy uid của mình hoặc của người khác",
+    description: {
+      vi: "Lấy uid của mình hoặc của người khác",
+      en: "Get your own or someone else's uid",
+    },
+    guide: {
+      vi: "[prefix]uid or [prefix]uid @mentions",
+      en: "[prefix]uid or [prefix]uid @mentions",
+    },
   };
 
   constructor(private client) {}

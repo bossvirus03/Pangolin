@@ -10,12 +10,33 @@ export default class GhepCommand {
     version: "1.0.0",
     author: "Nguyên Blue",
 
-    description: "Cách dùng: [prefix]ghep",
+    description: {
+      en: "Randomly pair with group members",
+      vi: "Ghép đôi ngẫu nhiên với thành viên trong nhóm",
+    },
+    guide: {
+      vi: "[prefix]ghep",
+      en: "[prefix]ghep",
+    },
+  };
+
+  static message = {
+    vi: {
+      notGroup: "Đây không phải 1 nhóm!",
+      pairSuccess: "⚡️Ghép đôi thành công!\n⚡️Tỉ lệ hợp đôi: $0%\n$1 💓 $2",
+    },
+    en: {
+      notGroup: "This is not a group!",
+      pairSuccess: "⚡️Matching success!\n⚡️Matching rate: $0%\n$1 💓 $2",
+    },
   };
 
   constructor(private client) {}
 
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang }: IPangolinRun) {
+    if (!event.isGroup) {
+      return api.sendMessage(getLang("notGroup"), event.threadID);
+    }
     try {
       const threadInfo: any = await new Promise((resolve, reject) => {
         api.getThreadInfo(event.threadID, (err, info) => {
@@ -56,7 +77,7 @@ export default class GhepCommand {
       fs.writeFileSync(`${path}/avt2.png`, Buffer.from(avatar2.data, "utf-8"));
 
       const message = {
-        body: `⚡️Ghép đôi thành công!\n⚡️Tỉ lệ hợp đôi: ${tile}%\n${senderInfo} 💓 ${matchInfo}`,
+        body: getLang("pairSuccess", tile, senderInfo, matchInfo),
         mentions: [
           { id: event.senderID, tag: senderInfo },
           { id: randomUser, tag: matchInfo },

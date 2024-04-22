@@ -6,9 +6,14 @@ export default class LinkCommand {
     name: "link",
     version: "1.0.0",
     author: "Nguyên blue",
-
-    description:
-      "Cách dùng: [prefix]link or [prefix]link @mentions\nChức năng: Lấy link của mình hoặc của người khác",
+    description: {
+      vi: "Lấy link của mình hoặc của người khác",
+      en: "Get your own link or someone else's",
+    },
+    guide: {
+      vi: "[prefix]link or [prefix]link @mentions",
+      en: "[prefix]link or [prefix]link @mentions",
+    },
   };
 
   constructor(private client) {}

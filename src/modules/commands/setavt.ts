@@ -4,33 +4,36 @@ import * as fs from "fs";
 import { join } from "path";
 export default class SetAvt {
   static config = {
-    name: "setavt", //your command name
+    name: "setavt",
     version: "1.0.0",
-    author: "",
+    author: "Lợi",
+    category: "ADMIN",
     permission: 2,
     description: {
-      vi: "",
-      en: "",
+      vi: "Đổi avatar bot",
+      en: "Change bot avatar",
     },
     guide: {
-      vi: "",
-      en: "",
+      vi: "[prefix]setavt (reply 1 ảnh)",
+      en: "[prefix]setavt (reply 1 photo)",
     },
   };
 
   static message = {
     vi: {
-      text1: "",
-      text2: "",
+      success: "Đã đổi avt bot thành công",
+      imageError: "Đã sảy ra lỗi vui lòng thử ảnh khác",
+      needReply: "Vui lòng reply 1 hình ảnh!",
     },
     en: {
-      text1: "",
-      text2: "",
+      success: "Successfully changed bot avatar",
+      imageError: "An error occurred, please try another photo",
+      needReply: "Please reply with 1 image!",
     },
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
+  async run({ api, event, getLang, args }: IPangolinRun) {
     if (event.type == "message_reply") {
       const imgPath = join(process.cwd(), `/public/images/avt.png`);
       if (event.messageReply.attachments[0].type == "photo") {
@@ -46,18 +49,14 @@ export default class SetAvt {
             api.changeAvt(img, caption as string);
           })
           .then(() => {
-            api.sendMessage("Đã avt bot thành công", event.threadID);
+            api.sendMessage(getLang("success"), event.threadID);
           })
           .catch((error) => {
-            api.sendMessage(
-              "Đã xảy ra lỗi khi đổi ảnh vui lòng thử ảnh khác",
-              event.threadID,
-            );
-            console.error("Error downloading image:", error);
+            api.sendMessage(getLang("imageError"), event.threadID);
           });
       }
       return;
     }
-    api.sendMessage("Vui lòng reply 1 hình ảnh!", event.threadID);
+    api.sendMessage(getLang("needReply"), event.threadID);
   }
 }

@@ -1,11 +1,8 @@
 import { join } from "path";
 import * as sqlite3 from "sqlite3";
-
 import * as cache from "memory-cache";
 import * as fs from "fs";
-import { threadId } from "worker_threads";
 import axios from "axios";
-import { IUserInThreadData } from "src/types/type.userInThreadData";
 import {
   IPangolinListenEvent,
   IPangolinRun,
@@ -20,8 +17,8 @@ export default class ReportCommand {
     author: "Lợi",
     permission: 1,
     description: {
-      vi: "",
-      en: "",
+      vi: "Báo cáo đến admin bot",
+      en: "Report to admin bot",
     },
     guide: {
       vi: "[prefix]report",
@@ -127,15 +124,7 @@ export default class ReportCommand {
       });
     }
   }
-  async event({
-    api,
-    event,
-    client,
-    UserData,
-    ThreadData,
-    UserInThreadData,
-    getLang,
-  }: IPangolinListenEvent) {
+  async event({ api, event, getLang }: IPangolinListenEvent) {
     if (event.type === "message_reply") {
       const reportInfo = cache.get("report");
       if (reportInfo && event.messageReply.messageID == reportInfo.messageID) {

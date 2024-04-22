@@ -1,7 +1,10 @@
 import { readdirSync } from "fs";
 import * as fs from "fs";
 import { join } from "path";
-import { IPangolinRun } from "src/types/type.pangolin-handle";
+import {
+  IPangolinListenEvent,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
 
 export default class RankUpCommand {
   static config = {
@@ -9,12 +12,37 @@ export default class RankUpCommand {
     name: "rankup",
     version: "1.0.0",
     author: "Lợi",
-    description:
-      "Cách dùng: [prefix]rankup [on/off]\nChức năng: bật tắt thông báo khi tăng cấp độ tương tác",
+    description: {
+      vi: "Bật tắt thông báo khi tăng cấp độ tương tác",
+      en: "Toggle notifications when interaction level increases",
+    },
+    guide: {
+      vi: "[prefix]rankup [on/off]",
+      en: "[prefix]rankup [on/off]",
+    },
   };
 
+  static message = {
+    vi: {
+      on: "Đã bật thông báo khi tăng cấp độ tương tác",
+      off: "Đã tắt thông báo khi tăng cấp độ tương tác",
+      info: "Chúc mừng @0 đã tăng cấp",
+    },
+    en: {
+      on: "Enabled notifications when interaction level increases",
+      off: "Disabled notifications when interaction level increases",
+      info: "Congratulations @$0 on your level up",
+    },
+  };
   constructor(private client) {}
-  async event({ api, event, client, UserData, ThreadData }: IPangolinRun) {
+  async event({
+    api,
+    event,
+    client,
+    UserData,
+    ThreadData,
+    getLang,
+  }: IPangolinListenEvent) {
     if (!event.senderID) return;
     if (!event.isGroup) return;
     const thread = (await ThreadData.rankup.get(event.threadID)) || null;
@@ -36,7 +64,7 @@ export default class RankUpCommand {
     if (level - currentLevel == 1 && level != 1) {
       return api.sendMessage(
         {
-          body: `Chúc mừng @${user.name} đã tăng cấp`,
+          body: getLang("info", user.name),
           mentions: [
             {
               tag: `@${user.name}`,
@@ -51,20 +79,14 @@ export default class RankUpCommand {
     }
   }
 
-  async run({ api, event, client, args, UserData, ThreadData }) {
+  async run({ api, event, args, getLang, ThreadData }: IPangolinRun) {
     if (args[1] == "on") {
       await ThreadData.rankup.set(event.threadID, true);
-      api.sendMessage(
-        "Đã bật thông báo khi tăng cấp độ tương tác",
-        event.threadID,
-      );
+      api.sendMessage(getLang("on"), event.threadID);
     }
     if (args[1] == "off") {
       await ThreadData.rankup.set(event.threadID, false);
-      api.sendMessage(
-        "Đã tắt thông báo khi tăng cấp độ tương tác",
-        event.threadID,
-      );
+      api.sendMessage(getLang("off"), event.threadID);
     }
   }
 }

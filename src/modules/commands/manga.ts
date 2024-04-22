@@ -14,13 +14,31 @@ export default class MangaCommand {
     name: "manga",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]manga [tên truyện cần tìm]\nChức năng: đọc truyện",
+    description: {
+      vi: "Đọc truyện",
+      en: "Read comics",
+    },
+    guide: {
+      vi: "[prefix]manga [tên truyện cần tìm]",
+      en: "[prefix]manga [name of story to search for]",
+    },
   };
 
+  static message = {
+    vi: {
+      listChapters: "Có $0 chapter, vui lòng reply để chọn chap cần đọc!",
+      info: "Có $0 trang ở chap này. Chúc bạn đọc vui vẻ :D",
+      syntaxError: "Bạn phải nhập tên truyện",
+    },
+    en: {
+      info: "There are $0 pages in this chapter. Happy reading :D",
+      listChapters:
+        "There are $0 chapters, please reply to select the chapter to read!",
+      syntaxError: "You must enter the story name",
+    },
+  };
   constructor(private client) {}
-  async event({ api, event, client }: IPangolinListenEvent) {
+  async event({ api, event, getLang }: IPangolinListenEvent) {
     const listManga = cache.get("manga");
     if (event.type == "message_reply") {
       let numChose = 1;
@@ -39,7 +57,7 @@ export default class MangaCommand {
                     chapters.push(link);
                   });
                   api.sendMessage(
-                    `Có ${chapters.length} chapter, vui lòng reply để chọn chap cần đọc!`,
+                    getLang("listChapters", chapters.length),
                     event.threadID,
                     (err, res) => {
                       cache.put(
@@ -101,7 +119,7 @@ export default class MangaCommand {
                     api.sendMessage(
                       {
                         attachment: imgChapters,
-                        body: `Có ${imgChapters.length} trang ở chap này. Chúc bạn đọc vui vẻ :D`,
+                        body: getLang("info", imgChapters.length),
                       },
                       event.threadID,
                     );
@@ -117,7 +135,8 @@ export default class MangaCommand {
       }
     }
   }
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang, args }: IPangolinRun) {
+    if (!args[1]) return api.sendMessage(getLang(""), event.threadID);
     const search = (event.body as string).split(args[0])[1].trim();
     try {
       const response = await axios.get(

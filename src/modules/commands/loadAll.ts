@@ -6,10 +6,6 @@ export default class LoadAllCommand {
     name: "loadAll",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "[Chỉ dành cho ADMIN bot]:load all người dùng, thread đang hoạt động vào database",
-    permission: 2,
   };
 
   constructor(private client) {}

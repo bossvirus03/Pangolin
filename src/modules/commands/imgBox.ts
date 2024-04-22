@@ -10,14 +10,32 @@ export default class ImgBoxCommand {
     name: "imgbox",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]imgbox(Reply 1 bức ảnh)\nChức năng: đổi avatar nhóm",
+    description: {
+      vi: "Đổi avatar nhóm",
+      en: "Change group avatar",
+    },
+    guide: {
+      vi: "[prefix]imgbox(Reply 1 bức ảnh)",
+      en: "[prefix]imgbox(Reply 1 photo)",
+    },
     permission: 1,
   };
 
+  static message = {
+    vi: {
+      syntaxError: "Vui lòng reply ít nhất 1 ảnh!",
+      errorPhoto: "Đã xảy ra lỗi khi đổi ảnh vui lòng thử ảnh khác",
+      changeSuccess: "Đã đổi ảnh nhóm thành công",
+    },
+    en: {
+      syntaxError: "Please reply with at least 1 photo!",
+      errorPhoto:
+        "An error occurred while changing the photo. Please try another photo",
+      changeSuccess: "Group photo changed successfully",
+    },
+  };
   constructor(private client) {}
-  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
+  async run({ api, event, getLang }: IPangolinRun) {
     if (event.type == "message_reply") {
       const imgPath = join(
         process.cwd(),
@@ -37,18 +55,15 @@ export default class ImgBoxCommand {
             });
           })
           .then(() => {
-            api.sendMessage("Đã đổi ảnh nhóm thành công", event.threadID);
+            api.sendMessage(getLang("changeSuccess"), event.threadID);
           })
           .catch((error) => {
-            api.sendMessage(
-              "Đã xảy ra lỗi khi đổi ảnh vui lòng thử ảnh khác",
-              event.threadID,
-            );
+            api.sendMessage(getLang("errorPhoto"), event.threadID);
             console.error("Error downloading image:", error);
           });
       }
       return;
     }
-    api.sendMessage("Vui lòng reply 1 hình ảnh!", event.threadID);
+    api.sendMessage(getLang("syntaxError"), event.threadID);
   }
 }

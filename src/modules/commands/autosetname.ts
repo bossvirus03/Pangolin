@@ -11,7 +11,6 @@ export default class AutosetnameCommand {
     name: "autosetname",
     version: "1.0.0",
     author: "Nguyên Blue",
-
     description: "khi có thành viên mới vào nhóm bot sẽ tự động set name",
   };
 

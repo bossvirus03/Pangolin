@@ -15,13 +15,28 @@ export default class YtCommand {
     name: "sing",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]sing [tìm kiếm gì đó ở đây]\nChức năng: tải audio từ youtube về",
+    description: {
+      vi: "Tìm kiếm và tải nhạc từ youtube",
+      en: "Search and download music from youtube",
+    },
+    guide: {
+      vi: "[prefix]sing (tìm gì đó)",
+      en: "[prefix]sing (find something)",
+    },
   };
 
+  static message = {
+    vi: {
+      tooLong: "Audio này quá dài vui lòng tự xem tại ",
+      info: "Có $0 kết quả phù hợp: $1",
+    },
+    en: {
+      tooLong: "This audio is too long, please watch it yourself at",
+      info: "There are $0 matches: $1",
+    },
+  };
   constructor(private client) {}
-  async event({ api, event, client }: IPangolinListenEvent) {
+  async event({ api, event, getLang }: IPangolinListenEvent) {
     if (event.type == "message_reply") {
       const listVideoYoutubeSearch = cache.get("list-audio-youtube-search");
       if (
@@ -37,10 +52,10 @@ export default class YtCommand {
             );
             ytdl
               .getInfo(item.id)
-              .then((res) => {
+              .then(async (res) => {
                 if (parseInt(res.videoDetails.lengthSeconds) > 1500) {
                   api.sendMessage(
-                    "Xin lỗi audio này quá dài bạn vui lòng tự nhấn xem tại: " +
+                    (await getLang("tooLong")) +
                       "https://www.youtube.com/watch?v=" +
                       item.id,
                     event.threadID,
@@ -75,7 +90,7 @@ export default class YtCommand {
     }
   }
 
-  async run({ api, event, pangolin, args }: IPangolinRun) {
+  async run({ api, event, pangolin, args, getLang }: IPangolinRun) {
     const search = (event.body as string).split(args[0])[1];
     var listVideoResult = [];
     let index = 1;
@@ -106,7 +121,7 @@ export default class YtCommand {
       smg += `[${item.index}] - ${item.title}\nChannel: ${item.channel}\n\n`;
     });
     api.sendMessage(
-      `Có ${listVideoResult.length} kết quả phù hợp: \n` + smg,
+      getLang("info", listVideoResult.length, smg),
       event.threadID,
       (err, res) => {
         cache.put(

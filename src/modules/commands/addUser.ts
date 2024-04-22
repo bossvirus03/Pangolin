@@ -6,29 +6,34 @@ export default class AddUserName {
     name: "addUser", //your command name
     version: "1.0.0",
     author: "Lợi",
+    category: "GROUP",
     description: {
-      vi: "",
-      en: "",
+      vi: "Thêm thành viên mới vào nhóm",
+      en: "Add new members to the group",
     },
     guide: {
-      vi: "",
-      en: "",
+      vi: "[prefix]addUser [danh sách link facebook]",
+      en: "[prefix]addUser [list link facebook]",
     },
   };
 
   static message = {
     vi: {
-      text1: "",
-      text2: "",
+      userAlreadyExists: "User đã tồn tại",
+      addedUser: "Đã thêm $0 vào nhóm",
+      canNotAddUser: "Không thể thêm User vào nhóm!",
+      linkInvalid: "Link facebook không hợp lệ!",
     },
     en: {
-      text1: "",
-      text2: "",
+      userAlreadyExists: "User already exists",
+      addedUser: "Added $0 to the group",
+      canNotAddUser: "Can not add user to group!",
+      linkInvalid: "Link facebook is invalid!",
     },
   };
 
   constructor(private client) {}
-  async run({ api, event, args, UserInThreadData }: IPangolinRun) {
+  async run({ api, event, args, UserInThreadData, getLang }: IPangolinRun) {
     const regexFb =
       /(?:https?:\/\/)?(?:www\.)?(?:facebook|fb|m\.facebook)\.(?:com|me)\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]+)(?:\/)?/i;
 
@@ -37,7 +42,8 @@ export default class AddUserName {
         const uid = await getUid(item);
         if (uid) {
           const user = await UserInThreadData.get(uid, event.threadID);
-          if (user) api.sendMessage("User đã tồn tại", event.threadID);
+          if (user)
+            api.sendMessage(getLang("userAlreadyExists"), event.threadID);
           else {
             const newUser = new Promise((resolve, reject) => {
               api.getUserInfo(uid, (err, info) => {
@@ -54,13 +60,13 @@ export default class AddUserName {
                   .addUserToGroup(uid, event.threadID)
                   .then(() => {
                     api.sendMessage(
-                      `Đã thêm ${user.name} vào nhóm`,
+                      getLang("addedUser", user.name),
                       event.threadID,
                     );
                   })
                   .catch(() => {
                     api.sendMessage(
-                      "Không thể thêm User vào nhóm!",
+                      getLang("canNotAddUser", user.name),
                       event.threadID,
                       () => {},
                       event.messageID,
@@ -79,7 +85,7 @@ export default class AddUserName {
           return uid;
         } catch (error) {
           api.sendMessage(
-            "Link facebook không hợp lệ",
+            getLang("linkInvalid"),
             event.threadID,
             () => {},
             event.messageID,

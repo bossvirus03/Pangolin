@@ -150,7 +150,7 @@ export default class HelpCommand {
         );
         if (parseInt(event.body as string) > paginatedData.totalPages) {
           return api.sendMessage(
-            getLang("InvalidPage"),
+            getLang("invalidPage"),
             event.threadID,
             () => {},
             event.messageID,

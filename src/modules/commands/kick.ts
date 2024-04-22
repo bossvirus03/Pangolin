@@ -6,14 +6,36 @@ export default class SetNameCommand {
     name: "kick",
     version: "1.0.0",
     author: "Lợi",
-
-    description:
-      "Cách dùng: [prefix]kick @mentions\nChức năng: Kick những người được tag",
+    description: {
+      vi: "Kick những người được tag",
+      en: "Kick those tagged",
+    },
     permission: 1,
+    guide: {
+      vi: "[prefix]kick @mentions",
+      en: "[prefix]kick @mentions",
+    },
   };
 
+  static message = {
+    vi: {
+      notGroup: "Chỉ sử dụng trong nhóm chat",
+      needAdmin: "Bạn cần set cho bot làm admin để sử dụng lệnh này",
+      syntaxError: "Vui lòng tag một người!",
+      kicked: "Đã kick $0 ra khỏi nhóm!",
+    },
+    en: {
+      notGroup: "only use it in groups",
+      syntaxError: "Please tag someone!",
+      needAdmin: "You need to set the bot as admin to use this command",
+      kicked: "Kicked $0 out of the group!",
+    },
+  };
   constructor(private client) {}
-  async run({ api, event, client, args }: IPangolinRun) {
+  async run({ api, event, getLang, args }: IPangolinRun) {
+    if (!event.isGroup) {
+      return api.sendMessage(getLang("notGroup"), event.threadID);
+    }
     const UID_BOT = api.getCurrentUserID();
     try {
       const info: any = await new Promise((resolve, reject) => {
@@ -30,16 +52,13 @@ export default class SetNameCommand {
           })
           .includes(UID_BOT)
       ) {
-        return api.sendMessage(
-          "Bạn cần set cho bot làm admin để sử dụng lệnh này",
-          event.threadID,
-        );
+        return api.sendMessage(getLang("needAdmin"), event.threadID);
       }
     } catch (err) {
       console.log(err);
     }
     if (!args[1] || !event.mentions)
-      return api.sendMessage("Vui lòng tag một người!", event.threadID);
+      return api.sendMessage(getLang("syntaxError"), event.threadID);
     const mentions = Object.keys(event.mentions);
 
     try {
@@ -51,10 +70,7 @@ export default class SetNameCommand {
     }
     api.sendMessage(
       {
-        body:
-          "Đã kick " +
-          Object.values(event.mentions).join(", ") +
-          " ra khỏi nhóm!",
+        body: getLang("kicked", Object.values(event.mentions).join(", ")),
         mentions: Object.entries(event.mentions).map((mention) => {
           return {
             tag: mention[1],

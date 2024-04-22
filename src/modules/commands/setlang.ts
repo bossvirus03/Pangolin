@@ -7,10 +7,11 @@ export default class SetLangName {
     name: "setlang", //your command name
     version: "1.0.0",
     author: "Lợi",
+    category: "ADMIN",
     permission: 2,
     description: {
-      vi: "",
-      en: "",
+      vi: "Đổi ngôn ngữ bot",
+      en: "Change bot language",
     },
     guide: {
       vi: "",
