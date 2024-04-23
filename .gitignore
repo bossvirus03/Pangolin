@@ -53,7 +53,7 @@ lerna-debug.log*
 /public/audio/*
 
 # 
-.sqlite
+*.sqlite
 
 # Runtime data
 pids
