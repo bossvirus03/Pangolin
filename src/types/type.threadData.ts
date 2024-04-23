@@ -11,6 +11,10 @@ interface Antichangeinfobox {
   get(tid: string): Promise<string>;
   set(tid: string, value: boolean): Promise<void>;
 }
+interface JoinLeaveNoti {
+  get(tid: string): Promise<string>;
+  set(tid: string, value: boolean): Promise<void>;
+}
 interface Antileave {
   get(tid: string): Promise<string>;
   set(tid: string, value: boolean): Promise<void>;
@@ -25,4 +29,5 @@ export interface IThreadData {
   resend: Resend;
   antichangeinfobox: Antichangeinfobox;
   antileave: Antileave;
+  joinLeaveNoti: JoinLeaveNoti;
 }

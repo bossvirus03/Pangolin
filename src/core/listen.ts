@@ -169,6 +169,30 @@ class Listen {
         }
       },
     },
+    joinLeaveNoti: {
+      get: async (tid) => {
+        try {
+          const res = await Thread.findOne({ where: { tid } });
+          return res ? res.dataValues.joinLeaveNoti : false;
+        } catch (error) {
+          console.error("Error getting joinLeaveNoti status:", error);
+          throw error;
+        }
+      },
+
+      set: async (tid, bool) => {
+        try {
+          const res = await Thread.update(
+            { joinLeaveNoti: bool },
+            { where: { tid } },
+          );
+          return;
+        } catch (error) {
+          console.error("Error setting joinLeaveNoti status:", error);
+          throw error;
+        }
+      },
+    },
     resend: {
       get: async (tid) => {
         try {

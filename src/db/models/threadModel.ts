@@ -53,6 +53,13 @@ export class Thread extends Model<Thread> {
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
+    defaultValue: true,
+  })
+  joinLeaveNoti?: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
     defaultValue: false,
   })
   antileave?: boolean;

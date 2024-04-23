@@ -25,9 +25,10 @@ export default class NotiCommand {
     },
   };
   constructor(private client) {}
-  async run({ api, event, pangolin, getLang }: IPangolinEvent) {
+  async run({ api, event, pangolin, getLang, ThreadData }: IPangolinEvent) {
     const GifPath = join(process.cwd(), "/src/db/data/join/join.gif");
     if (event.logMessageType != "log:subscribe") return;
+    if (!(await ThreadData.joinLeaveNoti.get(event.threadID))) return;
     const UID_BOT = await api.getCurrentUserID();
     api.getThreadInfo(event.threadID, async (err, info) => {
       if (err) {

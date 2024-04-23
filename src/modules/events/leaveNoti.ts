@@ -15,10 +15,10 @@ export default class NotiCommand {
 
   constructor(private client) {}
 
-  async run({ api, event }: IPangolinEvent) {
+  async run({ api, event, ThreadData }: IPangolinEvent) {
     const GifPath = join(process.cwd(), "/src/db/data/leave/leave.gif");
     if (event.logMessageType === "log:unsubscribe") {
-      // console.log(event);
+      if (!(await ThreadData.joinLeaveNoti.get(event.threadID))) return;
       const infoUser = await api.getUserInfo(
         event.logMessageData.leftParticipantFbId,
         (err, user) => {
