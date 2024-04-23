@@ -336,7 +336,7 @@ class Listen {
         pangolin: config,
       });
     }
-    this.api.setOptions({ listenEvents: true });
+    this.api.setOptions({ listenEvents: true, selfListen: config.self_listen });
     this.api.listenMqtt(async (err, event: IEvent) => {
       // create user if not already
       try {

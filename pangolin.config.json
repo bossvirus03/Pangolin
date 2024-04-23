@@ -1,6 +1,6 @@
 {
     "language": "en",
-    "botname": "heloo",
+    "botname": "yourname bot",
     "admins": [
         "100049732817959",
         "100000113681117"
@@ -10,7 +10,8 @@
         "youtube_search_api": "AIzaSyBDI5O0D9SHlMy8EhAyFbt5kc96WJqaFqQ"
     },
     "access_token": "6628568379%7Cc1e620fa708a1d5696fb991c1bde5662",
+    "self_listen": true,
     "log_event": false,
     "help_paginate": false,
-    "noti_loaded_data": true
+    "noti_loaded_data": false
 }
