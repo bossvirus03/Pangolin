@@ -47,10 +47,16 @@ lerna-debug.log*
 .tmp
 
 # image, audio, video
-/public/videos/*
-/public/files/*
-/public/images/*
-/public/audio/*
+/public/videos/*.mp4
+/public/files/*.txt
+/public/files/*.mp4
+/public/files/*.mp3
+/public/files/*.pdf
+/public/files/*.jpg
+/public/images/*.png
+/public/images/*.jpg
+/public/images/*.webp
+/public/audios/*mp3
 
 # 
 *.sqlite
