@@ -43,7 +43,7 @@ export default class SimCommand {
       api.sendMessage(getLang("off"), event.threadID);
     }
   }
-  async event({
+  async handleEvent({
     api,
     event,
     client,

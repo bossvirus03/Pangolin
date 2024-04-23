@@ -3,7 +3,7 @@ import fs from "fs";
 import axios from "axios";
 import * as ytdl from "@distube/ytdl-core";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -184,7 +184,7 @@ export default class autodown {
     }
   }
 
-  async event({ api, event, client }: IPangolinListenEvent) {
+  async handleEvent({ api, event, client }: IPangolinHandleEvent) {
     try {
       const encoding = "utf8";
       const duongdan = join(process.cwd(), `/src/db/data/autodown.json`);

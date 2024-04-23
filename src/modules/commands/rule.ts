@@ -2,7 +2,7 @@ import { join } from "path";
 import * as fs from "fs";
 import * as cache from "memory-cache";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 export default class RuleCommand {
@@ -125,7 +125,7 @@ export default class RuleCommand {
     }
     api.sendMessage(getLang("add"), event.threadID);
   }
-  async event({ api, event, getLang }: IPangolinListenEvent) {
+  async handleEvent({ api, event, getLang }: IPangolinHandleEvent) {
     if (event.type === "message_reply") {
       if (event.messageReply.messageID == cache.get("tmp-rule-message")) {
         if ((event.body as string).startsWith("remove")) {

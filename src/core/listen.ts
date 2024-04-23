@@ -9,6 +9,7 @@ import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
 import * as fs from "fs";
+import * as cache from "memory-cache";
 import {
   createThreadIfNotExists,
   createUserIfNotExists,
@@ -306,7 +307,19 @@ class Listen {
       }
     },
   };
-
+  // ({ name: this.config.name, messageID: info.messageID, author: event.senderID, link })
+  cache = {
+    client: {
+      handleReply: ({ name, messageID, author, value }) => {
+        cache.put("handleReply", { name, messageID, author, value });
+      },
+      handleReaction: (name: string, messageID, author: string, value: any) => {
+        cache.put("handleReaction", { name, messageID, author, value });
+      },
+    },
+  };
+  reply = async () => await cache.get("handleReply");
+  reaction = async () => await cache.get("handleReaction");
   async listen() {
     const UID_BOT = this.api.getCurrentUserID();
     const configPath = join(process.cwd(), "pangolin.config.json");
@@ -411,13 +424,13 @@ class Listen {
       });
 
       //load all command event
-      this.client.event.forEach((value, key) => {
+      this.client.handleEvent.forEach((value, key) => {
         const configGuideLang = new ConfigGuideLang(this.client, key);
         function getLang(key, ...args: any[]) {
           const message = configGuideLang.getLang(key, args);
           return message;
         }
-        this.client.event.get(key).event({
+        this.client.handleEvent.get(key).handleEvent({
           api: this.api,
           event,
           client: this.client,
@@ -428,6 +441,49 @@ class Listen {
           pangolin: config,
         });
       });
+
+      //load all command reply
+      if (event.type === "message_reply") {
+        this.client.handleReply.forEach(async (value, key) => {
+          const configGuideLang = new ConfigGuideLang(this.client, key);
+          function getLang(key, ...args: any[]) {
+            const message = configGuideLang.getLang(key, args);
+            return message;
+          }
+          this.client.handleReply.get(key).handleReply({
+            api: this.api,
+            event,
+            client: this.client,
+            UserData: this.UserData,
+            ThreadData: this.ThreadData,
+            UserInThreadData: this.UserInThreadData,
+            getLang,
+            pangolin: config,
+            reply: (await this.reply()) || "",
+          });
+        });
+      }
+      //load all command reaction
+      if (event.type === "message_reaction") {
+        this.client.handleReaction.forEach(async (value, key) => {
+          const configGuideLang = new ConfigGuideLang(this.client, key);
+          function getLang(key, ...args: any[]) {
+            const message = configGuideLang.getLang(key, args);
+            return message;
+          }
+          this.client.handleReaction.get(key).handleReaction({
+            api: this.api,
+            event,
+            client: this.client,
+            UserData: this.UserData,
+            ThreadData: this.ThreadData,
+            UserInThreadData: this.UserInThreadData,
+            getLang,
+            pangolin: config,
+            reaction: (await this.reaction()) || "",
+          });
+        });
+      }
       if (event.body != undefined) {
         let args = (event.body as string).trim().split(" ");
         let configGuideLang = new ConfigGuideLang(this.client, args[0]);
@@ -565,6 +621,7 @@ class Listen {
             UserInThreadData: this.UserInThreadData,
             getLang,
             pangolin: config,
+            cache: this.cache,
           });
         }
       }

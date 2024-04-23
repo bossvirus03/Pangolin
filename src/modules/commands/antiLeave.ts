@@ -1,5 +1,5 @@
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinNoprefix,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
@@ -44,7 +44,7 @@ export default class ClassName {
       api.sendMessage(getLang("offModule"), event.threadID);
     }
   }
-  async event({
+  async handleEvent({
     api,
     event,
     client,
@@ -52,7 +52,7 @@ export default class ClassName {
     ThreadData,
     UserInThreadData,
     getLang,
-  }: IPangolinListenEvent) {
+  }: IPangolinHandleEvent) {
     if (!event.isGroup) return;
     if (!(await ThreadData.antileave.get(event.threadID))) return;
     if (event.logMessageType === "log:unsubscribe") {

@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { join } from "path";
 
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -38,7 +38,7 @@ export default class ResendCommand {
     },
   };
   constructor(private client) {}
-  async event({ api, event, getLang, ThreadData }: IPangolinListenEvent) {
+  async handleEvent({ api, event, getLang, ThreadData }: IPangolinHandleEvent) {
     async function handleMessageUnSend(message) {
       const user = await api.getUserInfo(event.senderID, (err, ret) => {});
       if (!message.attachments.length) {

@@ -5,7 +5,7 @@ import * as fs from "fs";
 import { join } from "path";
 
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 export default class MangaCommand {
@@ -41,7 +41,7 @@ export default class MangaCommand {
     },
   };
   constructor(private client) {}
-  async event({ api, event, getLang }: IPangolinListenEvent) {
+  async handleEvent({ api, event, getLang }: IPangolinHandleEvent) {
     const listManga = cache.get("manga");
     if (event.type == "message_reply") {
       let numChose = 1;

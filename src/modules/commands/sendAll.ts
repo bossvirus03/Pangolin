@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as cache from "memory-cache";
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 export default class SendAllCommand {
@@ -140,7 +140,7 @@ export default class SendAllCommand {
       });
     }
   }
-  async event({ api, event, pangolin, getLang }: IPangolinListenEvent) {
+  async handleEvent({ api, event, pangolin, getLang }: IPangolinHandleEvent) {
     const sendAllPath = join(process.cwd(), "/src/db/data/sendAll.json");
     const dataMessageID = fs.readFileSync(sendAllPath, "utf8");
     if (!dataMessageID) return;

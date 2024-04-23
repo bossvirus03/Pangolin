@@ -2,7 +2,7 @@ import * as cache from "memory-cache";
 import * as fs from "fs";
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -185,7 +185,13 @@ export default class ShortCommand {
       cache.put("short", messageID);
     }
   }
-  async event({ api, event, client, UserData, getLang }: IPangolinListenEvent) {
+  async handleEvent({
+    api,
+    event,
+    client,
+    UserData,
+    getLang,
+  }: IPangolinHandleEvent) {
     const listShortFromThread = await fs.readFileSync(
       this.partDataShort,
       "utf-8",

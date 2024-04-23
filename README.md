@@ -9,15 +9,16 @@
 </p>
 
 ## Installation
+
 <ul>
 <li align="left">Download <a href="https://nodejs.org/en/">Nodejs</a> & <a href="https://git-scm.com/">Git</a></li>
 <li align="left">Open git bash & enter</li>
 </ul>
 
-
 ```bash
 $ git clone https://github.com/bossvirus03/Pangolin.git
 ```
+
 <p>and then</p>
 
 ```bash
@@ -25,6 +26,7 @@ $ npm install
 ```
 
 ## Some settings to get started
+
 <ul>
     <li>Download <a href="https://github.com/c3cbot/c3c-fbstate">c3c fbstate</a> to get fbstate</li>
     <li>Add that extension to chrome or any browse</li>
@@ -61,10 +63,8 @@ $ npm run start:prod
 
 <li>From root directory to /src/modules/commands or /src/modules/events and then you need follow template <a href="https://github.com/bossvirus03/Pangolin/blob/master/src/modules/template.ts">Here</a></li>
 
-
-
-
 ### With prefix
+
 ```javascript
 import { IPangolinRun } from "src/types/type.pangolin-handle";
  async run({
@@ -85,8 +85,8 @@ import { IPangolinRun } from "src/types/type.pangolin-handle";
 ### Listen event from command has prefix
 
 ```javascript
-import { IPangolinListenEvent } from "src/types/type.pangolin-handle";
- async event({
+import { IPangolinHandleEvent } from "src/types/type.pangolin-handle";
+ async handleEvent({
     api,
     event,
     client,
@@ -95,12 +95,13 @@ import { IPangolinListenEvent } from "src/types/type.pangolin-handle";
     UserInThreadData,
     getLang,
     pagolin,
-  }: IPangolinListenEvent) {
+  }: IPangolinHandleEvent) {
     // logic
   }
 ```
 
 ### No prefix
+
 ```javascript
 import { IPangolinNoprefix } from "src/types/type.pangolin-handle";
  async noprefix({
@@ -117,7 +118,9 @@ import { IPangolinNoprefix } from "src/types/type.pangolin-handle";
     // logic
   }
 ```
+
 ### Something you need to know
+
 <ul>
     <li>From functions handle command</li>
 </ul>
@@ -139,11 +142,13 @@ async run({
 <p>In the code above</p>
 
 #### api
+
 <p>Example: send a message</p>
 
 ```javascript
-    api.sendMessage("hello world", event.ThreadID)
+api.sendMessage("hello world", event.ThreadID);
 ```
+
 <p>To see detail you need to <a href="https://github.com/bossvirus03/facebook-chat-api">Here</a></p>
 
 #### event
@@ -172,7 +177,7 @@ async run({
 
 ```javascript
 const user = await UserData.get("61556745520442");
-console.log(user)
+console.log(user);
 //response
 /*
    User {
@@ -184,13 +189,14 @@ console.log(user)
     }
 */
 ```
+
 #### ThreadData
 
 <p>Example get a thread</p>
 
 ```javascript
 const thread = await ThreadData.get("47923492740238");
-console.log(thread)
+console.log(thread);
 //response
 /*
    Thread {
@@ -208,8 +214,11 @@ console.log(thread)
 <p>Example get a user in group</p>
 
 ```javascript
-const userInThread = await UserInThreadData.get("61556745520442","47923492740238");
-console.log(userInThread)
+const userInThread = await UserInThreadData.get(
+  "61556745520442",
+  "47923492740238",
+);
+console.log(userInThread);
 //response
 /*
    UserInThread {
@@ -250,7 +259,6 @@ console.log(config);
 } 
 */
 ```
-
 
 ## Stay in touch
 

@@ -1,7 +1,7 @@
 import * as cache from "memory-cache";
 
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 import { IUserInThreadData } from "src/types/type.userInThreadData";
@@ -36,14 +36,14 @@ export default class CheckttCommand {
 
   constructor(private client) {}
 
-  async event({
+  async handleEvent({
     api,
     event,
     client,
     UserData,
     ThreadData,
     UserInThreadData,
-  }: IPangolinListenEvent) {
+  }: IPangolinHandleEvent) {
     if (event.type === "message_reaction") {
       const messageID = cache.get("message-id");
       if (messageID && event.reaction === "❤") {

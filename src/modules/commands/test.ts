@@ -1,32 +1,40 @@
-const axios = require("axios");
-import { applyIsOptionalDecorator } from "@nestjs/mapped-types";
-import { IPangolinRun } from "src/types/type.pangolin-handle";
-export default class TachCommand {
+// import * as cache from "memory-cache";
+import {
+  IPangolinHandleEvent,
+  IPangolinHandleReply,
+  IPangolinRun,
+} from "src/types/type.pangolin-handle";
+export default class Test {
   static config = {
-    category: "",
     name: "test",
-    version: "1.0.0",
-    author: "Nguyên Blue",
-
-    description:
-      "Cách dùng: [prefix]tach (Reply 1 bức ảnh)\nChức năng: tách nền ảnh",
   };
 
   constructor(private client) {}
-
-  async run({ api, event, UserData }: IPangolinRun) {
-    // const function = new Function();
-    const axios = require("axios");
-    const url = `https://graph.facebook.com/234/picture?type=large&redirect=false&width=480&height=480&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
-
-    //vd0
-    // const data = axios.get(url);
-    // console.log(data);
-
-    // vd1
-    const data = await axios.get(url);
-    api.sendMessage("hello world", event.threadID);
-
-    console.log(data);
+  async handleReply({ api, event, reply }: IPangolinHandleReply) {
+    console.log(reply.name, reply.messageID, reply.author, reply.value);
   }
+  async handleReaction({ api, event }) {
+    api.sendMessage("reply", "100049732817959");
+  }
+
+  async run({ api, event, UserData, cache }: IPangolinRun) {
+    // clg
+    api.sendMessage("test", event.threadID, (err, info) => {
+      cache.client.handleReply({
+        name: Test.config.name, //test là tên class
+        messageID: info.messageID,
+        author: event.senderID,
+        value: event.body,
+      });
+    });
+  }
+  // async handleEvent({ api, event }: IPangolinHandleEvent) {
+  //   if (event.type === "message_reply") {
+  //     // đoạn này check nếu reply tin nhắn nào có id = với id lưu trong biến test ở cache
+  //     const idReply = await cache.get("test");
+  //     if (event.messageReply.messageID == idReply) {
+  //       api.sendMessage("response reply", event.threadID);
+  //     }
+  //   }
+  // }
 }

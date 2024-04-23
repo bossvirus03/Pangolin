@@ -5,6 +5,21 @@ import { IThreadData } from "./type.threadData";
 import { IUserData } from "./type.userData";
 import { IUserInThreadData } from "./type.userInThreadData";
 
+interface Reply {
+  name: string;
+  messageID: string;
+  author: string;
+  value: any;
+}
+interface Reaction extends Reply {}
+
+interface IClient {
+  handleReply: (values: Reply) => void;
+  handleReaction: (values: Reaction) => void;
+}
+interface IcacheCommand {
+  client: IClient;
+}
 export interface IPangolinRun {
   api?: Ifca;
   event?: IEvent;
@@ -15,6 +30,7 @@ export interface IPangolinRun {
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
   pangolin?: IPangolinConfig;
+  cache?: IcacheCommand;
 }
 export interface IPangolinOnload {
   api?: Ifca;
@@ -35,7 +51,7 @@ export interface IPangolinEvent {
   getLang?: (...args: any[]) => Promise<string>;
   pangolin?: IPangolinConfig;
 }
-export interface IPangolinListenEvent {
+export interface IPangolinHandleEvent {
   api?: Ifca;
   event?: IEvent;
   client?: any;
@@ -44,4 +60,26 @@ export interface IPangolinListenEvent {
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
   pangolin?: IPangolinConfig;
+}
+export interface IPangolinHandleReaction {
+  api?: Ifca;
+  event?: IEvent;
+  client?: any;
+  UserData?: IUserData;
+  ThreadData?: IThreadData;
+  UserInThreadData?: IUserInThreadData;
+  getLang?: (...args: any[]) => Promise<string>;
+  pangolin?: IPangolinConfig;
+  reaction?: Reaction;
+}
+export interface IPangolinHandleReply {
+  api?: Ifca;
+  event?: IEvent;
+  client?: any;
+  UserData?: IUserData;
+  ThreadData?: IThreadData;
+  UserInThreadData?: IUserInThreadData;
+  getLang?: (...args: any[]) => Promise<string>;
+  pangolin?: IPangolinConfig;
+  reply: Reply;
 }

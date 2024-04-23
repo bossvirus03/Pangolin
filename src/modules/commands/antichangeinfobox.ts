@@ -1,6 +1,6 @@
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 import * as fs from "fs";
@@ -45,7 +45,7 @@ export default class AntiChangeInfoBox {
       api.sendMessage(getLang("offModule"), event.threadID);
     }
   }
-  async event({ api, event, ThreadData, getLang }: IPangolinListenEvent) {
+  async handleEvent({ api, event, ThreadData, getLang }: IPangolinHandleEvent) {
     if (!event.isGroup) return;
     const dataThread = await ThreadData.get(event.threadID);
     if (dataThread && dataThread.antichangeinfobox) {

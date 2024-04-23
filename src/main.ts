@@ -102,7 +102,9 @@ async function bootstrap() {
       events: new Map(),
       noprefix: new Map(),
       onload: new Array(),
-      event: new Map(),
+      handleEvent: new Map(),
+      handleReply: new Map(),
+      handleReaction: new Map(),
       language: new Object(),
     };
 

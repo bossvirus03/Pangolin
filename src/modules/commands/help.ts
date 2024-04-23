@@ -1,7 +1,7 @@
 import { readdirSync } from "fs";
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 import * as cache from "memory-cache";
@@ -136,7 +136,7 @@ export default class HelpCommand {
     });
     cache.put("help", messageID);
   }
-  async event({ event, api, getLang }: IPangolinListenEvent) {
+  async handleEvent({ event, api, getLang }: IPangolinHandleEvent) {
     if (event.type === "message_reply") {
       const messageID = cache.get("help");
       if (messageID && event.messageReply.messageID == messageID) {

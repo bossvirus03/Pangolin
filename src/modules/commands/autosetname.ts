@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -16,7 +16,7 @@ export default class AutosetnameCommand {
 
   constructor(private client) {}
 
-  async event({ api, event, client }: IPangolinListenEvent) {
+  async handleEvent({ api, event, client }: IPangolinHandleEvent) {
     const { threadID } = event;
     const pathData = join(process.cwd(), `/src/db/data/autosetname.json`);
 

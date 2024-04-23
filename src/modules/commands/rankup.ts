@@ -2,7 +2,7 @@ import { readdirSync } from "fs";
 import * as fs from "fs";
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -35,14 +35,14 @@ export default class RankUpCommand {
     },
   };
   constructor(private client) {}
-  async event({
+  async handleEvent({
     api,
     event,
     client,
     UserData,
     ThreadData,
     getLang,
-  }: IPangolinListenEvent) {
+  }: IPangolinHandleEvent) {
     if (!event.senderID) return;
     if (!event.isGroup) return;
     const thread = (await ThreadData.rankup.get(event.threadID)) || null;

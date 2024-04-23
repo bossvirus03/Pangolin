@@ -5,7 +5,7 @@ import { join } from "path";
 import * as ytdl from "@distube/ytdl-core";
 
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -36,7 +36,7 @@ export default class YtCommand {
     },
   };
   constructor(private client) {}
-  async event({ api, event, getLang }: IPangolinListenEvent) {
+  async handleEvent({ api, event, getLang }: IPangolinHandleEvent) {
     if (event.type == "message_reply") {
       const listVideoYoutubeSearch = cache.get("list-audio-youtube-search");
       if (

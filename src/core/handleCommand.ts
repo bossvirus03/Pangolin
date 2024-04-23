@@ -42,20 +42,34 @@ class HandleCommand {
         }
 
         const commandInstance = new CommandClass(this.client);
+        //execute command when prefix is ​​present
         if (commandInstance.run) {
           commandCount++;
           this.client.commands.set(config.name, commandInstance);
         }
 
-        if (commandInstance.event) {
-          this.client.event.set(config.name, commandInstance);
-        }
-
+        // execute command without prefix
         if (commandInstance.noprefix) {
           noprefixCount++;
           this.client.noprefix.set(config.name, commandInstance);
         }
 
+        // execute command for all event
+        if (commandInstance.handleEvent) {
+          this.client.handleEvent.set(config.name, commandInstance);
+        }
+
+        // execute command for all reply event
+        if (commandInstance.handleReply) {
+          this.client.handleReply.set(config.name, commandInstance);
+        }
+
+        // execute command for all reaction event
+        if (commandInstance.handleReaction) {
+          this.client.handleReaction.set(config.name, commandInstance);
+        }
+
+        // command execution as each command id loaded
         if (commandInstance.onload) {
           this.client.onload.push(commandInstance);
         }

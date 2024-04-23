@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 import * as cache from "memory-cache";
@@ -80,7 +80,7 @@ export default class FileCommand {
       console.error("Error:", error);
     }
   }
-  async event({ api, event }: IPangolinListenEvent) {
+  async handleEvent({ api, event }: IPangolinHandleEvent) {
     if (event.type === "message_reply") {
       const file = cache.get("file");
       if (!file) return;

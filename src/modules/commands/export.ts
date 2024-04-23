@@ -3,7 +3,7 @@ import { join } from "path";
 import * as fs from "fs";
 import * as cache from "memory-cache";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -66,13 +66,13 @@ export default class ExportCommand {
       event.messageID,
     );
   }
-  async event({
+  async handleEvent({
     api,
     event,
     client,
     UserData,
     ThreadData,
-  }: IPangolinListenEvent) {
+  }: IPangolinHandleEvent) {
     const messageID = cache.get("messageID");
     if (event.type === "message_reply") {
       if (messageID && event.messageReply.messageID == messageID) {

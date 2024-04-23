@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -33,7 +33,7 @@ export default class AutokickCommand {
   };
   constructor(private client) {}
 
-  async event({ api, event, client }: IPangolinListenEvent) {
+  async handleEvent({ api, event, client }: IPangolinHandleEvent) {
     try {
       const filePath = join(process.cwd(), `/src/db/data/autokick.json`);
       const encoding = "utf8";

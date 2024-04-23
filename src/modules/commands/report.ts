@@ -4,7 +4,7 @@ import * as cache from "memory-cache";
 import * as fs from "fs";
 import axios from "axios";
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 sqlite3.verbose();
@@ -124,7 +124,7 @@ export default class ReportCommand {
       });
     }
   }
-  async event({ api, event, getLang }: IPangolinListenEvent) {
+  async handleEvent({ api, event, getLang }: IPangolinHandleEvent) {
     if (event.type === "message_reply") {
       const reportInfo = cache.get("report");
       if (reportInfo && event.messageReply.messageID == reportInfo.messageID) {

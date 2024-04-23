@@ -3,7 +3,7 @@ import { join } from "path";
 import * as fs from "fs";
 
 import {
-  IPangolinListenEvent,
+  IPangolinHandleEvent,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
 
@@ -46,7 +46,7 @@ export default class autoReaction {
 
   pathAutoReaction = join(process.cwd(), "/src/db/data/autoReaction.json");
 
-  async event({ api, event, client }: IPangolinListenEvent) {
+  async handleEvent({ api, event, client }: IPangolinHandleEvent) {
     if (event.type == "message") {
       const dataAutoReaction = fs.readFileSync(this.pathAutoReaction, {
         encoding: "utf-8",
