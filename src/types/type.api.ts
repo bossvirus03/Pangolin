@@ -1,18 +1,7 @@
 interface options {}
 
 export default interface Ifca {
-  /**
-   *
-   *
-   *
-   * */
   setOptions(options: any): Promise<undefined>;
-
-  /**
-   *
-   *
-   *
-   * */
   login(): Promise<any>;
   addUserToGroup(
     userID: string,
@@ -100,6 +89,12 @@ export default interface Ifca {
     options: any, //TODO: add sendMessage Option
     ThreadID: string,
     callback?: (err: Error, info: any) => void,
+    MessageID?: any,
+  ): Promise<undefined>;
+
+  sendMessage(
+    options: any, //TODO: add sendMessage Option
+    ThreadID: string,
     MessageID?: any,
   ): Promise<undefined>;
 

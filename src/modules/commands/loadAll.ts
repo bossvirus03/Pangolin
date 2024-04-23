@@ -1,5 +1,5 @@
+import { CustomLogger } from "../../../src/logger/log";
 import { IPangolinOnload, IPangolinRun } from "src/types/type.pangolin-handle";
-
 export default class LoadAllCommand {
   static config = {
     category: "ADMIN",
@@ -17,6 +17,7 @@ export default class LoadAllCommand {
     UserInThreadData,
     pangolin,
   }: IPangolinOnload) {
+    const Log = new CustomLogger();
     try {
       const threadsData = await ThreadData.getAll();
       const threads = threadsData.map((item) => item.dataValues.tid);
@@ -32,12 +33,19 @@ export default class LoadAllCommand {
       const onFinish = () => {
         if (++allTasksCompleted === allTags.length) {
           const currentTime = new Date().toLocaleString();
-          pangolin.admins.forEach((id) => {
-            api.sendMessage(
-              `[DONE] All groups and users have been loaded! (Time: ${currentTime})`,
-              id,
-            );
-          });
+          if (pangolin.noti_loaded_data) {
+            pangolin.admins.forEach((id) => {
+              api.sendMessage(
+                `[DONE] All groups and users have been loaded! (Time: ${currentTime})`,
+                id,
+              );
+            });
+          }
+          return Log.rainbow(
+            "[DONE] All groups and users have been loaded! (Time:",
+            currentTime,
+            ")",
+          );
         }
       };
 

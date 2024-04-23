@@ -1,5 +1,6 @@
 import Ifca from "./type.api";
 import IEvent from "./type.event";
+import { IPangolinConfig } from "./type.pangolin-config";
 import { IThreadData } from "./type.threadData";
 import { IUserData } from "./type.userData";
 import { IUserInThreadData } from "./type.userInThreadData";
@@ -13,7 +14,7 @@ export interface IPangolinRun {
   ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
-  pangolin?: any;
+  pangolin?: IPangolinConfig;
 }
 export interface IPangolinOnload {
   api?: Ifca;
@@ -21,7 +22,7 @@ export interface IPangolinOnload {
   UserData?: IUserData;
   ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
-  pangolin?: any;
+  pangolin?: IPangolinConfig;
 }
 export interface IPangolinNoprefix extends IPangolinRun {}
 export interface IPangolinEvent {
@@ -32,7 +33,7 @@ export interface IPangolinEvent {
   ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
-  pangolin?: any;
+  pangolin?: IPangolinConfig;
 }
 export interface IPangolinListenEvent {
   api?: Ifca;
@@ -42,5 +43,5 @@ export interface IPangolinListenEvent {
   ThreadData?: IThreadData;
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
-  pangolin?: any;
+  pangolin?: IPangolinConfig;
 }

@@ -29,12 +29,15 @@ export default class MangaCommand {
       listChapters: "Có $0 chapter, vui lòng reply để chọn chap cần đọc!",
       info: "Có $0 trang ở chap này. Chúc bạn đọc vui vẻ :D",
       syntaxError: "Bạn phải nhập tên truyện",
+      fetchError: "Có lỗi xảy ra trong quá trình tải, vui lòng thừ lại!",
     },
     en: {
       info: "There are $0 pages in this chapter. Happy reading :D",
       listChapters:
         "There are $0 chapters, please reply to select the chapter to read!",
       syntaxError: "You must enter the story name",
+      fetchError:
+        "An error occurred during the download process, please try again!",
     },
   };
   constructor(private client) {}
@@ -86,34 +89,31 @@ export default class MangaCommand {
                 const html = res.data;
                 const $ = cheerio.load(html);
                 let imgChapters = [];
-                let promises = [];
                 let numOfImgChapter = 1;
-                $(".reading .reading-detail .page-chapter", html).each(
-                  function () {
-                    const link = $(this).find("img").attr("data-original");
-                    var ext = link.substring(link.lastIndexOf(".") + 1);
-                    const path = join(
-                      process.cwd(),
-                      `/public/images/${numOfImgChapter}.${ext}`,
-                    );
-                    // Create a promise for each image download
-                    const promise = axios
-                      .get(link, { responseType: "arraybuffer" })
-                      .then((response) => {
-                        const buffer = Buffer.from(response.data);
-                        fs.writeFileSync(path, buffer);
-                        imgChapters.push(fs.createReadStream(path));
-                      })
-                      .catch((error) => {
-                        console.error("Error downloading image:", error);
-                      });
-                    promises.push(promise);
-                    numOfImgChapter++;
-                  },
-                );
-
-                // Wait for all promises to resolve
-                Promise.all(promises)
+                new Promise(() => {
+                  $(".reading .reading-detail .page-chapter", html).each(
+                    function () {
+                      const link = $(this).find("img").attr("data-original");
+                      var ext = link.substring(link.lastIndexOf(".") + 1);
+                      const path = join(
+                        process.cwd(),
+                        `/public/images/${numOfImgChapter}.${ext}`,
+                      );
+                      // Create a promise for each image download
+                      axios
+                        .get(link, { responseType: "arraybuffer" })
+                        .then((response) => {
+                          const buffer = Buffer.from(response.data);
+                          fs.writeFileSync(path, buffer);
+                          imgChapters.push(fs.createReadStream(path));
+                        })
+                        .catch((error) => {
+                          console.error("Error downloading image:", error);
+                        });
+                      numOfImgChapter++;
+                    },
+                  );
+                })
                   .then(() => {
                     // All images are downloaded, send the message
                     api.sendMessage(
@@ -125,6 +125,7 @@ export default class MangaCommand {
                     );
                   })
                   .catch((error) => {
+                    api.sendMessage(getLang("fetchError"), event.threadID);
                     console.error("Error downloading images:", error);
                   });
               });
@@ -136,7 +137,8 @@ export default class MangaCommand {
     }
   }
   async run({ api, event, getLang, args }: IPangolinRun) {
-    if (!args[1]) return api.sendMessage(getLang(""), event.threadID);
+    if (!args[1])
+      return api.sendMessage(getLang("syntaxError"), event.threadID);
     const search = (event.body as string).split(args[0])[1].trim();
     try {
       const response = await axios.get(

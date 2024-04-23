@@ -52,6 +52,9 @@ lerna-debug.log*
 /public/images/*
 /public/audio/*
 
+# 
+.sqlite
+
 # Runtime data
 pids
 *.pid

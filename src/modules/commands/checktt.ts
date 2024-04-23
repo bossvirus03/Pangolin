@@ -18,8 +18,8 @@ export default class CheckttCommand {
       en: "Check the number of your interactions in the group",
     },
     guide: {
-      vi: "[prefix]check",
-      en: "[prefix]check",
+      vi: "[prefix]checktt",
+      en: "[prefix]checktt",
     },
   };
 
@@ -476,7 +476,7 @@ export default class CheckttCommand {
 
       let smgSorted = "";
       if (res) {
-        smgSorted += `♻️ Nhóm: ${threadName}\n👤 Tên: ${res.name}\n🎖️ Chức Vụ: ${position}\n💬 Tổng Tin Nhắn: ${res.exp}\n📊 Tu Vi Hiện Tại: ${getRankName(res.exp)}\n\n📌 Thả cảm xúc '❤️' tin nhắn này để xem tổng tin nhắn của toàn bộ thành viên trong nhóm`;
+        smgSorted += `♻️ Nhóm: ${threadName}\n👤 Tên: ${res.name}\n🎖️ Chức Vụ: ${position}\n💬Tin nhắn trong ngày: ${res.countMessageOfDay}\n💬Tin nhắn trong tuần: ${res.countMessageOfWeek}\n💬 Tổng Tin Nhắn: ${res.exp}\n📊 Tu Vi Hiện Tại: ${getRankName(res.exp)}\n\n📌 Thả cảm xúc '❤️' tin nhắn này để xem tổng tin nhắn của toàn bộ thành viên trong nhóm`;
       } else {
         smgSorted += "Không có dữ liệu về tương tác của bạn trong nhóm này.";
       }

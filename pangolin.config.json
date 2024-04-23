@@ -11,5 +11,6 @@
     },
     "access_token": "6628568379%7Cc1e620fa708a1d5696fb991c1bde5662",
     "log_event": false,
-    "help_paginate": false
+    "help_paginate": false,
+    "noti_loaded_data": true
 }

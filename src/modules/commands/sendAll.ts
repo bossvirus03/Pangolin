@@ -154,8 +154,7 @@ export default class SendAllCommand {
       const messageIDs = JSON.parse(dataMessageID);
       messageIDs.forEach((messageID) => {
         if (event.messageReply.messageID === messageID) {
-          const adminsData = pangolin.admins;
-          const admins = JSON.parse(adminsData);
+          const admins = pangolin.admins;
           admins.forEach((admin) => {
             api.sendMessage(
               getLang(

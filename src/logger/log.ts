@@ -1,12 +1,5 @@
 import * as colors from "colors";
 export class CustomLogger {
-  error(...text) {
-    let res = "";
-    text.forEach((arg) => {
-      res += arg + " ";
-    });
-    console.log(colors.red("[ERR]" + res));
-  }
   warn(...text) {
     let res = "";
     text.forEach((arg) => {
@@ -33,8 +26,12 @@ export class CustomLogger {
   blue(text: string) {
     console.log(colors.blue(text));
   }
-  rainbow(text: string) {
-    console.log(colors.rainbow(text));
+  rainbow(...text) {
+    let res = "";
+    text.forEach((arg) => {
+      res += arg + " ";
+    });
+    console.log(colors.rainbow(res));
   }
   bg(text: string) {}
 }
