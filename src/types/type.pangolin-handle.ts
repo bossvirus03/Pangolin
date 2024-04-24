@@ -13,13 +13,6 @@ interface Reply {
 }
 interface Reaction extends Reply {}
 
-interface IClient {
-  handleReply: (values: Reply) => void;
-  handleReaction: (values: Reaction) => void;
-}
-interface IcacheCommand {
-  client: IClient;
-}
 export interface IPangolinRun {
   api?: Ifca;
   event?: IEvent;
@@ -30,7 +23,6 @@ export interface IPangolinRun {
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
   pangolin?: IPangolinConfig;
-  cache?: IcacheCommand;
 }
 export interface IPangolinOnload {
   api?: Ifca;
@@ -70,7 +62,7 @@ export interface IPangolinHandleReaction {
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
   pangolin?: IPangolinConfig;
-  reaction?: Reaction;
+  messageReaction?: Reaction;
 }
 export interface IPangolinHandleReply {
   api?: Ifca;
@@ -81,5 +73,5 @@ export interface IPangolinHandleReply {
   UserInThreadData?: IUserInThreadData;
   getLang?: (...args: any[]) => Promise<string>;
   pangolin?: IPangolinConfig;
-  reply: Reply;
+  messageReply: Reply;
 }

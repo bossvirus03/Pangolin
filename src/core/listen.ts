@@ -307,19 +307,41 @@ class Listen {
       }
     },
   };
-  // ({ name: this.config.name, messageID: info.messageID, author: event.senderID, link })
-  cache = {
-    client: {
-      handleReply: ({ name, messageID, author, value }) => {
-        cache.put("handleReply", { name, messageID, author, value });
-      },
-      handleReaction: (name: string, messageID, author: string, value: any) => {
-        cache.put("handleReaction", { name, messageID, author, value });
-      },
-    },
+  // handleReply = {
+  //   set: ({ name, messageID, author, value }, event) => {
+  //     console.log("check >>>>", name, messageID, author, value);
+  //     event &&
+  //       event.messageReply &&
+  //       cache.put(`handleReply${messageID}`, {
+  //         name,
+  //         messageID,
+  //         author,
+  //         value,
+  //       });
+  //   },
+  // };
+  // handleReaction = {
+  //   set: ({ name, messageID, author, value }, event) => {
+  //     if (event.type === "message_reaction")
+  //       cache.put(`handleReaction${messageID}`, {
+  //         name,
+  //         messageID,
+  //         author,
+  //         value,
+  //       });
+  //   },
+  // };
+
+  cacheReply = async (event) => {
+    if (event && event.messageReply)
+      return await cache.get(`handleReply${event.messageReply.messageID}`);
   };
-  reply = async () => await cache.get("handleReply");
-  reaction = async () => await cache.get("handleReaction");
+
+  cacheReaction = async (event) => {
+    if (event.type == "message_reaction")
+      return await cache.get(`handleReaction${event.messageID}`);
+  };
+  // ({ name: this.config.name, messageID: info.messageID, author: event.senderID, link })
   async listen() {
     const UID_BOT = this.api.getCurrentUserID();
     const configPath = join(process.cwd(), "pangolin.config.json");
@@ -443,46 +465,56 @@ class Listen {
       });
 
       //load all command reply
+      const messageReply = global.client.messageReply;
       if (event.type === "message_reply") {
-        this.client.handleReply.forEach(async (value, key) => {
-          const configGuideLang = new ConfigGuideLang(this.client, key);
-          function getLang(key, ...args: any[]) {
-            const message = configGuideLang.getLang(key, args);
-            return message;
+        for (const item of messageReply) {
+          if (item.messageID === event.messageReply.messageID) {
+            this.client.handleReply.forEach(async (value, key) => {
+              const configGuideLang = new ConfigGuideLang(this.client, key);
+              function getLang(key, ...args: any[]) {
+                const message = configGuideLang.getLang(key, args);
+                return message;
+              }
+              this.client.handleReply.get(key).handleReply({
+                api: this.api,
+                event,
+                client: this.client,
+                UserData: this.UserData,
+                ThreadData: this.ThreadData,
+                UserInThreadData: this.UserInThreadData,
+                getLang,
+                pangolin: config,
+                messageReply: item,
+              });
+            });
           }
-          this.client.handleReply.get(key).handleReply({
-            api: this.api,
-            event,
-            client: this.client,
-            UserData: this.UserData,
-            ThreadData: this.ThreadData,
-            UserInThreadData: this.UserInThreadData,
-            getLang,
-            pangolin: config,
-            reply: (await this.reply()) || "",
-          });
-        });
+        }
       }
       //load all command reaction
+      const messageReaction = global.client.messageReaction;
       if (event.type === "message_reaction") {
-        this.client.handleReaction.forEach(async (value, key) => {
-          const configGuideLang = new ConfigGuideLang(this.client, key);
-          function getLang(key, ...args: any[]) {
-            const message = configGuideLang.getLang(key, args);
-            return message;
+        for (const item of messageReaction) {
+          if (item.messageID === event.messageID) {
+            this.client.handleReaction.forEach(async (value, key) => {
+              const configGuideLang = new ConfigGuideLang(this.client, key);
+              function getLang(key, ...args: any[]) {
+                const message = configGuideLang.getLang(key, args);
+                return message;
+              }
+              this.client.handleReaction.get(key).handleReaction({
+                api: this.api,
+                event,
+                client: this.client,
+                UserData: this.UserData,
+                ThreadData: this.ThreadData,
+                UserInThreadData: this.UserInThreadData,
+                getLang,
+                pangolin: config,
+                messageReaction: item,
+              });
+            });
           }
-          this.client.handleReaction.get(key).handleReaction({
-            api: this.api,
-            event,
-            client: this.client,
-            UserData: this.UserData,
-            ThreadData: this.ThreadData,
-            UserInThreadData: this.UserInThreadData,
-            getLang,
-            pangolin: config,
-            reaction: (await this.reaction()) || "",
-          });
-        });
+        }
       }
       if (event.body != undefined) {
         let args = (event.body as string).trim().split(" ");
@@ -621,7 +653,6 @@ class Listen {
             UserInThreadData: this.UserInThreadData,
             getLang,
             pangolin: config,
-            cache: this.cache,
           });
         }
       }

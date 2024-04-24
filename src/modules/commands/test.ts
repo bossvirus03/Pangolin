@@ -1,6 +1,5 @@
-// import * as cache from "memory-cache";
 import {
-  IPangolinHandleEvent,
+  IPangolinHandleReaction,
   IPangolinHandleReply,
   IPangolinRun,
 } from "src/types/type.pangolin-handle";
@@ -10,31 +9,47 @@ export default class Test {
   };
 
   constructor(private client) {}
-  async handleReply({ api, event, reply }: IPangolinHandleReply) {
-    console.log(reply.name, reply.messageID, reply.author, reply.value);
+  async handleReply({ api, event, messageReply }: IPangolinHandleReply) {
+    console.log(event);
+    console.log(
+      messageReply.name, //
+      messageReply.messageID, //
+      messageReply.author, //
+      messageReply.value, //nhận được exampleValueMessage ở đây
+    );
   }
-  async handleReaction({ api, event }) {
-    api.sendMessage("reply", "100049732817959");
+  async handleReaction({
+    api,
+    event,
+    messageReaction,
+  }: IPangolinHandleReaction) {
+    console.log(event);
+    console.log(
+      messageReaction.name,
+      messageReaction.messageID,
+      messageReaction.author,
+      messageReaction.value, //nhận được  event.body ở đây
+    );
   }
 
-  async run({ api, event, UserData, cache }: IPangolinRun) {
-    // clg
-    api.sendMessage("test", event.threadID, (err, info) => {
-      cache.client.handleReply({
-        name: Test.config.name, //test là tên class
+  async run({ api, event, UserData }: IPangolinRun) {
+    const exampleValueMessage = "nguyen van a";
+    api.sendMessage("test reply", event.threadID, (err, info) => {
+      global.client.messageReply.push({
+        name: Test.config.name, //Test là tên class
         messageID: info.messageID,
         author: event.senderID,
-        value: event.body,
+        value: exampleValueMessage, //value có thể truyền vào bất cứ thứ gì (arr, object, ...)
+      });
+    });
+
+    api.sendMessage("test reaction", event.threadID, (err, info) => {
+      global.client.messageReaction.push({
+        name: Test.config.name, //Test là tên class
+        messageID: info.messageID,
+        author: event.senderID,
+        value: event.body, //value có thể truyền vào bất cứ thứ gì (arr, object, ...)
       });
     });
   }
-  // async handleEvent({ api, event }: IPangolinHandleEvent) {
-  //   if (event.type === "message_reply") {
-  //     // đoạn này check nếu reply tin nhắn nào có id = với id lưu trong biến test ở cache
-  //     const idReply = await cache.get("test");
-  //     if (event.messageReply.messageID == idReply) {
-  //       api.sendMessage("response reply", event.threadID);
-  //     }
-  //   }
-  // }
 }

@@ -108,6 +108,10 @@ async function bootstrap() {
       language: new Object(),
     };
 
+    global.client = {
+      messageReply: new Array(),
+      messageReaction: new Array(),
+    };
     const LangData = (
       await readFileSync(
         join(process.cwd(), `/src/lang/${config.language || "en"}.lang`),
