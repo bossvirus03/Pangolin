@@ -307,30 +307,6 @@ class Listen {
       }
     },
   };
-  // handleReply = {
-  //   set: ({ name, messageID, author, value }, event) => {
-  //     console.log("check >>>>", name, messageID, author, value);
-  //     event &&
-  //       event.messageReply &&
-  //       cache.put(`handleReply${messageID}`, {
-  //         name,
-  //         messageID,
-  //         author,
-  //         value,
-  //       });
-  //   },
-  // };
-  // handleReaction = {
-  //   set: ({ name, messageID, author, value }, event) => {
-  //     if (event.type === "message_reaction")
-  //       cache.put(`handleReaction${messageID}`, {
-  //         name,
-  //         messageID,
-  //         author,
-  //         value,
-  //       });
-  //   },
-  // };
 
   cacheReply = async (event) => {
     if (event && event.messageReply)

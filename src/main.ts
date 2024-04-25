@@ -90,7 +90,10 @@ async function bootstrap() {
     const loginPath = {
       appState: JSON.parse(
         readFileSync(
-          join(process.cwd(), configService.get("FILE_STATE")),
+          join(
+            process.cwd(),
+            configService.get("FILE_STATE") || "appstate.json",
+          ),
           "utf-8",
         ),
       ),
@@ -131,7 +134,7 @@ async function bootstrap() {
       args.forEach((key, index) => {
         text = text.replace(`\$${index}`, args[index]);
       });
-      return text;
+      return text.toString();
     };
     //load commands, event
     const loadCommands = new HandleCommand(client);

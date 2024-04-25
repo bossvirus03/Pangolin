@@ -72,7 +72,7 @@ export default class YtCommand {
                     const buffer = Buffer.from(res.data);
                     fs.writeFileSync(path, buffer);
                     audio = fs.createReadStream(path);
-                    api.sendMessage(
+                    return api.sendMessage(
                       {
                         attachment: audio,
                         body: "Download success",
