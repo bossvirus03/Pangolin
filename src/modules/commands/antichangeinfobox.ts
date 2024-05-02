@@ -38,7 +38,7 @@ export default class AntiChangeInfoBox {
   async run({ api, event, args, ThreadData, getLang }: IPangolinRun) {
     if (args[1] == "on") {
       await ThreadData.antichangeinfobox.set(event.threadID, true);
-      api.sendMessage(getLang("offModule"), event.threadID);
+      api.sendMessage(getLang("onModule"), event.threadID);
     }
     if (args[1] == "off") {
       await ThreadData.antichangeinfobox.set(event.threadID, false);
@@ -46,11 +46,13 @@ export default class AntiChangeInfoBox {
     }
   }
   async handleEvent({ api, event, ThreadData, getLang }: IPangolinHandleEvent) {
-    if (!event.isGroup) return;
+    console.log(event);
+    if (!event.threadID) return;
     const dataThread = await ThreadData.get(event.threadID);
     if (dataThread && dataThread.antichangeinfobox) {
-      switch (event.logMessageType) {
-        case "log:thread-image":
+      switch (event.type) {
+        case "change_thread_image":
+          console.log("hehêh");
           const imgPath = join(
             process.cwd(),
             `/public/images/${event.threadID}.png`,
@@ -67,6 +69,11 @@ export default class AntiChangeInfoBox {
                 if (err) return console.log(err);
               });
             });
+        case "change_thread_quick_reaction":
+          api.changeThreadEmoji(dataThread.emoji, event.threadID);
+          return;
+      }
+      switch (event.logMessageType) {
         case "log:thread-name":
           console.log("thread name");
           api.setTitle(dataThread.name, event.threadID);
@@ -74,10 +81,6 @@ export default class AntiChangeInfoBox {
 
         case "log:thread-color":
           api.changeThreadColor(dataThread.color, event.threadID);
-          return;
-
-        case "change_thread_quick_reaction":
-          api.changeThreadEmoji(dataThread.emoji, event.threadID);
           return;
       }
     }
