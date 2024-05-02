@@ -14,7 +14,7 @@ import cookieParser from "cookie-parser";
 import { TransformInterceptor } from "./app/core/transform.interceptor";
 import OnTime from "./modules/ontime";
 import * as fs from "fs";
-import { CustomLogger } from "./../src/logger/log";
+import { CustomLogger } from "./logger";
 import * as readlineSync from "readline-sync";
 
 const Log = new CustomLogger();
