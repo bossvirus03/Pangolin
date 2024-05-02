@@ -46,7 +46,6 @@ export default class AntiChangeInfoBox {
     }
   }
   async handleEvent({ api, event, ThreadData, getLang }: IPangolinHandleEvent) {
-    console.log(event);
     if (!event.threadID) return;
     const dataThread = await ThreadData.get(event.threadID);
     if (dataThread && dataThread.antichangeinfobox) {
