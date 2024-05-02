@@ -2,9 +2,9 @@ import Ifca from "src/types/type.api";
 import * as cron from "node-cron";
 import { join } from "path";
 import fs from "fs";
-import { Thread } from "src/db/models/threadModel";
-import { UserInThread } from "src/db/models/userInThreadModel";
-import { User } from "src/db/models/userModel";
+import { Thread } from "./../db/models/threadModel";
+import { UserInThread } from "./../db/models/userInThreadModel";
+import { User } from "./../db/models/userModel";
 class OnTime {
   async scheduleTask(api: Ifca) {
     const threadData = await Thread.findAll();
@@ -43,7 +43,7 @@ class OnTime {
             }
             const cacheFiles = files.filter((file) => {
               return /\.(png|jpg|jpeg|gif|mp4|avi|mp3|wav|txt|pdf)$/i.test(
-                file
+                file,
               );
             });
             cacheFiles.forEach((file) => {

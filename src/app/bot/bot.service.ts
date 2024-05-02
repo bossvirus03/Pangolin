@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { Thread } from "src/db/models/threadModel";
-import { User } from "src/db/models/userModel";
+import { Thread } from "./../../db/models/threadModel";
+import { User } from "./../../db/models/userModel";
 
 @Injectable()
 export class BotService {
@@ -11,7 +11,7 @@ export class BotService {
     private readonly userModel: typeof User,
     @InjectModel(Thread)
     private readonly threadModel: typeof Thread,
-    private readonly sequelize: Sequelize
+    private readonly sequelize: Sequelize,
   ) {}
   async findAllUser(): Promise<User[]> {
     return this.userModel.findAll();

@@ -1,10 +1,10 @@
 import { readdirSync } from "fs";
 import { join } from "path";
-import sequelize from "src/db/database";
-import { Thread } from "src/db/models/threadModel";
-import { UserInThread } from "src/db/models/userInThreadModel";
-import { User } from "src/db/models/userModel";
-import ConfigGuideLang from "src/lang/LangConfig";
+import sequelize from "./../db/database";
+import { Thread } from "./../db/models/threadModel";
+import { UserInThread } from "./../db/models/userInThreadModel";
+import { User } from "./../db/models/userModel";
+import ConfigGuideLang from "./../lang/LangConfig";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import * as stringSimilarity from "string-similarity";
@@ -16,7 +16,7 @@ import {
   deleteThread,
   deleteUserInThread,
   logMessageUserInThread,
-} from "src/util";
+} from "./../util";
 class Listen {
   constructor(
     private api: Ifca,

@@ -1,7 +1,7 @@
-import sequelize from "src/db/database";
-import { Thread } from "src/db/models/threadModel";
-import { UserInThread } from "src/db/models/userInThreadModel";
-import { User } from "src/db/models/userModel";
+import sequelize from "./../db/database";
+import { Thread } from "./../db/models/threadModel";
+import { UserInThread } from "./../db/models/userInThreadModel";
+import { User } from "./../db/models/userModel";
 import Ifca from "src/types/type.api";
 import IEvent from "src/types/type.event";
 import moment from "moment";
