@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import { join } from "path";
-import { exec } from "child_process";
 import { IPangolinRun } from "src/types/type.pangolin-handle";
 
 export default class RestartCommand {
@@ -15,13 +14,11 @@ export default class RestartCommand {
 
   constructor(private client) {}
   pathFile = join(process.cwd(), "/src/db/data/restart.txt");
-  async run({ api, event, client, args, UserData, ThreadData }: IPangolinRun) {
+  async run({ api, event }: IPangolinRun) {
     api.sendMessage(global.getLang("Restarting"), event.threadID);
     fs.writeFileSync(this.pathFile, `${Date.now()} ${event.threadID}`);
     try {
-      const { stdout, stderr } = await exec("pm2 restart pangolin");
-      console.log("stdout:", stdout);
-      console.error("stderr:", stderr);
+      process.exit(2);
     } catch (error) {
       console.error("Error executing command:", error);
     }

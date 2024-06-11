@@ -4,14 +4,11 @@ import { readFileSync } from "fs";
 import { promisify } from "util";
 import * as loginModule from "facebook-chat-api";
 import { join } from "path";
-import { ConfigService } from "@nestjs/config";
 import { Logger, ValidationPipe } from "@nestjs/common";
 import HandleCommand from "./core/handleCommand";
 import HandleEvent from "./core/handleEvent";
 import Listen from "./core/listen";
-import { JwtAuthGuard } from "./app/auth/guards/jwt-auth.guard";
 import cookieParser from "cookie-parser";
-import { TransformInterceptor } from "./app/core/transform.interceptor";
 import OnTime from "./modules/ontime";
 import * as fs from "fs";
 import { CustomLogger } from "./logger";
@@ -65,7 +62,6 @@ async function bootstrap() {
   /** =========== APP ===========*/
   const app = await NestFactory.create(AppModule);
   const reflector = app.get(Reflector);
-  const configService = app.get(ConfigService);
 
   app.enableCors({
     origin: true,
@@ -74,12 +70,8 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  app.useGlobalInterceptors(new TransformInterceptor());
-
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
-
   app.use(cookieParser());
-  const port = configService.get("PORT") || 3000;
+  const port = 3000;
   await app.listen(port, () => {
     Logger.log(`🚀Application is running on: http://localhost:${port}`);
   });
@@ -89,13 +81,7 @@ async function bootstrap() {
     const loginAsync = promisify(login);
     const loginPath = {
       appState: JSON.parse(
-        readFileSync(
-          join(
-            process.cwd(),
-            configService.get("FILE_STATE") || "appstate.json",
-          ),
-          "utf-8",
-        ),
+        readFileSync(join(process.cwd(), "appstate.json"), "utf-8"),
       ),
     };
 

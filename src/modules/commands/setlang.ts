@@ -14,24 +14,24 @@ export default class SetLangName {
       en: "Change bot language",
     },
     guide: {
-      vi: "",
-      en: "",
+      vi: "[prefix]setlang [vi/en]",
+      en: "[prefix]setlang [vi/en]",
     },
   };
 
   static message = {
     vi: {
-      text1: "",
-      text2: "",
+      successChange: "Đã đổi ngôn ngữ thành $0",
+      errorGuide: "Chỉ 'en' hoặc 'vi'!",
     },
     en: {
-      text1: "",
-      text2: "",
+      successChange: "Success change bot language to $0",
+      errorGuide: "Just 'en' or 'vi'",
     },
   };
 
   constructor(private client) {}
-  async run({ api, event, args }: IPangolinRun) {
+  async run({ api, event, args, getLang }: IPangolinRun) {
     const configPath = join(process.cwd(), "pangolin.config.json");
     let dataConfig = fs.readFileSync(configPath, "utf8");
     let config = JSON.parse(dataConfig);
@@ -48,9 +48,9 @@ export default class SetLangName {
           encoding: "utf-8",
         },
       );
-      await api.sendMessage(`Đã đổi ngôn ngữ thành ${args[1]}`, event.threadID);
+      await api.sendMessage(getLang("successChange", args[1]), event.threadID);
     } else {
-      api.sendMessage("chỉ 'en' hoặc 'vi'!", event.threadID);
+      api.sendMessage(getLang("errorGuide"), event.threadID);
     }
   }
 }

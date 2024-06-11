@@ -19,6 +19,8 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@CustomLog": ["src/logger/log.ts"]
+    }
   }
 }

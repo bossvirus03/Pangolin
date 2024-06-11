@@ -17,11 +17,12 @@ export default class UidCommand {
   };
 
   constructor(private client) {}
-  async run({ api, event, client, args }: IPangolinRun) {
-    if (!args[1]) return api.sendMessage(event.senderID, event.threadID);
+  async run({ api, event, args }: IPangolinRun) {
+    if (!args[1])
+      return api.sendMessage("sssss" + event.senderID, event.threadID);
     const propertyValues = Object.keys(event.mentions);
     propertyValues.forEach((item) => {
-      api.sendMessage(item, event.threadID);
+      api.sendMessage(">" + item, event.threadID);
     });
   }
 }

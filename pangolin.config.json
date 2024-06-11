@@ -13,5 +13,5 @@
     "self_listen": true,
     "log_event": false,
     "help_paginate": false,
-    "noti_loaded_data": false
+    "noti_loaded_data": true
 }
