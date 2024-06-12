@@ -5,6 +5,7 @@ export default class Setjoinleavnoti {
     name: "setjoinleavnoti",
     version: "1.0.0",
     author: "Lợi",
+    category: "GROUP",
     description: {
       vi: "Bật tắt thông báo khi thành viên (rời khỏi/vào) nhóm",
       en: "Toggle notifications when members (leave/join) the group",

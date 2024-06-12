@@ -5,7 +5,7 @@ import { promisify } from "util";
 import * as loginModule from "facebook-chat-api";
 import { join } from "path";
 import { Logger, ValidationPipe } from "@nestjs/common";
-import HandleCommand from "./core/handleCommand";
+import { loadCommands } from "./core/handleCommand";
 import HandleEvent from "./core/handleEvent";
 import Listen from "./core/listen";
 import cookieParser from "cookie-parser";
@@ -123,10 +123,9 @@ async function bootstrap() {
       return text.toString();
     };
     //load commands, event
-    const loadCommands = new HandleCommand(client);
     const loadEvents = new HandleEvent(client);
     loadEvents.load();
-    loadCommands.load();
+    loadCommands(client);
     // Logging in to Facebook Chat API
     Log.rainbow(
       `

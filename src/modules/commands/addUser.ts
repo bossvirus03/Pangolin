@@ -1,9 +1,9 @@
 import { IPangolinRun } from "src/types/type.pangolin-handle";
-import { findUid } from "./../../util/function";
+import { findUid } from "./../../utils/function";
 
 export default class AddUserName {
   static config = {
-    name: "addUser", //your command name
+    name: "addUser",
     version: "1.0.0",
     author: "Lợi",
     category: "GROUP",

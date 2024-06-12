@@ -1,4 +1,3 @@
-import { readdirSync } from "fs";
 import { join } from "path";
 import sequelize from "./../db/database";
 import { Thread } from "./../db/models/threadModel";
@@ -16,7 +15,9 @@ import {
   deleteThread,
   deleteUserInThread,
   logMessageUserInThread,
-} from "./../util";
+} from "./../utils";
+import { checkPermission } from "./handleCommand";
+
 class Listen {
   constructor(
     private api: Ifca,
@@ -317,7 +318,7 @@ class Listen {
     if (event.type == "message_reaction")
       return await cache.get(`handleReaction${event.messageID}`);
   };
-  // ({ name: this.config.name, messageID: info.messageID, author: event.senderID, link })
+
   async listen() {
     const UID_BOT = this.api.getCurrentUserID();
     const configPath = join(process.cwd(), "pangolin.config.json");
@@ -325,18 +326,7 @@ class Listen {
     const config = JSON.parse(dataConfig);
     sequelize.addModels([User, Thread, UserInThread]);
     await sequelize.sync();
-    const commandPath = join(process.cwd(), "src", "modules", "commands");
-    const commandFiles = readdirSync(commandPath).filter((file: string) =>
-      file.endsWith(".ts"),
-    );
-    let listCommands = [];
-    for (const file of commandFiles) {
-      const filePath = join(commandPath, file);
-      const CommandClass = require(filePath).default;
-      if (!CommandClass) continue;
-      const { config } = CommandClass;
-      listCommands.push(config.name);
-    }
+
     for (let i = 0; i < this.client.onload.length; i++) {
       this.client.onload[i].onload({
         api: this.api,
@@ -528,78 +518,14 @@ class Listen {
         this.client.commands.forEach((value, key) => {
           listCommands.push(key);
         });
-        async function checkPermission(client, api: Ifca) {
-          const ADMINS = config.admins;
-          const commandPath = join(process.cwd(), "src", "modules", "commands");
-          const commandFiles = readdirSync(commandPath).filter((file: string) =>
-            file.endsWith(".ts"),
-          );
-          for (const file of commandFiles) {
-            const filePath = join(commandPath, file);
-            const CommandClass = require(filePath).default;
-            if (!CommandClass) continue;
-            const { config } = CommandClass;
-            const commandInstance = new CommandClass(client);
-            if (commandInstance.run) {
-              if (config.name == args[0]) {
-                // check permissions group admin
-                if (config.permission == 1) {
-                  try {
-                    const info: { adminIDs: { id: string }[] } =
-                      await new Promise((resolve, reject) => {
-                        api.getThreadInfo(event.threadID, (err, info) => {
-                          if (err) reject(err);
-                          else resolve(info);
-                        });
-                      });
-                    const checkIsPermission = info.adminIDs.some(
-                      (item) => item.id == event.senderID,
-                    );
-                    const isAdminBot = ADMINS.includes(event.senderID);
-                    if (isAdminBot) return true;
-                    if (checkIsPermission) {
-                      return true;
-                    } else {
-                      await api.sendMessage(
-                        global.getLang("Unauthorized", PREFIX, config.name),
-                        event.threadID,
-                      );
-                      return false;
-                    }
-                  } catch (error) {
-                    global.getLang("ErrorOccurred", error);
-
-                    return false;
-                  }
-                }
-                // check permissions for admin bot
-                else if (
-                  config.permission == 2 &&
-                  (event.body as string).startsWith(PREFIX)
-                ) {
-                  let isPermission = true;
-                  let isAdmin = 0;
-                  for (let id of ADMINS) {
-                    if (id != event.senderID) {
-                      isAdmin++;
-                    }
-                  }
-                  if (isAdmin == ADMINS.length) {
-                    api.sendMessage(
-                      global.getLang("Unauthorized", PREFIX, config.name),
-                      event.threadID,
-                    );
-                    isPermission = false;
-                  }
-                  return isPermission;
-                } else {
-                  return true;
-                }
-              }
-            }
-          }
-        }
-        const isPermission = await checkPermission(this.client, this.api);
+        const isPermission = await checkPermission(
+          this.client,
+          this.api,
+          event,
+          config,
+          args,
+          PREFIX,
+        );
 
         if (!(event.body as string).startsWith(PREFIX)) return;
         if (!listCommands.includes(args[0])) {

@@ -37,12 +37,13 @@ export default class SetLangName {
     let config = JSON.parse(dataConfig);
 
     const lang = ["vi", "en"];
+
     if (lang.includes(args[1])) {
       fs.writeFileSync(
         configPath,
         JSON.stringify({
           ...config,
-          lang,
+          language: args[1],
         }),
         {
           encoding: "utf-8",
