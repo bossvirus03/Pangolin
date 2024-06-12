@@ -10,7 +10,7 @@ export default class HelpCommand {
   static config = {
     category: "GROUP",
     name: "help",
-    version: "1.0.0",
+    version: "1.0.1",
     author: "Lợi",
     description: {
       vi: "xem bot có bao nhiêu lệnh or xem hướng dẫn cách dùng của 1 lệnh nào đó",
@@ -32,7 +32,7 @@ export default class HelpCommand {
     },
     en: {
       listCommand:
-        "This is a Facebook chat message. Currently, this bot has $0 commands\n\n$1 commands has prefix : $2\n\n$3 no prefix: $4",
+        "Đây là tin nhắn tự động từ bot chat. Hiện tại, bot đang có $0 lệnh\n\n$1 lệnh có prefix : $2\n\n$3 không prefix prefix: $4",
       command: "------$0-------\nFunction: $1\nUse: $2",
       invalidPage: "Invalid page!",
       listCommandPaginate:
